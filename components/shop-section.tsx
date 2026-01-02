@@ -1,0 +1,508 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { ShoppingBag, X, Plus, Minus, ArrowRight, MessageCircle } from "lucide-react"
+import { GlitchText } from "@/components/ui/glitch-text"
+import clsx from "clsx"
+
+// --- DATOS DE PRODUCTOS ---
+interface Product {
+  id: string
+  name: string
+  category: "merch" | "tickets"
+  price: number
+  image: string
+  description: string
+  sizes?: string[]
+  colors?: string[]
+  eventDate?: string
+  soldOut?: boolean
+}
+
+const products: Product[] = [
+  {
+    id: "tee-01",
+    name: "T-Shirt Ritual 01",
+    category: "merch",
+    price: 35,
+    image: "/modelo1.JPG",
+    description: "100% Organic Cotton. Heavyweight. Screen printed back.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+  },
+  {
+    id: "tee-02",
+    name: "T-Shirt Ritual 02",
+    category: "merch",
+    price: 35,
+    image: "/modelo2.JPG",
+    description: "100% Organic Cotton. Heavyweight. Screen printed back.",
+    sizes: ["S", "M", "L", "XL"],
+  },
+  {
+    id: "tee-03",
+    name: "T-Shirt Ritual 03",
+    category: "merch",
+    price: 35,
+    image: "/modelo3.JPG",
+    description: "100% Organic Cotton. Heavyweight. Screen printed back.",
+    sizes: ["S", "M", "L", "XL"],
+  },
+  {
+    id: "keychain",
+    name: "Keychain Limited",
+    category: "merch",
+    price: 12,
+    image: "/llavero.png",
+    description: "Metal & Rubber. Red Accent.",
+    colors: ["BLACK", "RED"],
+  },
+  {
+    id: "JUNY",
+    name: "RITUAL: JUNY. TBC",
+    category: "tickets",
+    price: 20,
+    image: "/LOGO_MORK_RED.PNG",
+    description: "06.06.2026 · Wave Club Mallorca",
+    eventDate: "06.06.2026",
+  },
+  {
+    id: "JULY",
+    name: "RITUAL: JULY. TBC",
+    category: "tickets",
+    price: 20,
+    image: "/GALLETA_ROJA.PNG",
+    description: "04.07.2026 · Wave Club Mallorca",
+    eventDate: "04.07.2026",
+  },
+  {
+    id: "AUGUST",
+    name: "RITUAL: AUGUST. TBC",
+    category: "tickets",
+    price: 20,
+    image: "/LOGO_MORK_RED.PNG",
+    description: "08.2026 · Wave Club Mallorca",
+    eventDate: "08.2026",
+  },
+  {
+    id: "SEPTEMBER",
+    name: "RITUAL: SEPTEMBER. TBC",
+    category: "tickets",
+    price: 20,
+    image: "/GALLETA_ROJA.PNG",
+    description: "12.09.2026 · Wave Club Mallorca",
+    eventDate: "12.09.2026",
+  },
+]
+
+// --- INTERFAZ DEL CARRITO ---
+interface CartItem extends Product {
+  quantity: number
+  selectedSize?: string
+  selectedColor?: string
+}
+
+export function ShopSection() {
+  const [filter, setFilter] = useState<"all" | "merch" | "tickets">("all")
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  
+  // Estados de selección
+  const [selectedSize, setSelectedSize] = useState<string>("")
+  const [selectedColor, setSelectedColor] = useState<string>("")
+
+  // --- LÓGICA DE FILTRO POR URL ---
+  useEffect(() => {
+    const checkHash = () => {
+      if (typeof window !== "undefined" && window.location.hash === "#tickets") {
+        setFilter("tickets")
+      }
+    }
+    checkHash()
+    window.addEventListener("hashchange", checkHash)
+    const handleClick = () => setTimeout(checkHash, 100)
+    window.addEventListener("click", handleClick)
+    return () => {
+      window.removeEventListener("hashchange", checkHash)
+      window.removeEventListener("click", handleClick)
+    }
+  }, [])
+
+  const handleManualFilter = (newFilter: "all" | "merch" | "tickets") => {
+    setFilter(newFilter)
+    if (window.location.hash === "#tickets") {
+      history.replaceState(null, "", window.location.pathname) 
+    }
+  }
+
+  const filteredProducts = products.filter((p) => filter === "all" || p.category === filter)
+
+  // --- AÑADIR AL CARRITO ---
+  const addToCart = (product: Product, size?: string, color?: string) => {
+    if (product.soldOut) return
+
+    const existingItem = cart.find(
+      (item) => item.id === product.id && item.selectedSize === size && item.selectedColor === color,
+    )
+
+    if (existingItem) {
+      setCart(
+        cart.map((item) =>
+          item.id === product.id && item.selectedSize === size && item.selectedColor === color
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        ),
+      )
+    } else {
+      setCart([...cart, { ...product, quantity: 1, selectedSize: size, selectedColor: color }])
+    }
+
+    // Cerramos modal y reseteamos selección
+    setSelectedProduct(null)
+    setSelectedSize("")
+    setSelectedColor("")
+    
+    // Abrimos carrito automáticamente para feedback visual
+    setIsCartOpen(true)
+  }
+
+  const removeFromCart = (id: string, size?: string, color?: string) => {
+    setCart(cart.filter((item) => !(item.id === id && item.selectedSize === size && item.selectedColor === color)))
+  }
+
+  const updateQuantity = (id: string, size: string | undefined, color: string | undefined, delta: number) => {
+    setCart(
+      cart.map((item) => {
+          if (item.id === id && item.selectedSize === size && item.selectedColor === color) {
+            const newQuantity = item.quantity + delta
+            return newQuantity > 0 ? { ...item, quantity: newQuantity } : item
+          }
+          return item
+        }).filter((item) => item.quantity > 0),
+    )
+  }
+
+  // --- LÓGICA DE CHECKOUT (WHATSAPP) ---
+  const handleCheckout = () => {
+    const phoneNumber = "34676182044"; // <--- ⚠️ PON AQUÍ TU NÚMERO DE TELÉFONO (Con prefijo 34)
+    
+    // Construimos el mensaje
+    let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
+    
+    cart.forEach(item => {
+        message += `▪️ ${item.quantity}x ${item.name}`;
+        if (item.selectedSize) message += ` [Talla: ${item.selectedSize}]`;
+        if (item.selectedColor) message += ` [Color: ${item.selectedColor}]`;
+        message += ` - ${item.price * item.quantity}€\n`;
+    });
+    
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    message += `\nTOTAL ESTIMADO: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`;
+
+    // Abrir WhatsApp
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  }
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+
+  return (
+    <section id="shop" className="py-20 md:py-32 px-4 md:px-8 border-t border-border relative bg-background">
+      
+      <div id="tickets" className="absolute top-20 md:top-32" />
+
+      <div className="max-w-7xl mx-auto">
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
+          <div>
+            <p className="text-muted-foreground text-xs tracking-[0.3em] uppercase mb-2">[ 06 ]</p>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight uppercase">
+               <GlitchText>The Shop</GlitchText>
+            </h2>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex gap-1 border border-border p-1">
+            {(["all", "merch", "tickets"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => handleManualFilter(tab)}
+                className={clsx(
+                    "px-4 py-2 text-xs tracking-[0.15em] uppercase transition-all min-h-11",
+                    filter === tab ? "bg-foreground text-background font-bold" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {tab === "all" ? "All" : tab === "merch" ? "Merch" : "Tickets"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* GRID DE PRODUCTOS */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {filteredProducts.map((product) => (
+            <div key={product.id} className="group">
+              <div
+                className={clsx(
+                    "relative aspect-square bg-zinc-900 border border-white/5 overflow-hidden mb-3 transition-all duration-300",
+                    product.soldOut ? "opacity-50" : "cursor-pointer hover:border-white/20"
+                )}
+                onClick={() => !product.soldOut && setSelectedProduct(product)}
+              >
+                <Image
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.name}
+                  fill
+                  className="object-cover brightness-[0.4] group-hover:brightness-100 group-hover:scale-105 transition-all duration-500"
+                />
+                
+                {/* Etiquetas */}
+                {product.soldOut && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                    <span className="text-red-600 text-xs tracking-[0.2em] uppercase font-bold border border-red-600 px-3 py-1">Sold Out</span>
+                  </div>
+                )}
+                {product.category === "tickets" && !product.soldOut && (
+                  <div className="absolute top-3 left-3 bg-red-600 px-2 py-1">
+                    <span className="text-white text-[10px] tracking-[0.1em] uppercase font-bold">
+                      Ticket
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-1">
+                <h3 className="text-sm font-bold tracking-wide uppercase truncate text-white">{product.name}</h3>
+                <p className="text-muted-foreground text-xs truncate">{product.description}</p>
+                <p className="text-accent font-mono text-sm">{product.price}€</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* BOTÓN FLOTANTE DEL CARRITO */}
+        <button
+          onClick={() => setIsCartOpen(true)}
+          className={clsx(
+              "fixed bottom-6 right-6 p-4 flex items-center gap-3 transition-all z-40 min-h-11 shadow-2xl",
+              cartCount > 0 ? "bg-red-600 text-white hover:bg-red-700" : "bg-white text-black hover:bg-gray-200"
+          )}
+        >
+          <ShoppingBag size={20} />
+          {cartCount > 0 && (
+            <span className="text-sm font-mono font-bold">
+              {cartCount} · {cartTotal}€
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* MODAL DE PRODUCTO */}
+      {selectedProduct && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-zinc-950 border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid md:grid-cols-2">
+            
+            {/* Imagen Grande */}
+            <div className="relative aspect-square md:aspect-auto md:h-full bg-zinc-900">
+              <Image
+                src={selectedProduct.image || "/placeholder.svg"}
+                alt={selectedProduct.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Detalles */}
+            <div className="p-6 md:p-10 flex flex-col h-full relative">
+               <button
+                onClick={() => {
+                  setSelectedProduct(null)
+                  setSelectedSize("")
+                  setSelectedColor("")
+                }}
+                className="absolute top-4 right-4 text-white/50 hover:text-white p-2"
+              >
+                <X size={24} />
+              </button>
+
+              <div className="mb-auto">
+                <p className="text-red-600 text-xs tracking-[0.2em] uppercase mb-2">
+                  {selectedProduct.category === "tickets" ? "Official Ticket" : "Limited Edition"}
+                </p>
+                <h3 className="text-3xl md:text-4xl font-black tracking-tight uppercase text-white mb-4">{selectedProduct.name}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed mb-6">{selectedProduct.description}</p>
+                <p className="text-3xl font-mono text-white mb-8">{selectedProduct.price}€</p>
+
+                {/* Selector Talla */}
+                {selectedProduct.sizes && (
+                  <div className="space-y-3 mb-6">
+                    <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Size</p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProduct.sizes.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={clsx(
+                              "px-6 py-3 border text-xs tracking-wider uppercase transition-all",
+                              selectedSize === size
+                                ? "border-white bg-white text-black font-bold"
+                                : "border-white/20 text-gray-400 hover:border-white hover:text-white"
+                          )}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Selector Color */}
+                {selectedProduct.colors && (
+                  <div className="space-y-3 mb-8">
+                    <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Color</p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProduct.colors.map((color) => (
+                        <button
+                          key={color}
+                          onClick={() => setSelectedColor(color)}
+                          className={clsx(
+                              "px-6 py-3 border text-xs tracking-wider uppercase transition-all",
+                              selectedColor === color
+                                ? "border-white bg-white text-black font-bold"
+                                : "border-white/20 text-gray-400 hover:border-white hover:text-white"
+                          )}
+                        >
+                          {color}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Botón Añadir */}
+              <button
+                onClick={() => addToCart(selectedProduct, selectedSize || undefined, selectedColor || undefined)}
+                disabled={
+                  (selectedProduct.sizes && !selectedSize) || (selectedProduct.colors && !selectedColor)
+                }
+                className="w-full bg-red-600 text-white py-4 text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-zinc-800 flex items-center justify-center gap-3 mt-4"
+              >
+                <Plus size={18} />
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CART DRAWER (Lateral) */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Fondo oscuro para cerrar */}
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={() => setIsCartOpen(false)} />
+          
+          {/* Panel Lateral */}
+          <div className="relative w-full max-w-md bg-zinc-950 border-l border-white/10 flex flex-col h-full shadow-2xl animate-in slide-in-from-right duration-300">
+            
+            {/* Cabecera Carrito */}
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <h3 className="text-lg font-black tracking-[0.2em] uppercase text-white">Your Cart</h3>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="p-2 text-gray-400 hover:text-white"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Lista de Items */}
+            {cart.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
+                <ShoppingBag size={48} className="mb-4 opacity-20" />
+                <p className="text-sm tracking-wide uppercase">Empty Cart</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                  {cart.map((item, idx) => (
+                    <div
+                      key={`${item.id}-${item.selectedSize}-${item.selectedColor}-${idx}`}
+                      className="flex gap-4 pb-6 border-b border-white/5 last:border-0"
+                    >
+                      <div className="relative w-20 h-24 bg-zinc-900 flex-shrink-0 border border-white/5">
+                        <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                            <h4 className="text-sm font-bold uppercase truncate text-white">{item.name}</h4>
+                            <div className="flex gap-3 mt-1">
+                                {item.selectedSize && (
+                                <p className="text-gray-500 text-[10px] uppercase border border-white/10 px-1">Size: {item.selectedSize}</p>
+                                )}
+                                {item.selectedColor && (
+                                <p className="text-gray-500 text-[10px] uppercase border border-white/10 px-1">Color: {item.selectedColor}</p>
+                                )}
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-2">
+                            <p className="text-sm font-mono text-white">{item.price}€</p>
+                            
+                            <div className="flex items-center gap-3 bg-zinc-900 border border-white/10 px-2 py-1">
+                                <button
+                                    onClick={() => updateQuantity(item.id, item.selectedSize, item.selectedColor, -1)}
+                                    className="text-gray-400 hover:text-white"
+                                >
+                                    <Minus size={12} />
+                                </button>
+                                <span className="text-xs font-mono w-4 text-center text-white">{item.quantity}</span>
+                                <button
+                                    onClick={() => updateQuantity(item.id, item.selectedSize, item.selectedColor, 1)}
+                                    className="text-gray-400 hover:text-white"
+                                >
+                                    <Plus size={12} />
+                                </button>
+                            </div>
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={() => removeFromCart(item.id, item.selectedSize, item.selectedColor)}
+                        className="text-gray-600 hover:text-red-500 self-start"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer del Carrito */}
+                <div className="p-6 border-t border-white/10 space-y-4 bg-zinc-900/50">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-400 text-sm uppercase tracking-wide">Total Estimated</span>
+                    <span className="text-2xl font-mono text-white">{cartTotal}€</span>
+                  </div>
+                  
+                  <button 
+                    onClick={handleCheckout}
+                    className="w-full bg-green-600 text-white py-4 text-sm tracking-[0.2em] uppercase font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle size={18} />
+                    Order via WhatsApp
+                  </button>
+                  
+                  <p className="text-gray-600 text-[10px] text-center tracking-wide leading-relaxed">
+                    Orders are processed manually. Click to send your cart details to our team and arrange payment/shipping.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}

@@ -35,7 +35,7 @@ const residents = [
     name: "ODEEN",
     role: "Mørk DJ",
     style: "Techno, Hardgroove",
-    image: "/odeen.JPEG",
+    image: "/odeen.jpeg",
   },
 ]
 

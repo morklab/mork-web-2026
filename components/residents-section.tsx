@@ -31,6 +31,12 @@ const residents = [
     style: "Techno, Hardgroove",
     image: "/selin.JPEG",
   },
+  {
+    name: "ODEEN",
+    role: "Mørk DJ",
+    style: "Techno, Hardgroove",
+    image: "/odeen.JPEG",
+  },
 ]
 
 export function ResidentsSection() {

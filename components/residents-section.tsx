@@ -3,7 +3,6 @@
 import { useState, useRef } from "react"
 import Image from "next/image"
 import clsx from "clsx"
-// 1. IMPORTAR COMPONENTE GLITCH 👇
 import { GlitchText } from "@/components/ui/glitch-text"
 
 const residents = [
@@ -46,16 +45,17 @@ export function ResidentsSection() {
   const isTouchRef = useRef(false)
 
   return (
-    <section id="residents" className="py-20 md:py-32 bg-card border-t border-white/10 overflow-hidden">
+    // 👇 CAMBIO 1: El ID debe coincidir con el del menú (sin la almohadilla #)
+    <section id="core-artists" className="py-20 md:py-32 bg-card border-t border-white/10 overflow-hidden">
       <div className="w-full">
         
         {/* Section Header */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 mb-12 md:mb-16">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">The Architects</p>
           
-          {/* 2. APLICAR GLITCH AQUÍ 👇 */}
+          {/* 👇 CAMBIO 2: El Texto visible con Glitch */}
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[0.05em] uppercase text-foreground">
-            <GlitchText>RESIDENTS</GlitchText>
+            <GlitchText>CORE ARTISTS</GlitchText>
           </h2>
         </div>
 

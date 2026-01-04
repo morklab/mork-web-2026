@@ -31,10 +31,10 @@ export function Navigation() {
               Events
             </Link>
             <Link
-              href="#residents"
+              href="#core-artists"
               className="text-muted-foreground hover:text-accent text-xs tracking-[0.2em] uppercase transition-colors"
             >
-              Residents
+              Core Artists
             </Link>
             <Link
               href="#manifesto"
@@ -98,11 +98,11 @@ export function Navigation() {
               Events
             </Link>
             <Link
-              href="#residents"
+              href="#core-artists"
               onClick={() => setIsOpen(false)}
               className="text-foreground text-lg tracking-[0.2em] uppercase py-3 border-b border-border"
             >
-              Residents
+              Core Artists
             </Link>
             <Link
               href="#manifesto"

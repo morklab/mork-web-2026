@@ -24,7 +24,7 @@ export function SoundPlayer() {
       {/* 1. EL REPRODUCTOR INVISIBLE */}
       <audio 
         ref={audioRef} 
-        src="/ambient.mp3" 
+        src="/ambient2.mp3" 
         loop 
       />
 

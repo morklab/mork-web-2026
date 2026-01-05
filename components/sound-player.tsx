@@ -19,7 +19,8 @@ export function SoundPlayer() {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 z-50">
+    // 👇 CAMBIO AQUÍ: 'left-8' en lugar de 'right-8'
+    <div className="fixed bottom-8 left-8 z-50">
       {/* 1. EL REPRODUCTOR INVISIBLE */}
       <audio 
         ref={audioRef} 

@@ -62,7 +62,7 @@ export function TeamSection() {
         {/* Philosophy */}
         <div className="mb-12 max-w-3xl">
           <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            Somos una familia que cree en el proyecto desde el principio. Respetamos el techno y la cultura de club como forma de vida. Unidos por la misma pasión, trabajamos para crear experiencias que trasciendan lo ordinario.
+          We are a family that believed in the project from the very start. Techno and club culture are not trends to us, but a way of life. Driven by the same passion, we create experiences that go beyond the surface and escape the ordinary.
           </p>
         </div>
 

@@ -22,22 +22,22 @@ const team = [
   },
   {
     name: "Rut Garau",
-    role: "Directora RRPP",
+    role: "PR & Promotions Coordinator",
     image: "/female-professional-portrait-dark-elegant.jpg",
   },
   {
     name: "Álvaro Company",
-    role: "Director de Video",
+    role: "Director and Head of Video",
     image: "/male-videographer-portrait-dark-cinematic.jpg",
   },
   {
     name: "Ernesto Montero",
-    role: "Director de Fotografía",
+    role: "Visual Artist & Photographer",
     image: "/male-photographer-portrait-dark-artistic.jpg",
   },
   {
-    name: "Carlitos",
-    role: "Jefe de Iluminación",
+    name: "Carlos Gomez",
+    role: "Lighting Director",
     image: "/male-lighting-technician-portrait-dark-stage.jpg",
   },
 ]

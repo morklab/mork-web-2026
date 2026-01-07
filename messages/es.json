@@ -10,7 +10,7 @@
     "follow": "SEGUIR"
   },
   "Hero": {
-    "subtitle": "CULTURA DE MÚSICA ELECTRÓNICA UNDERGROUND",
+    "subtitle": "EL MOVIMIENTO TECHNO ABSOLUTO",
     "text": "Mallorca — Donde el ego se disuelve y solo queda el ritmo.",
     "cta": "TIENDA",
     "est": "Est. MMXXIII — Mallorca"
@@ -18,15 +18,35 @@
   "Manifesto": {
     "subtitle": "Nuestra Filosofía",
     "title": "EL MANIFIESTO",
-    "p1_1": "MØRK no es solo una fiesta.",
-    "p1_2": "Es un compromiso con el sonido.",
-    "p2": "Un espacio seguro donde el ego se disuelve y solo queda el ritmo. Curamos noches para el oído educado. Cada beat, cada luz, cada momento está diseñado con intención.",
-    "p3": "Creemos en el poder de la cultura underground. En la oscuridad encontramos unidad. En la repetición encontramos trascendencia. En el bajo nos encontramos a nosotros mismos.",
-    "p4": "Esto no es entretenimiento. Esto es un ritual.",
-    "stat_style": "Estilo",
-    "stat_artists": "Artistas Internacionales",
-    "stat_community": "Comunidad",
-    "stat_founded": "Fundado"
+    
+    "m1_t": "MØRK NO ES SOLO UNA FIESTA",
+    "m1_d": "Es una declaración. Un compromiso inquebrantable con el sonido como verdad.",
+    
+    "m2_t": "DONDE EL EGO SE APAGA",
+    "m2_d": "Creamos un espacio donde el cuerpo recuerda cómo escuchar. Un refugio para quienes entienden la música no como fondo, sino como centro.",
+    
+    "m3_t": "PARA EL OÍDO EDUCADO",
+    "m3_d": "Curamos noches para quienes reconocen la intención en la repetición y la profundidad en la oscuridad. Aquí el ritmo no distrae: revela.",
+    
+    "m4_t": "TERRITORIO NEUTRAL",
+    "m4_d": "La pista no tiene jerarquías ni personajes, solo pulsos sincronizados. En la oscuridad encontramos unidad. En la repetición, trascendencia. En el volumen justo, comunión.",
+    
+    "m5_t": "RITUAL, NO CONSUMO",
+    "m5_d": "Es presencia, no espectáculo. Es comunidad sin rostro. Cuando la luz desaparece, el sonido toma el control. Y ahí, comienza MØRK.",
+
+    "code_title": "MØRK CØDE",
+    "r1_t": "RESPETA EL VIBE",
+    "r1_d": "Aquí venimos a bailar. La música nos une, no molestes a quien está a tu lado.",
+    "r2_t": "RESPETA A LXS DEMÁS",
+    "r2_d": "No es NO. El consentimiento es obligatorio. No toques sin permiso.",
+    "r3_t": "NO PHOTOS, NO VIDEOS",
+    "r3_d": "Disfruta del momento. Nuestro personal se encargará de inmortalizar el evento. Pista libre de flashes.",
+    "r4_t": "DEJA LA MALA ENERGÍA FUERA",
+    "r4_d": "Buen rollo o puerta. Trae tu mejor versión.",
+    "r5_t": "CELEBRA LA DIVERSIDAD",
+    "r5_d": "Todos los cuerpos, géneros y estilos son bienvenidos. Aquí todxs bailamos.",
+    "r6_t": "CUIDA LA PISTA",
+    "r6_d": "Si ves algo raro, avisa al staff. Estamos aquí para ayudarte."
   },
   "Visuals": {
     "subtitle": "Archivo Visual"
@@ -51,21 +71,12 @@
     "profile_button": "Perfil de Mixcloud"
   },
   "Shop": {
-    "subtitle": "[ 06 ]",
-    "title": "La Tienda",
-    "tab_all": "Todo",
-    "tab_merch": "Merch",
-    "tab_tickets": "Entradas",
-    "sold_out": "Agotado",
-    "ticket_label": "Entrada",
-    "add_to_cart": "Añadir al Carrito",
-    "size": "Talla",
-    "color": "Color",
-    "cart_title": "Tu Carrito",
-    "cart_empty": "Carrito Vacío",
-    "total_est": "Total Estimado",
-    "whatsapp_btn": "Pedir por WhatsApp",
-    "whatsapp_note": "Los pedidos se procesan manualmente. Haz clic para enviar tu carrito a nuestro equipo y gestionar el pago/envío."
+    "subtitle": "MERCH OFICIAL",
+    "title": "TIENDA",
+    "cat_all": "COLECCIÓN",
+    "cat_apparel": "INDUMENTARIA",
+    "cat_accessories": "ACCESORIOS",
+    "btn_buy": "COMPRAR"
   },
   "Artists": {
     "subtitle": "Los Arquitectos",
@@ -85,7 +96,7 @@
   },
   "Events": {
     "subtitle": "Próximamente",
-    "title": "PROGRAMACIÓN",
+    "title": "PROXIMOS EVENTOS",
     "ticket_btn": "Entradas",
     "view_all": "Ver todos los eventos →",
     "night_with": "Una Noche Con"

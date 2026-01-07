@@ -68,9 +68,9 @@ export function EventsSection() {
         <div className="mb-16 md:mb-24">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">{t('subtitle')}</p>
           
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[0.05em] uppercase text-foreground">
-            <GlitchText>{t('title')}</GlitchText>
-          </h2>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
+  <GlitchText>{t('title')}</GlitchText>
+</h2>
         </div>
 
         {/* Events List */}

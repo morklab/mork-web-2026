@@ -86,8 +86,11 @@ export function VisualsSection() {
       <div className="w-full">
         <div className="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-end mb-2">
           <div>
-            <p className="text-accent text-xs tracking-[0.4em] uppercase mb-2">{t('subtitle')}</p>
-            <h2 className="text-3xl md:text-5xl font-black tracking-[0.05em] uppercase text-white">
+            <p className="text-accent text-xs tracking-[0.4em] uppercase mb-2 font-bold no-glow">
+              {t('subtitle')}
+            </p>
+            {/* Título unificado con tracking-tighter */}
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white">
               <GlitchText>RITUAL ECHOES</GlitchText> ({items.length})
             </h2>
           </div>

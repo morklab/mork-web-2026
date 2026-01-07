@@ -8,7 +8,6 @@
   --color-background: hsl(0 0% 0%);
   --color-foreground: hsl(0 0% 98%);
   
-  /* ... resto de colores estándar ... */
   --color-primary: hsl(0 0% 98%);
   --color-primary-foreground: hsl(0 0% 9%);
   --color-secondary: hsl(0 0% 14.9%);
@@ -28,8 +27,7 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
-  /* 🔥 ROJO NEÓN (Aquí está el truco) */
-  /* Usamos 0 100% 50% (Rojo puro) */
+  /* ROJO PURO (Sólido) */
   --color-accent: hsl(0 100% 50%); 
   --color-accent-foreground: hsl(0 0% 98%);
 }
@@ -39,7 +37,6 @@
   :root {
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-    /* ROJO PURO HEX (#FF0000) */
     --accent: 0 100% 50%;
   }
 
@@ -52,9 +49,10 @@
     overflow-x: hidden;
   }
   
-  /* 👇 TRUCO NUEVO: Todo lo que sea "text-accent" tendrá glow automático */
+  /* 🔥 CAMBIO: HE ELIMINADO EL TEXT-SHADOW AQUÍ */
+  /* El rojo ahora será plano y nítido */
   .text-accent {
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7), 0 0 20px rgba(255, 0, 0, 0.4);
+    text-shadow: none; 
   }
 }
 
@@ -112,8 +110,7 @@
   opacity: 0.4;
 }
 
-/* 4. GLITCH TEXTO TERROR (Silent Hill) */
-/* Actualizamos las animaciones con el ROJO NEÓN */
+/* 4. GLITCH TEXTO TERROR */
 @keyframes glitch-horror-red {
   0%, 92% { opacity: 0; transform: translate(0); clip-path: inset(0 0 0 0); }
   93% { opacity: 1; transform: translate(-5px, 2px); clip-path: inset(20% 0 50% 0); }
@@ -152,12 +149,11 @@
   z-index: -1;
 }
 
-/* Capa ROJA MØRK: AÑADIDO GLOW INTENSO */
 .glitch-text::before {
   left: 2px;
   color: #ff0000;
-  /* 👇 ESTA SOMBRA ES LA CLAVE DEL BRILLO */
-  text-shadow: 0 0 10px #ff0000, 2px 0 black; 
+  /* 🔥 SIN GLOW, solo borde negro para legibilidad */
+  text-shadow: 2px 0 black; 
   animation: glitch-horror-red 5s infinite linear;
 }
 
@@ -167,4 +163,10 @@
   text-shadow: -2px 0 black;
   mix-blend-mode: hard-light;
   animation: glitch-horror-cyan 5s infinite linear reverse;
+}
+
+/* CLASE UTILIDAD (Por si acaso la necesitas) */
+.no-glow {
+  text-shadow: none !important;
+  filter: none !important;
 }

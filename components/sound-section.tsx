@@ -45,10 +45,11 @@ export function SoundSection() {
         
         {/* HEADER */}
         <div className="mb-16 md:mb-24">
-          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">
+          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">
             {t('subtitle')}
           </p>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[0.05em] uppercase text-foreground">
+          {/* 🔥 TÍTULO UNIFICADO: Igual que en Manifiesto y Eventos */}
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
             <GlitchText>{t('title')}</GlitchText>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base tracking-wider mt-6 max-w-xl">
@@ -145,7 +146,6 @@ export function SoundSection() {
             className="inline-flex items-center justify-center gap-3 border border-white/20 text-foreground px-8 py-4 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all min-h-11 group"
           >
             <Radio size={16} className="group-hover:text-red-600 transition-colors" />
-            {/* CORREGIDO: Usamos btn_mixcloud que es lo que tienes en el JSON */}
             {t('btn_mixcloud')}
           </a>
         </div>

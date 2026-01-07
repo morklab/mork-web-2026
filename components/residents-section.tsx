@@ -4,6 +4,7 @@ import { useState, useRef } from "react"
 import Image from "next/image"
 import clsx from "clsx"
 import { GlitchText } from "@/components/ui/glitch-text"
+import { useTranslations } from "next-intl" // 👈 Importamos traducciones
 
 const residents = [
   {
@@ -40,9 +41,10 @@ const residents = [
 
 export function ResidentsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  
-  // Usamos la misma lógica táctil que en la otra sección para mejor experiencia móvil
   const isTouchRef = useRef(false)
+  
+  // 👇 Activamos el diccionario "Artists"
+  const t = useTranslations("Artists")
 
   return (
     <section id="core-artists" className="py-20 md:py-32 bg-card border-t border-white/10 overflow-hidden">
@@ -50,10 +52,11 @@ export function ResidentsSection() {
         
         {/* Section Header */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 mb-12 md:mb-16">
-          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">The Architects</p>
+          {/* 👇 AQUÍ ESTÁ EL CAMBIO: Usamos t('subtitle') en vez de texto fijo */}
+          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">{t('subtitle')}</p>
           
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[0.05em] uppercase text-foreground">
-            <GlitchText>CORE ARTISTS</GlitchText>
+            <GlitchText>{t('title')}</GlitchText>
           </h2>
         </div>
 
@@ -67,7 +70,6 @@ export function ResidentsSection() {
                 key={index}
                 className={clsx(
                     "group relative flex-shrink-0 snap-center cursor-pointer",
-                    // 👇 CAMBIO AQUÍ: Reducimos el ancho (antes w-64 md:w-80)
                     "w-52 md:w-64"
                 )}
                 onTouchStart={() => { isTouchRef.current = true }}

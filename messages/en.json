@@ -1,0 +1,93 @@
+{
+  "Navigation": {
+    "events": "EVENTS",
+    "artists": "CORE ARTISTS",
+    "manifesto": "MANIFESTO",
+    "visuals": "RITUAL ECHOES",
+    "team": "TEAM",
+    "sound": "SOUND",
+    "shop": "SHOP",
+    "follow": "FOLLOW"
+  },
+  "Hero": {
+    "subtitle": "UNDERGROUND ELECTRONIC MUSIC CULTURE",
+    "text": "Mallorca — Where the ego dissolves and only the rhythm remains.",
+    "cta": "SHOP",
+    "est": "Est. MMXXIII — Mallorca"
+  },
+  "Manifesto": {
+    "subtitle": "Our Philosophy",
+    "title": "THE MANIFESTO",
+    "p1_1": "MØRK is not just a party.",
+    "p1_2": "It is a commitment to sound.",
+    "p2": "A safe space where the ego dissolves and only the rhythm remains. We curate nights for the educated ear. Every beat, every light, every moment is crafted with intention.",
+    "p3": "We believe in the power of underground culture. In the darkness, we find unity. In the repetition, we find transcendence. In the bass, we find ourselves.",
+    "p4": "This is not entertainment. This is ritual.",
+    "stat_style": "Style",
+    "stat_artists": "International Artists",
+    "stat_community": "Community",
+    "stat_founded": "Founded"
+  },
+  "Visuals": {
+    "subtitle": "Visual Archive"
+  },
+  "Team": {
+    "subtitle": "THE FAMILY",
+    "title": "THE TEAM",
+    "text": "We are a family that believed in the project from the very start. Techno and club culture are not trends to us, but a way of life.",
+    "quote": "\"Excellence is in the invisible.\"",
+    "role_cofounder": "CO-FOUNDER",
+    "role_cofounder_artist": "CO-FOUNDER, ARTIST",
+    "role_ceo_artist": "CEO, ARTIST",
+    "role_pr": "PR & PROMOTIONS COORDINATOR",
+    "role_video": "DIRECTOR & HEAD OF VIDEO",
+    "role_visuals": "VISUAL ARTIST & PHOTOGRAPHER",
+    "role_lighting": "LIGHTING DIRECTOR"
+  },
+  "Sound": {
+    "subtitle": "Listen",
+    "title": "THE SOUND",
+    "text": "Immerse yourself in the MØRK sound. Play directly here.",
+    "profile_button": "Mixcloud Profile"
+  },
+  "Shop": {
+    "subtitle": "[ 06 ]",
+    "title": "The Shop",
+    "tab_all": "All",
+    "tab_merch": "Merch",
+    "tab_tickets": "Tickets",
+    "sold_out": "Sold Out",
+    "ticket_label": "Ticket",
+    "add_to_cart": "Add to Cart",
+    "size": "Size",
+    "color": "Color",
+    "cart_title": "Your Cart",
+    "cart_empty": "Empty Cart",
+    "total_est": "Total Estimated",
+    "whatsapp_btn": "Order via WhatsApp",
+    "whatsapp_note": "Orders are processed manually. Click to send your cart details to our team and arrange payment/shipping."
+  },
+  "Artists": {
+    "subtitle": "The Architects",
+    "title": "CORE ARTISTS"
+  },
+  "Footer": {
+    "text": "Underground electronic music culture in Mallorca. Pure techno, pure experience.",
+    "rights": "All rights reserved.",
+    "col_nav": "NAVIGATION",
+    "col_connect": "CONNECT",
+    "pure_mork": "PURE TECHNO. PURE MØRK."
+  },
+  "ShopProducts": {
+    "tee_desc": "100% Organic Cotton. Heavyweight. Screen printed back.",
+    "keychain_desc": "Metal & Rubber. Red Accent.",
+    "ticket_desc": "Wave Club Mallorca"
+  },
+  "Events": {
+    "subtitle": "Upcoming",
+    "title": "THE LINEUP",
+    "ticket_btn": "Tickets",
+    "view_all": "View All Events →",
+    "night_with": "A Night With"
+  }
+}

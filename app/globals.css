@@ -1,237 +1,171 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* 1. CONFIGURACIÓN DEL TEMA */
+@theme {
+  --color-border: hsl(0 0% 14.9%);
+  --color-input: hsl(0 0% 14.9%);
+  --color-ring: hsl(0 0% 83.1%);
+  --color-background: hsl(0 0% 0%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(0 0% 98%);
+  --color-primary-foreground: hsl(0 0% 9%);
+  --color-secondary: hsl(0 0% 14.9%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(0 0% 14.9%);
+  --color-muted-foreground: hsl(0 0% 63.9%);
 
-:root {
-  --background: #050505;
-  --foreground: #eaeaea;
-  --card: #0a0a0a;
-  --card-foreground: #eaeaea;
-  --popover: #0a0a0a;
-  --popover-foreground: #eaeaea;
-  --primary: #eaeaea;
-  --primary-foreground: #050505;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #eaeaea;
-  --muted: #1a1a1a;
-  --muted-foreground: #888888;
-  --accent: #ff2a2a;
-  --accent-foreground: #ffffff;
-  --destructive: #ff2a2a;
-  --destructive-foreground: #ffffff;
-  --border: #222222;
-  --input: #1a1a1a;
-  --ring: #ff2a2a;
-  --radius: 0rem;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* ROJO MØRK */
+  --color-accent: hsl(0 84% 60%); 
+  --color-accent-foreground: hsl(0 0% 98%);
+
+  --color-popover: hsl(0 0% 3%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  --color-card: hsl(0 0% 3%);
+  --color-card-foreground: hsl(0 0% 98%);
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+  
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }
 
-.dark {
-  --background: #050505;
-  --foreground: #eaeaea;
-  --card: #0a0a0a;
-  --card-foreground: #eaeaea;
-  --popover: #0a0a0a;
-  --popover-foreground: #eaeaea;
-  --primary: #eaeaea;
-  --primary-foreground: #050505;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #eaeaea;
-  --muted: #1a1a1a;
-  --muted-foreground: #888888;
-  --accent: #ff2a2a;
-  --accent-foreground: #ffffff;
-  --destructive: #ff2a2a;
-  --destructive-foreground: #ffffff;
-  --border: #222222;
-  --input: #1a1a1a;
-  --ring: #ff2a2a;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
-}
-
-@theme inline {
-  --font-sans: "Inter", "Inter Fallback", sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius));
-  --radius-md: calc(var(--radius));
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius));
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
+/* 2. BASE (Scroll permitido para Parallax) */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --accent: 0 84% 60%;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  html, body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: white;
+    overflow-x: hidden; /* Vital para que no haya scroll lateral */
   }
 }
 
-/* Film grain overlay effect */
-@keyframes grain {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-5%, -10%);
-  }
-  20% {
-    transform: translate(-15%, 5%);
-  }
-  30% {
-    transform: translate(7%, -25%);
-  }
-  40% {
-    transform: translate(-5%, 25%);
-  }
-  50% {
-    transform: translate(-15%, 10%);
-  }
-  60% {
-    transform: translate(15%, 0%);
-  }
-  70% {
-    transform: translate(0%, 15%);
-  }
-  80% {
-    transform: translate(3%, 35%);
-  }
-  90% {
-    transform: translate(-10%, 10%);
-  }
+/* 3. EFECTOS DE PANTALLA (Grain + Scanlines) */
+
+/* A. Animación del Ruido (Nieve) */
+@keyframes noise-move {
+  0% { transform: translate(0,0); }
+  10% { transform: translate(-5%,-5%); }
+  20% { transform: translate(-10%,5%); }
+  30% { transform: translate(5%,-10%); }
+  40% { transform: translate(-5%,15%); }
+  50% { transform: translate(-10%,5%); }
+  60% { transform: translate(15%,0); }
+  70% { transform: translate(0,10%); }
+  80% { transform: translate(-15%,0); }
+  90% { transform: translate(10%,5%); }
+  100% { transform: translate(5%,0); }
+}
+
+/* B. Animación de Scanlines (Barras bajando) */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
 }
 
 .grain-overlay {
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998; /* Justo debajo del menú, encima del fondo */
+}
+
+/* Capa 1: El Ruido (Grain) */
+.grain-overlay::before {
+  content: "";
+  position: absolute;
   top: -50%;
   left: -50%;
-  right: -50%;
-  bottom: -50%;
   width: 200%;
   height: 200%;
-  background: transparent
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")
-    repeat;
-  opacity: 0.04;
-  pointer-events: none;
-  animation: grain 8s steps(10) infinite;
-  z-index: 1000;
+  opacity: 0.07; /* Intensidad de la nieve */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+  animation: noise-move 0.2s steps(2) infinite;
 }
 
-/* --- GLITCH CSS (VERSIÓN VISIBLE Y SEGURA) --- */
-.glitch {
+/* Capa 2: Scanlines (Líneas de TV) - ESTO FALTABA */
+.grain-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.3) 51%,
+    transparent 52%
+  );
+  background-size: 100% 8px; /* Tamaño de las líneas */
+  opacity: 0.4; /* Visibilidad de las líneas */
+  /* Si quieres que se muevan, descomenta la siguiente línea: */
+  /* animation: scanline 8s linear infinite; */
+}
+
+/* 4. GLITCH TEXTO TERROR (Silent Hill) */
+@keyframes glitch-horror-red {
+  0%, 92% { opacity: 0; transform: translate(0); clip-path: inset(0 0 0 0); }
+  93% { opacity: 1; transform: translate(-5px, 2px); clip-path: inset(20% 0 50% 0); }
+  94% { transform: translate(5px, -2px) skew(10deg); clip-path: inset(40% 0 10% 0); }
+  96% { transform: translate(-5px, 5px); clip-path: inset(10% 0 80% 0); }
+  98% { opacity: 1; transform: translate(0); clip-path: inset(0 0 0 0); }
+  99%, 100% { opacity: 0; }
+}
+
+@keyframes glitch-horror-cyan {
+  0%, 92% { opacity: 0; transform: translate(0); clip-path: inset(0 0 0 0); }
+  93% { opacity: 1; transform: translate(5px, -2px); clip-path: inset(10% 0 60% 0); }
+  94% { transform: translate(-5px, 2px) skew(-10deg); clip-path: inset(80% 0 5% 0); }
+  96% { transform: translate(5px, -5px); clip-path: inset(30% 0 20% 0); }
+  98% { opacity: 1; transform: translate(0); clip-path: inset(0 0 0 0); }
+  99%, 100% { opacity: 0; }
+}
+
+.glitch-text {
   position: relative;
-  color: white; /* Asegura que el texto base sea blanco */
-  z-index: 1;
+  display: inline-block;
+  color: white;
+  z-index: 10;
 }
 
-.glitch::before,
-.glitch::after {
+.glitch-text::before,
+.glitch-text::after {
   content: attr(data-text);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  opacity: 0.8;
-  background: transparent; /* IMPORTANTE: Transparente para no tapar nada */
-}
-
-/* Capa Roja */
-.glitch::before {
-  color: #ff003c;
+  height: 100%;
+  background: black;
+  opacity: 0;
   z-index: -1;
+}
+
+.glitch-text::before {
   left: 2px;
-  text-shadow: -1px 0 #ff003c;
-  /* Está a 2s para que lo veas ya. Cámbialo a 8s si lo quieres más lento */
-  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+  color: #ff4141; 
+  text-shadow: 2px 0 black;
+  animation: glitch-horror-red 5s infinite linear;
 }
 
-/* Capa Azul */
-.glitch::after {
-  color: #00f7ff;
-  z-index: -2;
+.glitch-text::after {
   left: -2px;
-  text-shadow: 1px 0 #00f7ff;
-  animation: glitch-anim-2 2s infinite linear alternate-reverse;
-}
-
-/* ANIMACIONES */
-/* El 85% del tiempo está quieto, el 15% restante tiembla */
-
-@keyframes glitch-anim-1 {
-  0%, 85% { clip-path: inset(50% 50% 50% 50%); transform: translate(0); }
-  86% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 1px); }
-  88% { clip-path: inset(80% 0 10% 0); transform: translate(2px, -1px); }
-  90% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 2px); }
-  92% { clip-path: inset(10% 0 30% 0); transform: translate(2px, 0); }
-  94% { clip-path: inset(50% 0 20% 0); transform: translate(-2px, -2px); }
-  96%, 100% { clip-path: inset(50% 50% 50% 50%); transform: translate(0); }
-}
-
-@keyframes glitch-anim-2 {
-  0%, 85% { clip-path: inset(50% 50% 50% 50%); transform: translate(0); }
-  86% { clip-path: inset(15% 0 60% 0); transform: translate(2px, 1px); }
-  88% { clip-path: inset(70% 0 15% 0); transform: translate(-2px, -1px); }
-  90% { clip-path: inset(20% 0 40% 0); transform: translate(2px, 2px); }
-  92% { clip-path: inset(5% 0 25% 0); transform: translate(-2px, 0); }
-  94% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
-  96%, 100% { clip-path: inset(50% 50% 50% 50%); transform: translate(0); }
+  color: #00ffff;
+  text-shadow: -2px 0 black;
+  mix-blend-mode: hard-light;
+  animation: glitch-horror-cyan 5s infinite linear reverse;
 }

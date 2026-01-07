@@ -1,7 +1,14 @@
+"use client"
+
 import Image from "next/image"
 import { Instagram, Mail } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export function Footer() {
+  // 1. Activamos los diccionarios
+  const t = useTranslations("Footer")
+  const tNav = useTranslations("Navigation")
+
   return (
     <footer className="py-16 md:py-24 px-4 md:px-8 bg-background border-t border-border">
       <div className="max-w-7xl mx-auto">
@@ -10,32 +17,33 @@ export function Footer() {
           <div>
             <Image src="/GALLETA_ROJA.PNG" alt="MØRK Lab" width={60} height={60} className="mb-6" />
             <p className="text-muted-foreground text-sm tracking-wider leading-relaxed">
-              Underground electronic music culture in Mallorca. Pure techno, pure experience.
+              {t('text')}
             </p>
           </div>
 
-          {/* Links */}
+          {/* Links de Navegación */}
           <div>
-            <p className="text-foreground text-xs tracking-[0.3em] uppercase mb-6">Navigation</p>
+            <p className="text-foreground text-xs tracking-[0.3em] uppercase mb-6">{t('col_nav')}</p>
             <div className="flex flex-col gap-3">
               <a href="#events" className="text-muted-foreground text-sm hover:text-accent transition-colors">
-                Events
+                {tNav('events')}
               </a>
-              <a href="#residents" className="text-muted-foreground text-sm hover:text-accent transition-colors">
-                Residents
+              {/* He actualizado el href a #core-artists para que coincida con tu sección de Artistas */}
+              <a href="#core-artists" className="text-muted-foreground text-sm hover:text-accent transition-colors">
+                {tNav('artists')}
               </a>
               <a href="#manifesto" className="text-muted-foreground text-sm hover:text-accent transition-colors">
-                Manifesto
+                {tNav('manifesto')}
               </a>
               <a href="#sound" className="text-muted-foreground text-sm hover:text-accent transition-colors">
-                Sound
+                {tNav('sound')}
               </a>
             </div>
           </div>
 
-          {/* Contact */}
+          {/* Contacto */}
           <div>
-            <p className="text-foreground text-xs tracking-[0.3em] uppercase mb-6">Connect</p>
+            <p className="text-foreground text-xs tracking-[0.3em] uppercase mb-6">{t('col_connect')}</p>
             <div className="flex flex-col gap-3">
               <a
                 href="https://www.instagram.com/mork.lab/"
@@ -44,7 +52,7 @@ export function Footer() {
                 rel="noreferrer"
               >
                 <Instagram size={16} />
-                @morklab
+                @mork.lab
               </a>
               <a
                 href="mailto:info@mork.es"
@@ -60,10 +68,14 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
+        {/* Bottom / Copyright */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-xs tracking-wider">© 2025 MØRK Lab. All rights reserved.</p>
-          <p className="text-muted-foreground text-xs tracking-[0.3em] uppercase">Pure Techno. Pure MØRK.</p>
+          <p className="text-muted-foreground text-xs tracking-wider">
+            © 2025 MØRK Lab. {t('rights')}
+          </p>
+          <p className="text-muted-foreground text-xs tracking-[0.3em] uppercase">
+            {t('pure_mork')}
+          </p>
         </div>
       </div>
     </footer>

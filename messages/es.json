@@ -1,0 +1,93 @@
+{
+  "Navigation": {
+    "events": "EVENTOS",
+    "artists": "CORE ARTISTS",
+    "manifesto": "MANIFIESTO",
+    "visuals": "ECOS RITUALES",
+    "team": "EQUIPO",
+    "sound": "SONIDO",
+    "shop": "TIENDA",
+    "follow": "SEGUIR"
+  },
+  "Hero": {
+    "subtitle": "CULTURA DE MÚSICA ELECTRÓNICA UNDERGROUND",
+    "text": "Mallorca — Donde el ego se disuelve y solo queda el ritmo.",
+    "cta": "TIENDA",
+    "est": "Est. MMXXIII — Mallorca"
+  },
+  "Manifesto": {
+    "subtitle": "Nuestra Filosofía",
+    "title": "EL MANIFIESTO",
+    "p1_1": "MØRK no es solo una fiesta.",
+    "p1_2": "Es un compromiso con el sonido.",
+    "p2": "Un espacio seguro donde el ego se disuelve y solo queda el ritmo. Curamos noches para el oído educado. Cada beat, cada luz, cada momento está diseñado con intención.",
+    "p3": "Creemos en el poder de la cultura underground. En la oscuridad encontramos unidad. En la repetición encontramos trascendencia. En el bajo nos encontramos a nosotros mismos.",
+    "p4": "Esto no es entretenimiento. Esto es un ritual.",
+    "stat_style": "Estilo",
+    "stat_artists": "Artistas Internacionales",
+    "stat_community": "Comunidad",
+    "stat_founded": "Fundado"
+  },
+  "Visuals": {
+    "subtitle": "Archivo Visual"
+  },
+  "Team": {
+    "subtitle": "LA FAMILIA",
+    "title": "EL EQUIPO",
+    "text": "Somos una familia que cree en el proyecto desde el principio. El techno y la cultura de club no son una moda para nosotros: son una forma de vida.",
+    "quote": "\"La excelencia está en lo invisible.\"",
+    "role_cofounder": "COFUNDADOR",
+    "role_cofounder_artist": "COFUNDADOR Y ARTISTA",
+    "role_ceo_artist": "CEO Y ARTISTA",
+    "role_pr": "COORDINADORA DE PR Y PROMOCIÓN",
+    "role_video": "DIRECTOR Y JEFE DE VÍDEO",
+    "role_visuals": "ARTISTA VISUAL Y FOTÓGRAFO",
+    "role_lighting": "DIRECTOR DE ILUMINACIÓN"
+  },
+  "Sound": {
+    "subtitle": "Escuchar",
+    "title": "EL SONIDO",
+    "text": "Sumérgete en el sonido MØRK. Escúchalo aquí.",
+    "profile_button": "Perfil de Mixcloud"
+  },
+  "Shop": {
+    "subtitle": "[ 06 ]",
+    "title": "La Tienda",
+    "tab_all": "Todo",
+    "tab_merch": "Merch",
+    "tab_tickets": "Entradas",
+    "sold_out": "Agotado",
+    "ticket_label": "Entrada",
+    "add_to_cart": "Añadir al Carrito",
+    "size": "Talla",
+    "color": "Color",
+    "cart_title": "Tu Carrito",
+    "cart_empty": "Carrito Vacío",
+    "total_est": "Total Estimado",
+    "whatsapp_btn": "Pedir por WhatsApp",
+    "whatsapp_note": "Los pedidos se procesan manualmente. Haz clic para enviar tu carrito a nuestro equipo y gestionar el pago/envío."
+  },
+  "Artists": {
+    "subtitle": "Los Arquitectos",
+    "title": "CORE ARTISTS"
+  },
+  "Footer": {
+    "text": "Cultura de música electrónica underground en Mallorca. Puro techno, pura experiencia.",
+    "rights": "Todos los derechos reservados.",
+    "col_nav": "NAVEGACIÓN",
+    "col_connect": "CONECTAR",
+    "pure_mork": "PURO TECHNO. PURO MØRK."
+  },
+  "ShopProducts": {
+    "tee_desc": "100% Algodón Orgánico. Alto gramaje. Serigrafía trasera.",
+    "keychain_desc": "Metal y Goma. Acento Rojo.",
+    "ticket_desc": "Wave Club Mallorca"
+  },
+  "Events": {
+    "subtitle": "Próximamente",
+    "title": "PROGRAMACIÓN",
+    "ticket_btn": "Entradas",
+    "view_all": "Ver todos los eventos →",
+    "night_with": "Una Noche Con"
+  }
+}

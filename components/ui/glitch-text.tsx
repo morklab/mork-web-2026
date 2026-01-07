@@ -9,7 +9,8 @@ interface GlitchTextProps {
 export function GlitchText({ children, className = "", as: Component = "span" }: GlitchTextProps) {
   return (
     <Component
-      className={`glitch ${className}`}
+      /* 👇 CORREGIDO: Ahora usamos "glitch-text" para que el CSS lo reconozca */
+      className={`glitch-text ${className}`}
       data-text={children}
       style={{ position: "relative", display: "inline-block" }}
     >

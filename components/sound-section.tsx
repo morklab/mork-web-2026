@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Play, Headphones, X, Radio } from "lucide-react"
+import { Play, X, Radio } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import clsx from "clsx"
+import { useTranslations } from "next-intl"
 
-// --- DATOS DE LAS SESIONES (MIXCLOUD) ---
 const podcasts = [
   {
     number: "001",
@@ -13,7 +13,6 @@ const podcasts = [
     artist: "MZDZ",
     description: "Groove textures. Recorded live at Wave Club.",
     duration: "1:50:49",
-    // 👇 PEGA AQUÍ EL ENLACE COMPLETO DE MIXCLOUD DE MZDZ
     url: "https://www.mixcloud.com/M%C3%B8rk_lab/m%C3%B8rk-podcast-001-mzdz/", 
   },
   {
@@ -22,13 +21,15 @@ const podcasts = [
     artist: "ALEX LOSA",
     description: "Hypnotic layers and deep atmospheres.",
     duration: "1:15:43",
-    // 👇 PEGA AQUÍ EL ENLACE COMPLETO DE MIXCLOUD DE ALEX LOSA
     url: "https://www.mixcloud.com/M%C3%B8rk_lab/alex-losa-warm-up-m%C3%B8rk-07jun25/", 
   },
 ]
 
 export function SoundSection() {
   const [activeTrack, setActiveTrack] = useState<number | null>(null)
+  
+  // Conectamos con las traducciones "Sound"
+  const t = useTranslations("Sound")
 
   const toggleTrack = (index: number) => {
     if (activeTrack === index) {
@@ -44,12 +45,14 @@ export function SoundSection() {
         
         {/* HEADER */}
         <div className="mb-16 md:mb-24">
-          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">Listen</p>
+          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">
+            {t('subtitle')}
+          </p>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-[0.05em] uppercase text-foreground">
-            <GlitchText>THE SOUND</GlitchText>
+            <GlitchText>{t('title')}</GlitchText>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base tracking-wider mt-6 max-w-xl">
-            Immerse yourself in the MØRK sound. Play directly here.
+            {t('text')}
           </p>
         </div>
 
@@ -114,7 +117,7 @@ export function SoundSection() {
                   </div>
                 </div>
 
-                {/* REPRODUCTOR EMBEBIDO (MIXCLOUD) */}
+                {/* REPRODUCTOR EMBEBIDO */}
                 {isActive && (
                   <div className="w-full bg-black border-t border-white/5 animate-in fade-in slide-in-from-top-4 duration-500">
                     <iframe
@@ -142,7 +145,8 @@ export function SoundSection() {
             className="inline-flex items-center justify-center gap-3 border border-white/20 text-foreground px-8 py-4 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all min-h-11 group"
           >
             <Radio size={16} className="group-hover:text-red-600 transition-colors" />
-            Mixcloud Profile
+            {/* CORREGIDO: Usamos btn_mixcloud que es lo que tienes en el JSON */}
+            {t('btn_mixcloud')}
           </a>
         </div>
       </div>

@@ -5,23 +5,20 @@ import Image from "next/image"
 import Link from "next/link"
 import { Instagram, Play } from "lucide-react"
 import clsx from "clsx"
-// 1. IMPORTAR EL COMPONENTE GLITCH 👇
 import { GlitchText } from "@/components/ui/glitch-text"
+import { useTranslations } from "next-intl"
 
 export function VisualsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  
-  // Refs de control de estado
   const isTouchingRef = useRef(false)
   const isClickedRef = useRef(false)
   const clickedIndexRef = useRef<number | null>(null)
-
-  // Refs de elementos y temporizadores
   const scrollTimeoutRef = useRef<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const itemsRef = useRef<any[]>([])
 
-  // --- LISTA DE RITUALES ---
+  const t = useTranslations("Visuals")
+
   const items = [
     { title: "RITUAL MØRK 001", image: "/event-001.jpg", link: "https://www.instagram.com/reel/C6PEypRtS9M/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
     { title: "RITUAL MØRK 002", image: "/event-002.jpg", link: "https://www.instagram.com/reel/C7EaFgHtLVr/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
@@ -44,32 +41,25 @@ export function VisualsSection() {
     { title: "RITUAL MØRK 019", image: "/event-019.JPEG", link: "https://www.instagram.com/reel/DSDhLylEQta/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
   ]
 
-  // --- CÁLCULO DE POSICIÓN ---
   const calculateCenterItem = () => {
     if (!containerRef.current) return
-
     const container = containerRef.current
     const containerCenter = container.scrollLeft + (container.clientWidth / 2)
-    
     let closestIndex = null
     let minDistance = Infinity
-
     itemsRef.current.forEach((item, index) => {
       if (!item) return
       const el = item as HTMLElement
       const itemCenter = el.offsetLeft + (el.offsetWidth / 2)
       const distance = Math.abs(containerCenter - itemCenter)
-
       if (distance < minDistance) {
         minDistance = distance
         closestIndex = index
       }
     })
-
     setHoveredIndex(closestIndex)
   }
 
-  // --- GESTIÓN DEL SCROLL ---
   const handleScroll = () => {
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
     calculateCenterItem()
@@ -80,7 +70,6 @@ export function VisualsSection() {
     }, 600)
   }
 
-  // --- HANDLER FIN DE TOQUE ---
   const handleTouchEnd = () => {
     isTouchingRef.current = false
     if (!scrollTimeoutRef.current) {
@@ -95,28 +84,19 @@ export function VisualsSection() {
   return (
     <section id="visuals" className="py-20 bg-black border-t border-white/10 overflow-hidden">
       <div className="w-full">
-        
-        {/* CABECERA */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-end mb-2">
           <div>
-            <p className="text-accent text-xs tracking-[0.4em] uppercase mb-2">Visual Archive</p>
-            
-            {/* 2. APLICAR GLITCH AQUÍ 👇 */}
+            <p className="text-accent text-xs tracking-[0.4em] uppercase mb-2">{t('subtitle')}</p>
             <h2 className="text-3xl md:text-5xl font-black tracking-[0.05em] uppercase text-white">
               <GlitchText>RITUAL ECHOES</GlitchText> ({items.length})
             </h2>
           </div>
-          <Link 
-            href="https://www.instagram.com/mork.lab/" 
-            target="_blank"
-            className="hidden md:flex text-white border border-white/30 px-6 py-3 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all items-center gap-2"
-          >
+          <Link href="https://www.instagram.com/mork.lab/" target="_blank" className="hidden md:flex text-white border border-white/30 px-6 py-3 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all items-center gap-2">
             <Instagram size={16} />
             Instagram
           </Link>
         </div>
 
-        {/* CARRUSEL INTERACTIVO */}
         <div 
           ref={containerRef}
           onScroll={handleScroll}
@@ -124,7 +104,6 @@ export function VisualsSection() {
               "flex overflow-x-auto pt-8 md:pt-20 pb-8 md:pb-12 gap-6 snap-x snap-mandatory no-scrollbar items-end h-[220px] md:h-[340px]",
               "px-[calc(50%-3.5rem)] md:px-[calc(50%-4rem)]"
           )}
-          
           onTouchMove={() => {
             isClickedRef.current = false 
             clickedIndexRef.current = null
@@ -138,14 +117,10 @@ export function VisualsSection() {
           onTouchCancel={handleTouchEnd}
         >
           {items.map((item, index) => {
-            
             const distanceFromHovered = hoveredIndex === null ? 999 : Math.abs(hoveredIndex - index)
             const isSelected = hoveredIndex === index
-
-            // 1. ESCALA Y EFECTOS
             let scaleClass = "scale-100 opacity-50 grayscale blur-[0.5px]" 
             let zIndex = "z-10"
-
             if (distanceFromHovered === 0) {
               scaleClass = "scale-[1.6] md:scale-[1.8] opacity-100 grayscale-0 blur-0"
               zIndex = "z-50"
@@ -153,8 +128,6 @@ export function VisualsSection() {
               scaleClass = "scale-[1.15] md:scale-[1.2] opacity-80 grayscale-0 blur-0"
               zIndex = "z-40"
             }
-            
-            // 2. BORDE Y RESPLANDOR
             let borderClass = "border-white/10"
             let shadowClass = ""
             if (isSelected) {
@@ -168,14 +141,10 @@ export function VisualsSection() {
                 ref={(el) => { itemsRef.current[index] = el }} 
                 href={item.link}
                 target="_blank"
-                // --- RATÓN (PC) ---
                 onMouseEnter={() => { if (!isTouchingRef.current) setHoveredIndex(index) }}
                 onMouseLeave={() => { if (!isTouchingRef.current) setHoveredIndex(null) }}
-
-                // --- CLIC INTELIGENTE (TAP) ---
                 onClick={(e) => {
                   if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
-
                   if (!isClickedRef.current || clickedIndexRef.current !== index) {
                     e.preventDefault() 
                     isClickedRef.current = true
@@ -184,7 +153,6 @@ export function VisualsSection() {
                     isTouchingRef.current = false 
                   } 
                 }}
-
                 className={clsx(
                     "relative flex-shrink-0 aspect-square border bg-gray-900 overflow-visible snap-center rounded-lg",
                     "w-28 md:w-32", 
@@ -195,15 +163,7 @@ export function VisualsSection() {
                 <div className="absolute inset-0 bg-zinc-800 flex items-center justify-center rounded-lg">
                     <span className="text-[10px] text-white/20">#{String(index + 1).padStart(3, '0')}</span>
                 </div>
-                
-                <Image 
-                  src={item.image} 
-                  alt={item.title} 
-                  fill 
-                  sizes="(max-width: 768px) 150px, 150px"
-                  className="object-cover rounded-lg" 
-                />
-                
+                <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 150px, 150px" className="object-cover rounded-lg" />
                 <div className={clsx("absolute inset-0 flex items-center justify-center transition-opacity duration-300", 
                     distanceFromHovered <= 1 ? "opacity-100" : "opacity-0"
                 )}>
@@ -211,7 +171,6 @@ export function VisualsSection() {
                      <Play fill="white" className="text-white ml-1" size={14} />
                   </div>
                 </div>
-
                 <div className={clsx("absolute -bottom-10 left-1/2 -translate-x-1/2 w-32 text-center transition-all duration-200", 
                     isSelected ? "opacity-100 visible" : "opacity-0 invisible"
                 )}>

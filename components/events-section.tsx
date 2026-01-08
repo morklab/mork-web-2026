@@ -19,7 +19,7 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`, // "A Night With..." o "Una Noche Con..."
       venue: "Wave Club",
-      ticketUrl: "#",
+      ticketUrl: "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB",
     },
     {
       date: "2025.03.07",

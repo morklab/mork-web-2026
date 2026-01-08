@@ -6,39 +6,26 @@ import { useTranslations } from "next-intl"
 import { X, Loader2 } from "lucide-react"
 import clsx from "clsx"
 
-// 👇 1. WIDGET "SANDBOX": Crea un entorno seguro para que el script funcione
-function FourVenuesSandbox({ scriptSrc }: { scriptSrc: string }) {
-  // Creamos un mini-HTML que solo contiene el script.
-  // Así el script se ejecuta felizmente sin pelearse con React.
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          body { margin: 0; padding: 0; background: transparent; }
-          /* Forzamos que lo que genere el script ocupe todo */
-          iframe { width: 100% !important; height: 100% !important; border: none !important; }
-        </style>
-      </head>
-      <body>
-        <script src="${scriptSrc}"></script>
-      </body>
-    </html>
-  `;
+// 👇 WIDGET DEFINITIVO: Iframe Directo (Más rápido y compatible)
+function FourVenuesWidget({ url }: { url: string }) {
+  // Truco: Añadimos '?iframe=1' al enlace para que Fourvenues sepa que está incrustado
+  // y muestre solo la parte de compra (sin cabeceras ni menús de su web).
+  const embedUrl = url.includes('?') ? `${url}&iframe=1` : `${url}?iframe=1`;
 
   return (
     <div className="bg-white w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500 overflow-hidden">
       
-      {/* IFRAME CON HTML INYECTADO (srcDoc) */}
+      {/* IFRAME DIRECTO */}
       <iframe 
-        srcDoc={htmlContent}
+        src={embedUrl}
         width="100%" 
         height="100%" 
         className="relative z-20 w-full h-full min-h-[600px] border-none"
-        allow="payment; clipboard-read; clipboard-write" // Permisos vitales
+        allow="payment; clipboard-read; clipboard-write; geolocation" // Permisos completos
+        loading="lazy"
       />
 
-      {/* Loader de fondo (visible mientras el script carga su contenido) */}
+      {/* Loader de fondo */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-60 bg-white pointer-events-none">
         <Loader2 className="animate-spin w-8 h-8 text-black mb-2" />
         <span className="text-[10px] uppercase tracking-widest text-black font-bold">Loading Tickets...</span>
@@ -53,7 +40,7 @@ export function EventsSection() {
   
   const t = useTranslations("Events")
 
-  // 👇 2. DATOS DE EVENTOS
+  // 👇 DATOS DE EVENTOS
   const events = [
     {
       date: "2026.02.14",
@@ -61,9 +48,11 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      ticketUrl: "#", 
-      // 👇 TU SCRIPT EXACTO (Solo la URL del src)
-      fvScript: "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"
+      
+      // 👇 IMPORTANTE: Pon aquí el ENLACE NORMAL (el que me pasaste antes del 404 estaba mal).
+      // Usa el enlace que usas en Instagram o pásame el correcto si este falla.
+      // Debe ser algo como: https://www.fourvenues.com/mork-lab/events/mangles-b2b-reeko-V4HB
+      ticketLink: "https://www.fourvenues.com/mork-lab/events/mangles-b2b-reeko-V4HB" 
     },
     {
       date: "2025.03.07",
@@ -71,8 +60,7 @@ export function EventsSection() {
       artist: "SOL ORTEGA",
       subtitle: `${t('night_with')} Sol Ortega`,
       venue: "Wave Club",
-      ticketUrl: "#",
-      fvScript: "" 
+      ticketLink: "" // Vacío = Botón SOON
     },
     {
       date: "2025.04.18",
@@ -80,8 +68,7 @@ export function EventsSection() {
       artist: "FREDDY K",
       subtitle: `${t('night_with')} Freddy K`,
       venue: "Wave Club",
-      ticketUrl: "#",
-      fvScript: ""
+      ticketLink: ""
     },
     {
       date: "2025.05.9",
@@ -89,8 +76,7 @@ export function EventsSection() {
       artist: "SETAOC MASS",
       subtitle: `${t('night_with')} Setaoc Mass`,
       venue: "Wave Club",
-      ticketUrl: "#",
-      fvScript: ""
+      ticketLink: ""
     },
   ]
 
@@ -105,7 +91,7 @@ export function EventsSection() {
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
-      {/* Background */}
+      {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -120,6 +106,7 @@ export function EventsSection() {
       />
       
       <div className="relative z-10 max-w-7xl mx-auto">
+        {/* CABECERA */}
         <div className="mb-16 md:mb-24">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
@@ -127,6 +114,7 @@ export function EventsSection() {
           </h2>
         </div>
 
+        {/* LISTA DE EVENTOS */}
         <div className="border-t border-border">
           {events.map((event, index) => {
              const isOpen = activeEventIndex === index;
@@ -164,7 +152,7 @@ export function EventsSection() {
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                       
-                      {event.fvScript ? (
+                      {event.ticketLink ? (
                         <button 
                           onClick={() => toggleTickets(index)}
                           className={clsx(
@@ -185,10 +173,10 @@ export function EventsSection() {
                   </div>
                 </div>
 
-                {/* 👇 AQUÍ USAMOS EL COMPONENTE SANDBOX */}
-                {isOpen && event.fvScript && (
+                {/* 👇 AQUÍ CARGA EL WIDGET CORRECTO */}
+                {isOpen && event.ticketLink && (
                   <div className="w-full max-w-5xl mx-auto px-4">
-                    <FourVenuesSandbox scriptSrc={event.fvScript} />
+                    <FourVenuesWidget url={event.ticketLink} />
                   </div>
                 )}
               </div>
@@ -196,6 +184,7 @@ export function EventsSection() {
           })}
         </div>
 
+        {/* VER TODOS */}
         <div className="mt-16 text-center">
           <a
             href="https://www.fourvenues.com/mork-lab" 

@@ -6,26 +6,26 @@ import { useTranslations } from "next-intl"
 import { X, Loader2 } from "lucide-react"
 import clsx from "clsx"
 
-// 👇 WIDGET DEFINITIVO: Iframe Directo (Más rápido y compatible)
-function FourVenuesWidget({ url }: { url: string }) {
-  // Truco: Añadimos '?iframe=1' al enlace para que Fourvenues sepa que está incrustado
-  // y muestre solo la parte de compra (sin cabeceras ni menús de su web).
+// 👇 WIDGET INTELLIGENTE: Convierte tu enlace normal en un Embed
+function FourVenuesEmbed({ url }: { url: string }) {
+  // Añadimos el parámetro mágico '?iframe=1' para que Fourvenues
+  // sepa que está dentro de tu web y quite el menú/footer sobrante.
   const embedUrl = url.includes('?') ? `${url}&iframe=1` : `${url}?iframe=1`;
 
   return (
     <div className="bg-white w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500 overflow-hidden">
       
-      {/* IFRAME DIRECTO */}
+      {/* IFRAME DE CARGA DIRECTA */}
       <iframe 
         src={embedUrl}
         width="100%" 
         height="100%" 
         className="relative z-20 w-full h-full min-h-[600px] border-none"
-        allow="payment; clipboard-read; clipboard-write; geolocation" // Permisos completos
+        allow="payment; clipboard-read; clipboard-write; geolocation" // Permisos necesarios
         loading="lazy"
       />
 
-      {/* Loader de fondo */}
+      {/* Loader visual de fondo */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-60 bg-white pointer-events-none">
         <Loader2 className="animate-spin w-8 h-8 text-black mb-2" />
         <span className="text-[10px] uppercase tracking-widest text-black font-bold">Loading Tickets...</span>
@@ -40,18 +40,18 @@ export function EventsSection() {
   
   const t = useTranslations("Events")
 
-  // 👇 DATOS DE EVENTOS
+  // 👇 DATOS DE TUS EVENTOS
   const events = [
     {
       date: "2026.02.14",
       day: "SAT",
-      artist: "MANGLES b2b REEKO",
+      artist: "REEKO b2b MANGLES",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       
-      // 👇 IMPORTANTE: Pon aquí el ENLACE NORMAL (el que me pasaste antes del 404 estaba mal).
-      // Usa el enlace que usas en Instagram o pásame el correcto si este falla.
-      // Debe ser algo como: https://www.fourvenues.com/mork-lab/events/mangles-b2b-reeko-V4HB
+      // 👇 IMPORTANTE: Pega aquí el enlace PÚBLICO del evento.
+      // Entra en Fourvenues, ve al evento y copia la URL del navegador.
+      // Debería ser algo como esto:
       ticketLink: "https://www.fourvenues.com/mork-lab/events/mangles-b2b-reeko-V4HB" 
     },
     {
@@ -60,7 +60,7 @@ export function EventsSection() {
       artist: "SOL ORTEGA",
       subtitle: `${t('night_with')} Sol Ortega`,
       venue: "Wave Club",
-      ticketLink: "" // Vacío = Botón SOON
+      ticketLink: "" // Dejar vacío para mostrar botón "SOON"
     },
     {
       date: "2025.04.18",
@@ -91,7 +91,7 @@ export function EventsSection() {
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
-      {/* Background image */}
+      {/* IMAGEN DE FONDO */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -148,7 +148,7 @@ export function EventsSection() {
                       <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
                     </div>
 
-                    {/* BOTÓN */}
+                    {/* BOTÓN TICKETS */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                       
@@ -173,10 +173,10 @@ export function EventsSection() {
                   </div>
                 </div>
 
-                {/* 👇 AQUÍ CARGA EL WIDGET CORRECTO */}
+                {/* 👇 AQUÍ APARECE EL EMBED DENTRO DE TU WEB */}
                 {isOpen && event.ticketLink && (
                   <div className="w-full max-w-5xl mx-auto px-4">
-                    <FourVenuesWidget url={event.ticketLink} />
+                    <FourVenuesEmbed url={event.ticketLink} />
                   </div>
                 )}
               </div>
@@ -184,7 +184,7 @@ export function EventsSection() {
           })}
         </div>
 
-        {/* VER TODOS */}
+        {/* ENLACE 'VER TODOS' AL FINAL */}
         <div className="mt-16 text-center">
           <a
             href="https://www.fourvenues.com/mork-lab" 

@@ -145,60 +145,79 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* --- MODAL NATIVO DARK MORK --- */}
+      {/* --- MODAL CON EFECTOS CYBERPUNK --- */}
       {selectedScriptCode && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-300">
           
-          {/* Contenedor Modal: NEGRO + ROJO */}
+          {/* Contenedor Modal:
+              - Usamos 'group' para efectos hover.
+              - Borde semitransparente + Sombra exterior + Sombra interior (inset) para efecto NEÓN.
+              - transition-all para que el brillo cambie suavemente.
+          */}
           <div 
-            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-hidden md:rounded-lg"
+            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-hidden md:rounded-lg group transition-all duration-500 ease-in-out"
             style={{ 
-              backgroundColor: '#000000', // Negro puro para coincidir con el Dark Mode nativo
-              border: '2px solid #ff0000', // Borde Rojo Mork
-              boxShadow: '0 0 50px rgba(255, 0, 0, 0.3)' // Resplandor rojo sutil
+              backgroundColor: '#000000',
+              border: '1px solid rgba(255, 0, 0, 0.5)', // Borde más sutil
+              // Efecto de doble resplandor (exterior e interior)
+              boxShadow: '0 0 40px rgba(255, 0, 0, 0.2), inset 0 0 20px rgba(255, 0, 0, 0.1)'
             }}
           >
+             {/* CAPA DE TEXTURA (Rejilla Cyberpunk):
+                - Crea una rejilla muy sutil roja sobre el fondo negro.
+                - pointer-events-none para que no moleste al click.
+            */}
+            <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(255,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,0,0,0.05)_1px,transparent_1px)] bg-[size:24px_24px] opacity-70 mix-blend-screen"></div>
+
+            {/* EFECTO HOVER: Intensifica el brillo al pasar el ratón por el marco */}
+            <div 
+                className="absolute inset-0 z-[-1] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"
+                style={{
+                    boxShadow: '0 0 60px rgba(255, 0, 0, 0.4), inset 0 0 30px rgba(255, 0, 0, 0.3)'
+                }}
+            />
             
             {/* Botón Cerrar */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="absolute top-4 right-4 z-50 bg-black/50 text-white p-2 rounded-full hover:bg-[#ff0000] hover:text-white transition-all border border-white/10 hover:border-transparent"
+              className="absolute top-4 right-4 z-50 bg-black/50 text-white p-2 rounded-full hover:bg-[#ff0000] hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_20px_rgba(255,0,0,0.5)]"
             >
               <X className="w-6 h-6" /> 
             </button>
 
-            {/* CÁPSULA: Fondo transparente/negro esperando el contenido nativo */}
-            <iframe
-              title="Checkout Safe Frame"
-              className="w-full h-full border-none"
-              srcDoc={`
-                <!DOCTYPE html>
-                <html lang="es">
-                  <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                      /* Fondo negro base por si tarda en cargar */
-                      body { 
-                        margin: 0; 
-                        padding: 20px 0; 
-                        background-color: #000000; 
-                        color: #ffffff; 
-                        display: flex; 
-                        justify-content: center; 
-                        align-items: flex-start; 
-                        min-height: 100vh; 
-                        font-family: sans-serif;
-                      }
-                      iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
-                    </style>
-                  </head>
-                  <body>
-                    ${selectedScriptCode}
-                  </body>
-                </html>
-              `}
-            />
+            {/* CÁPSULA Iframe (Contenido por encima de la textura z-10) */}
+            <div className="flex-1 w-full h-full relative z-10">
+                <iframe
+                title="Checkout Safe Frame"
+                className="w-full h-full border-none"
+                srcDoc={`
+                    <!DOCTYPE html>
+                    <html lang="es">
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                        body { 
+                            margin: 0; 
+                            padding: 20px 0; 
+                            background-color: transparent; /* Fondo transparente para ver la textura del padre */
+                            color: #ffffff; 
+                            display: flex; 
+                            justify-content: center; 
+                            align-items: flex-start; 
+                            min-height: 100vh; 
+                            font-family: sans-serif;
+                        }
+                        iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
+                        </style>
+                    </head>
+                    <body>
+                        ${selectedScriptCode}
+                    </body>
+                    </html>
+                `}
+                />
+            </div>
           </div>
         </div>
       )}

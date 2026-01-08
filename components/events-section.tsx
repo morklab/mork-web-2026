@@ -3,44 +3,14 @@
 import { useState } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
-import { X, Loader2 } from "lucide-react"
 import clsx from "clsx"
 
-// 👇 WIDGET SIMPLE Y ROBUSTO: Muestra la web de venta dentro de tu página
-function FourVenuesEmbed({ url }: { url: string }) {
-  // Añadimos '?iframe=1' si no lo tiene, para intentar cargar la vista simplificada
-  const embedUrl = url.includes('?') ? `${url}&iframe=1` : `${url}?iframe=1`;
-
-  return (
-    <div className="bg-white w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500 overflow-hidden">
-      
-      {/* IFRAME DIRECTO: Carga la URL que tú le des */}
-      <iframe 
-        src={embedUrl}
-        width="100%" 
-        height="100%" 
-        className="relative z-20 w-full h-full min-h-[600px] border-none"
-        // Permisos vitales para que la pasarela de pago y la selección funcionen
-        allow="payment; clipboard-read; clipboard-write; geolocation; microphone; camera"
-        loading="lazy"
-      />
-
-      {/* Loader que se ve mientras carga la página de Fourvenues */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-60 bg-white pointer-events-none">
-        <Loader2 className="animate-spin w-8 h-8 text-black mb-2" />
-        <span className="text-[10px] uppercase tracking-widest text-black font-bold">Loading Tickets...</span>
-      </div>
-    </div>
-  )
-}
-
 export function EventsSection() {
-  const [activeEventIndex, setActiveEventIndex] = useState<number | null>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   
   const t = useTranslations("Events")
 
-  // 👇 CONFIGURACIÓN DE EVENTOS
+  // Configuración básica de eventos
   const events = [
     {
       date: "2026.02.14",
@@ -48,10 +18,7 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      
-      // 👇 IMPORTANTE: He puesto TU ENLACE EXACTO aquí.
-      // Al pulsar "TICKETS", se abrirá este enlace dentro de la caja blanca.
-      ticketLink: "https://web.fourvenues.com/es/mork-lab/events/reeko-b2b-mangles-14-02-2026-V4HB" 
+      ticketUrl: "#", // Aquí pondremos la lógica luego
     },
     {
       date: "2025.03.07",
@@ -59,7 +26,7 @@ export function EventsSection() {
       artist: "SOL ORTEGA",
       subtitle: `${t('night_with')} Sol Ortega`,
       venue: "Wave Club",
-      ticketLink: "" // Dejar vacío para mostrar botón "SOON"
+      ticketUrl: "#",
     },
     {
       date: "2025.04.18",
@@ -67,7 +34,7 @@ export function EventsSection() {
       artist: "FREDDY K",
       subtitle: `${t('night_with')} Freddy K`,
       venue: "Wave Club",
-      ticketLink: ""
+      ticketUrl: "#",
     },
     {
       date: "2025.05.9",
@@ -75,22 +42,14 @@ export function EventsSection() {
       artist: "SETAOC MASS",
       subtitle: `${t('night_with')} Setaoc Mass`,
       venue: "Wave Club",
-      ticketLink: ""
+      ticketUrl: "#",
     },
   ]
-
-  const toggleTickets = (index: number) => {
-    if (activeEventIndex === index) {
-      setActiveEventIndex(null)
-    } else {
-      setActiveEventIndex(index)
-    }
-  }
 
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
-      {/* IMAGEN DE FONDO */}
+      {/* Fondo decorativo */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -105,7 +64,7 @@ export function EventsSection() {
       />
       
       <div className="relative z-10 max-w-7xl mx-auto">
-        {/* CABECERA */}
+        {/* Cabecera */}
         <div className="mb-16 md:mb-24">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
@@ -113,81 +72,54 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* LISTA DE EVENTOS */}
+        {/* Lista de Eventos */}
         <div className="border-t border-border">
-          {events.map((event, index) => {
-             const isOpen = activeEventIndex === index;
+          {events.map((event, index) => (
+            <div key={index} className="border-b border-border">
+              <a
+                href={event.ticketUrl}
+                className="group block py-6 md:py-8 transition-colors hover:bg-secondary/30 relative"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                  
+                  {/* Fecha */}
+                  <div className="flex items-center gap-4 md:w-48">
+                    <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
+                    <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
+                  </div>
 
-             return (
-              <div key={index} className="flex flex-col border-b border-border">
-                
-                {/* TARJETA DEL EVENTO */}
-                <div
-                  className="group py-6 md:py-8 transition-colors hover:bg-secondary/30 relative"
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                    
-                    {/* FECHA */}
-                    <div className="flex items-center gap-4 md:w-48">
-                      <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
-                      <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
-                    </div>
-
-                    {/* ARTISTA */}
-                    <div className="flex-1">
-                      <h3
-                        className={clsx(
-                          "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors",
-                          hoveredIndex === index ? "text-accent" : "text-foreground"
-                        )}
-                      >
-                        {event.artist}
-                      </h3>
-                      <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
-                    </div>
-
-                    {/* BOTÓN TICKETS */}
-                    <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
-                      <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
-                      
-                      {event.ticketLink ? (
-                        <button 
-                          onClick={() => toggleTickets(index)}
-                          className={clsx(
-                            "px-6 py-2 text-xs tracking-[0.2em] uppercase border transition-all min-h-11 flex items-center justify-center min-w-[140px] font-bold",
-                            isOpen 
-                              ? "bg-white text-black border-white" 
-                              : "text-foreground border-foreground group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground"
-                          )}
-                        >
-                          {isOpen ? <X size={18} /> : t('ticket_btn')}
-                        </button>
-                      ) : (
-                        <span className="text-muted-foreground border border-muted-foreground/30 px-6 py-2 text-xs tracking-[0.2em] uppercase cursor-not-allowed min-h-11 flex items-center opacity-50">
-                          SOON
-                        </span>
+                  {/* Artista */}
+                  <div className="flex-1">
+                    <h3
+                      className={clsx(
+                        "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors",
+                        hoveredIndex === index ? "text-accent" : "text-foreground"
                       )}
-                    </div>
+                    >
+                      {event.artist}
+                    </h3>
+                    <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
+                  </div>
+
+                  {/* Botón (Solo visual por ahora) */}
+                  <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
+                    <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
+                    <span className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold">
+                      {t('ticket_btn')}
+                    </span>
                   </div>
                 </div>
-
-                {/* 👇 AQUÍ CARGA EL IFRAME CON TU URL */}
-                {isOpen && event.ticketLink && (
-                  <div className="w-full max-w-5xl mx-auto px-4">
-                    <FourVenuesEmbed url={event.ticketLink} />
-                  </div>
-                )}
-              </div>
-            )
-          })}
+              </a>
+            </div>
+          ))}
         </div>
 
-        {/* BOTÓN 'VER TODOS' */}
+        {/* Ver todos */}
         <div className="mt-16 text-center">
           <a
-            href="https://www.fourvenues.com/mork-lab" 
+            href="https://www.fourvenues.com/mork-lab"
             target="_blank"
             rel="noopener noreferrer"
             className="text-muted-foreground text-xs tracking-[0.3em] uppercase hover:text-accent transition-colors border-b border-transparent hover:border-accent pb-1"

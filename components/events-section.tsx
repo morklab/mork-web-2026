@@ -1,16 +1,32 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 import clsx from "clsx"
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const fourvenuesRef = useRef<HTMLDivElement>(null)
   
   const t = useTranslations("Events")
 
-  // Configuración básica de eventos
+  // Efecto para inyectar el script de Fourvenues
+  useEffect(() => {
+    if (fourvenuesRef.current) {
+      // Evitamos duplicados si el script ya existe
+      const existingScript = fourvenuesRef.current.querySelector('script[src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"]')
+      
+      if (!existingScript) {
+        const script = document.createElement("script")
+        script.src = "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"
+        script.async = true
+        fourvenuesRef.current.appendChild(script)
+      }
+    }
+  }, [])
+
+  // Datos manuales (comentados temporalmente para probar el widget)
   const events = [
     {
       date: "2026.02.14",
@@ -18,32 +34,9 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      ticketUrl: "#", // Aquí pondremos la lógica luego
-    },
-    {
-      date: "2025.03.07",
-      day: "SAT",
-      artist: "SOL ORTEGA",
-      subtitle: `${t('night_with')} Sol Ortega`,
-      venue: "Wave Club",
       ticketUrl: "#",
     },
-    {
-      date: "2025.04.18",
-      day: "SAT",
-      artist: "FREDDY K",
-      subtitle: `${t('night_with')} Freddy K`,
-      venue: "Wave Club",
-      ticketUrl: "#",
-    },
-    {
-      date: "2025.05.9",
-      day: "SAT",
-      artist: "SETAOC MASS",
-      subtitle: `${t('night_with')} Setaoc Mass`,
-      venue: "Wave Club",
-      ticketUrl: "#",
-    },
+    // ... otros eventos
   ]
 
   return (
@@ -72,8 +65,19 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* Lista de Eventos */}
-        <div className="border-t border-border">
+        {/* --- CONTENEDOR DEL WIDGET DE FOURVENUES --- */}
+        {/* El sistema de Fourvenues se pintará aquí dentro */}
+        <div 
+          ref={fourvenuesRef} 
+          className="w-full min-h-[600px] flex justify-center items-start"
+        >
+          {/* El script generará un iframe aquí */}
+        </div>
+
+        {/* Lista Manual (COMENTADA) 
+            Si el widget no te gusta, descomentamos esto y ocultamos el div de arriba.
+        */}
+        {/* <div className="border-t border-border">
           {events.map((event, index) => (
             <div key={index} className="border-b border-border">
               <a
@@ -83,14 +87,10 @@ export function EventsSection() {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                  
-                  {/* Fecha */}
                   <div className="flex items-center gap-4 md:w-48">
                     <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
                     <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
                   </div>
-
-                  {/* Artista */}
                   <div className="flex-1">
                     <h3
                       className={clsx(
@@ -102,8 +102,6 @@ export function EventsSection() {
                     </h3>
                     <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
                   </div>
-
-                  {/* Botón (Solo visual por ahora) */}
                   <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                     <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                     <span className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold">
@@ -114,9 +112,10 @@ export function EventsSection() {
               </a>
             </div>
           ))}
-        </div>
+        </div> 
+        */}
 
-        {/* Ver todos */}
+        {/* Link externo (Opcional, por si acaso) */}
         <div className="mt-16 text-center">
           <a
             href="https://www.fourvenues.com/mork-lab"

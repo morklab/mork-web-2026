@@ -1,50 +1,47 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 import { X, Loader2 } from "lucide-react"
 import clsx from "clsx"
 
-// 👇 WIDGET ESPECÍFICO PARA SCRIPTS DE FOURVENUES
-function FourVenuesScriptWidget({ scriptSrc }: { scriptSrc: string }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  // Usamos una referencia para asegurar que el script solo se inyecta una vez
-  const hasLoaded = useRef(false)
-
-  useEffect(() => {
-    if (hasLoaded.current || !containerRef.current) return;
-    
-    hasLoaded.current = true;
-    containerRef.current.innerHTML = ""; // Limpiar contenedor
-
-    const script = document.createElement("script");
-    script.src = scriptSrc;
-    script.async = true;
-    
-    // IMPORTANTE: Manejo de errores si el script falla
-    script.onerror = () => {
-      console.error("Error cargando script de Fourvenues");
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "<div class='text-red-500 p-4 text-center'>Error loading tickets. Please disable AdBlock.</div>";
-      }
-    };
-
-    containerRef.current.appendChild(script);
-
-  }, [scriptSrc]);
+// 👇 1. WIDGET "SANDBOX": Crea un entorno seguro para que el script funcione
+function FourVenuesSandbox({ scriptSrc }: { scriptSrc: string }) {
+  // Creamos un mini-HTML que solo contiene el script.
+  // Así el script se ejecuta felizmente sin pelearse con React.
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>
+          body { margin: 0; padding: 0; background: transparent; }
+          /* Forzamos que lo que genere el script ocupe todo */
+          iframe { width: 100% !important; height: 100% !important; border: none !important; }
+        </style>
+      </head>
+      <body>
+        <script src="${scriptSrc}"></script>
+      </body>
+    </html>
+  `;
 
   return (
-    // Forzamos altura mínima y fondo blanco para que NO se quede en blanco colapsado
-    <div className="bg-white text-black w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500">
+    <div className="bg-white w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500 overflow-hidden">
       
-      {/* Contenedor del script */}
-      <div ref={containerRef} className="relative z-20 min-h-[600px] w-full" />
+      {/* IFRAME CON HTML INYECTADO (srcDoc) */}
+      <iframe 
+        srcDoc={htmlContent}
+        width="100%" 
+        height="100%" 
+        className="relative z-20 w-full h-full min-h-[600px] border-none"
+        allow="payment; clipboard-read; clipboard-write" // Permisos vitales
+      />
 
-      {/* Loader que se ve detrás mientras carga */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-50 pointer-events-none">
+      {/* Loader de fondo (visible mientras el script carga su contenido) */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-60 bg-white pointer-events-none">
         <Loader2 className="animate-spin w-8 h-8 text-black mb-2" />
-        <span className="text-[10px] uppercase tracking-widest text-black font-bold">Loading...</span>
+        <span className="text-[10px] uppercase tracking-widest text-black font-bold">Loading Tickets...</span>
       </div>
     </div>
   )
@@ -56,7 +53,7 @@ export function EventsSection() {
   
   const t = useTranslations("Events")
 
-  // 👇 DATOS DE EVENTOS
+  // 👇 2. DATOS DE EVENTOS
   const events = [
     {
       date: "2026.02.14",
@@ -65,7 +62,7 @@ export function EventsSection() {
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       ticketUrl: "#", 
-      // 👇 AQUÍ PEGAMOS TU SCRIPT EXACTO (Solo la URL del src)
+      // 👇 TU SCRIPT EXACTO (Solo la URL del src)
       fvScript: "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"
     },
     {
@@ -108,6 +105,7 @@ export function EventsSection() {
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
+      {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
@@ -143,11 +141,13 @@ export function EventsSection() {
                 >
                   <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
                     
+                    {/* FECHA */}
                     <div className="flex items-center gap-4 md:w-48">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
                       <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
                     </div>
 
+                    {/* ARTISTA */}
                     <div className="flex-1">
                       <h3
                         className={clsx(
@@ -160,6 +160,7 @@ export function EventsSection() {
                       <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
                     </div>
 
+                    {/* BOTÓN */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                       
@@ -184,10 +185,10 @@ export function EventsSection() {
                   </div>
                 </div>
 
-                {/* 👇 AQUÍ SE ABRE EL WIDGET */}
+                {/* 👇 AQUÍ USAMOS EL COMPONENTE SANDBOX */}
                 {isOpen && event.fvScript && (
                   <div className="w-full max-w-5xl mx-auto px-4">
-                    <FourVenuesScriptWidget scriptSrc={event.fvScript} />
+                    <FourVenuesSandbox scriptSrc={event.fvScript} />
                   </div>
                 )}
               </div>

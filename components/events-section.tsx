@@ -9,12 +9,12 @@ import { X } from "lucide-react"
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   
-  // Aquí guardaremos el CÓDIGO HTML del script para inyectarlo
+  // Guardamos el código del SCRIPT ENTERO
   const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
   
   const t = useTranslations("Events")
 
-  // Bloquear scroll de la web cuando el modal está abierto
+  // Bloquear scroll
   useEffect(() => {
     if (selectedScriptCode) {
       document.body.style.overflow = 'hidden'
@@ -32,7 +32,7 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      // Pega aquí EL SCRIPT ENTERO tal cual te lo dan (con <script> y todo)
+      // PEGA AQUÍ EL SCRIPT ENTERO (Tal cual te lo da Fourvenues)
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
     },
     {
@@ -41,7 +41,6 @@ export function EventsSection() {
       artist: "SOL ORTEGA",
       subtitle: `${t('night_with')} Sol Ortega`,
       venue: "Wave Club",
-      // Si no tienes el script aún, deja null
       scriptTag: null, 
     },
     {
@@ -148,26 +147,31 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* --- MODAL "CÁPSULA SEGURA" --- */}
+      {/* --- MODAL DE PAGO (NEGRO Y ROJO) --- */}
       {selectedScriptCode && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
           
-          <div className="relative w-full md:max-w-4xl h-full md:h-[90vh] bg-black border border-white/10 md:rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden">
+          {/* Contenedor: Borde Rojo y Sombra Roja */}
+          <div 
+            className="relative w-full md:max-w-4xl h-full md:h-[90vh] bg-black flex flex-col overflow-hidden md:rounded-lg"
+            style={{ 
+              border: '1px solid #ff0000', 
+              boxShadow: '0 0 40px rgba(255, 0, 0, 0.2)' 
+            }}
+          >
             
-            {/* Botón Cerrar */}
+            {/* Botón Cerrar (Rojo al pasar el ratón) */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="absolute top-4 right-4 z-50 bg-white/10 text-white p-2 rounded-full hover:bg-accent hover:text-black transition-all backdrop-blur-md"
+              className="absolute top-5 right-5 z-50 bg-black text-white p-2 rounded-full transition-all border border-white/20 hover:border-[#ff0000] hover:text-[#ff0000] hover:bg-black/80"
             >
               <X className="w-6 h-6" /> 
             </button>
 
-            {/* AQUÍ ESTÁ EL TRUCO: srcDoc */}
-            {/* Creamos un mini-documento HTML limpio donde el script sí funciona */}
+            {/* CÁPSULA SEGURA */}
             <iframe
               title="Checkout Safe Frame"
-              className="w-full h-full border-none bg-black"
-              // Usamos srcDoc para crear un HTML al vuelo que contiene solo el script
+              className="w-full h-full border-none bg-transparent"
               srcDoc={`
                 <!DOCTYPE html>
                 <html lang="es">
@@ -175,9 +179,47 @@ export function EventsSection() {
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-                      body { margin: 0; padding: 0; background-color: #000; color: white; display: flex; justify-content: center; align-items: start; height: 100vh; font-family: sans-serif; }
-                      /* Forzamos que el iframe generado por el script ocupe todo */
-                      iframe { width: 100% !important; height: 100vh !important; border: none !important; }
+                      /* Fondo y Fuente base */
+                      body { 
+                        margin: 0; 
+                        padding: 20px 0; 
+                        background-color: #000000; 
+                        color: #ffffff; 
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: flex-start; 
+                        min-height: 100vh; 
+                        font-family: sans-serif;
+                      }
+                      iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
+
+                      /* --- INYECCIÓN DE ESTILO MORK (ROJO) --- */
+                      
+                      /* Textos a blanco */
+                      div, p, span, h1, h2, h3, label, li {
+                         color: #ffffff !important;
+                      }
+                      
+                      /* Inputs y selects legibles */
+                      input, select {
+                        color: #000 !important;
+                        background-color: #fff !important;
+                        border: 1px solid #333 !important;
+                      }
+                      
+                      /* Cajas de info (alerts): Fondo rojizo suave, borde rojo y texto rojo brillante */
+                      .fv-info-box, .alert-info, .alert {
+                         background-color: rgba(255, 0, 0, 0.1) !important;
+                         color: #ff4d4d !important; 
+                         border: 1px solid #ff0000 !important;
+                      }
+                      
+                      /* Enlaces en Rojo Mork */
+                      a { color: #ff0000 !important; text-decoration: underline; }
+                      
+                      /* Intentar forzar botones si se puede (depende del iframe interno) */
+                      button { cursor: pointer; }
+                      
                     </style>
                   </head>
                   <body>

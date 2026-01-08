@@ -1,49 +1,28 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 import clsx from "clsx"
 import { X } from "lucide-react" 
 
-// --- COMPONENTE AUXILIAR PARA CARGAR EL SCRIPT DE FOURVENUES ---
-// Este componente se encarga de inyectar el script oficial dentro del modal
-const FourvenuesWidget = ({ scriptUrl }: { scriptUrl: string }) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (containerRef.current) {
-      // Limpiamos por si acaso
-      containerRef.current.innerHTML = "";
-      
-      const script = document.createElement("script");
-      script.src = scriptUrl;
-      script.async = true;
-      // Esto asegura que el script sepa dónde pintarse
-      containerRef.current.appendChild(script);
-    }
-  }, [scriptUrl]);
-
-  return <div ref={containerRef} className="w-full h-full" />;
-};
-
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   
-  // Ahora guardamos la URL DEL SCRIPT (no la del iframe)
-  const [selectedScriptUrl, setSelectedScriptUrl] = useState<string | null>(null)
+  // Aquí guardaremos el CÓDIGO HTML del script para inyectarlo
+  const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
   
   const t = useTranslations("Events")
 
-  // Bloquear scroll
+  // Bloquear scroll de la web cuando el modal está abierto
   useEffect(() => {
-    if (selectedScriptUrl) {
+    if (selectedScriptCode) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'unset'
     }
     return () => { document.body.style.overflow = 'unset' }
-  }, [selectedScriptUrl])
+  }, [selectedScriptCode])
 
   // --- TUS EVENTOS ---
   const events = [
@@ -53,9 +32,8 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      // PON AQUÍ EL ENLACE DEL SCRIPT COMPLETO que te da Fourvenues
-      // (El que termina en .js o no tiene extensión pero es del script tag)
-      ticketUrl: "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB", 
+      // Pega aquí EL SCRIPT ENTERO tal cual te lo dan (con <script> y todo)
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
     },
     {
       date: "2025.03.07",
@@ -63,7 +41,8 @@ export function EventsSection() {
       artist: "SOL ORTEGA",
       subtitle: `${t('night_with')} Sol Ortega`,
       venue: "Wave Club",
-      ticketUrl: "#", 
+      // Si no tienes el script aún, deja null
+      scriptTag: null, 
     },
     {
       date: "2025.04.18",
@@ -71,7 +50,7 @@ export function EventsSection() {
       artist: "FREDDY K",
       subtitle: `${t('night_with')} Freddy K`,
       venue: "Wave Club",
-      ticketUrl: "#", 
+      scriptTag: null, 
     },
     {
       date: "2025.05.9",
@@ -79,13 +58,13 @@ export function EventsSection() {
       artist: "SETAOC MASS",
       subtitle: `${t('night_with')} Setaoc Mass`,
       venue: "Wave Club",
-      ticketUrl: "#", 
+      scriptTag: null, 
     },
   ]
 
-  const handleTicketClick = (url: string) => {
-    if (url === "#" || !url) return;
-    setSelectedScriptUrl(url)
+  const handleTicketClick = (script: string | null) => {
+    if (!script) return;
+    setSelectedScriptCode(script)
   }
 
   return (
@@ -121,7 +100,7 @@ export function EventsSection() {
                 className="group block py-6 md:py-8 transition-colors hover:bg-secondary/30 relative cursor-pointer"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                onClick={() => handleTicketClick(event.ticketUrl)}
+                onClick={() => handleTicketClick(event.scriptTag)}
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
                   <div className="flex items-center gap-4 md:w-48">
@@ -144,7 +123,7 @@ export function EventsSection() {
                     <button 
                       onClick={(e) => {
                         e.stopPropagation(); 
-                        handleTicketClick(event.ticketUrl);
+                        handleTicketClick(event.scriptTag);
                       }}
                       className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
                     >
@@ -169,24 +148,44 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* --- MODAL CON SCRIPT OFICIAL --- */}
-      {selectedScriptUrl && (
+      {/* --- MODAL "CÁPSULA SEGURA" --- */}
+      {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
           
           <div className="relative w-full md:max-w-4xl h-full md:h-[90vh] bg-black border border-white/10 md:rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden">
             
             {/* Botón Cerrar */}
             <button 
-              onClick={() => setSelectedScriptUrl(null)}
+              onClick={() => setSelectedScriptCode(null)}
               className="absolute top-4 right-4 z-50 bg-white/10 text-white p-2 rounded-full hover:bg-accent hover:text-black transition-all backdrop-blur-md"
             >
               <X className="w-6 h-6" /> 
             </button>
 
-            {/* Aquí inyectamos el SCRIPT, no un iframe manual */}
-            <div className="flex-1 w-full h-full bg-black relative p-4 overflow-y-auto"> 
-               <FourvenuesWidget scriptUrl={selectedScriptUrl} />
-            </div>
+            {/* AQUÍ ESTÁ EL TRUCO: srcDoc */}
+            {/* Creamos un mini-documento HTML limpio donde el script sí funciona */}
+            <iframe
+              title="Checkout Safe Frame"
+              className="w-full h-full border-none bg-black"
+              // Usamos srcDoc para crear un HTML al vuelo que contiene solo el script
+              srcDoc={`
+                <!DOCTYPE html>
+                <html lang="es">
+                  <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                      body { margin: 0; padding: 0; background-color: #000; color: white; display: flex; justify-content: center; align-items: start; height: 100vh; font-family: sans-serif; }
+                      /* Forzamos que el iframe generado por el script ocupe todo */
+                      iframe { width: 100% !important; height: 100vh !important; border: none !important; }
+                    </style>
+                  </head>
+                  <body>
+                    ${selectedScriptCode}
+                  </body>
+                </html>
+              `}
+            />
           </div>
         </div>
       )}

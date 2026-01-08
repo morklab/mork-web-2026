@@ -6,11 +6,14 @@ import { useTranslations } from "next-intl"
 import { X, Loader2 } from "lucide-react"
 import clsx from "clsx"
 
-// 👇 WIDGET INTELLIGENTE: Convierte tu enlace normal en un Embed
+// 👇 WIDGET INTELIGENTE: Transforma tu enlace web en un embed de venta limpio
 function FourVenuesEmbed({ url }: { url: string }) {
-  // Añadimos el parámetro mágico '?iframe=1' para que Fourvenues
-  // sepa que está dentro de tu web y quite el menú/footer sobrante.
-  const embedUrl = url.includes('?') ? `${url}&iframe=1` : `${url}?iframe=1`;
+  // 1. Extraemos el ID del final del enlace (ej: "...-V4HB" -> "V4HB")
+  const eventId = url.split('-').pop();
+  
+  // 2. Construimos la URL técnica para incrustar (Embed)
+  // Esta es la que carga rápido y no da problemas de pantalla blanca
+  const embedUrl = `https://www.fourvenues.com/es/embedding/events/${eventId}`;
 
   return (
     <div className="bg-white w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500 overflow-hidden">
@@ -21,7 +24,7 @@ function FourVenuesEmbed({ url }: { url: string }) {
         width="100%" 
         height="100%" 
         className="relative z-20 w-full h-full min-h-[600px] border-none"
-        allow="payment; clipboard-read; clipboard-write; geolocation" // Permisos necesarios
+        allow="payment; clipboard-read; clipboard-write; geolocation"
         loading="lazy"
       />
 
@@ -49,10 +52,9 @@ export function EventsSection() {
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       
-      // 👇 IMPORTANTE: Pega aquí el enlace PÚBLICO del evento.
-      // Entra en Fourvenues, ve al evento y copia la URL del navegador.
-      // Debería ser algo como esto:
-      ticketLink: "https://www.fourvenues.com/mork-lab/events/mangles-b2b-reeko-V4HB" 
+      // 👇 HE PUESTO EXACTAMENTE EL ENLACE QUE ME HAS PASADO
+      // El widget se encargará de "limpiarlo" para que funcione dentro de la web.
+      ticketLink: "https://web.fourvenues.com/es/mork-lab/events/reeko-b2b-mangles-14-02-2026-V4HB" 
     },
     {
       date: "2025.03.07",

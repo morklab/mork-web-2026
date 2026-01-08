@@ -6,26 +6,26 @@ import { useTranslations } from "next-intl"
 import { X, Loader2 } from "lucide-react"
 import clsx from "clsx"
 
-// 👇 WIDGET INTELLIGENTE: Convierte tu enlace normal en un Embed
+// 👇 WIDGET SIMPLE Y ROBUSTO: Muestra la web de venta dentro de tu página
 function FourVenuesEmbed({ url }: { url: string }) {
-  // Añadimos el parámetro mágico '?iframe=1' para que Fourvenues
-  // sepa que está dentro de tu web y quite el menú/footer sobrante.
+  // Añadimos '?iframe=1' si no lo tiene, para intentar cargar la vista simplificada
   const embedUrl = url.includes('?') ? `${url}&iframe=1` : `${url}?iframe=1`;
 
   return (
     <div className="bg-white w-full mt-6 mb-8 rounded-sm relative min-h-[600px] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-500 overflow-hidden">
       
-      {/* IFRAME DE CARGA DIRECTA */}
+      {/* IFRAME DIRECTO: Carga la URL que tú le des */}
       <iframe 
         src={embedUrl}
         width="100%" 
         height="100%" 
         className="relative z-20 w-full h-full min-h-[600px] border-none"
-        allow="payment; clipboard-read; clipboard-write; geolocation" // Permisos necesarios
+        // Permisos vitales para que la pasarela de pago y la selección funcionen
+        allow="payment; clipboard-read; clipboard-write; geolocation; microphone; camera"
         loading="lazy"
       />
 
-      {/* Loader visual de fondo */}
+      {/* Loader que se ve mientras carga la página de Fourvenues */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-60 bg-white pointer-events-none">
         <Loader2 className="animate-spin w-8 h-8 text-black mb-2" />
         <span className="text-[10px] uppercase tracking-widest text-black font-bold">Loading Tickets...</span>
@@ -40,19 +40,18 @@ export function EventsSection() {
   
   const t = useTranslations("Events")
 
-  // 👇 DATOS DE TUS EVENTOS
+  // 👇 CONFIGURACIÓN DE EVENTOS
   const events = [
     {
       date: "2026.02.14",
       day: "SAT",
-      artist: "REEKO b2b MANGLES",
+      artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       
-      // 👇 IMPORTANTE: Pega aquí el enlace PÚBLICO del evento.
-      // Entra en Fourvenues, ve al evento y copia la URL del navegador.
-      // Debería ser algo como esto:
-      ticketLink: "https://www.fourvenues.com/mork-lab/events/mangles-b2b-reeko-V4HB" 
+      // 👇 IMPORTANTE: He puesto TU ENLACE EXACTO aquí.
+      // Al pulsar "TICKETS", se abrirá este enlace dentro de la caja blanca.
+      ticketLink: "https://web.fourvenues.com/es/mork-lab/events/reeko-b2b-mangles-14-02-2026-V4HB" 
     },
     {
       date: "2025.03.07",
@@ -122,6 +121,7 @@ export function EventsSection() {
              return (
               <div key={index} className="flex flex-col border-b border-border">
                 
+                {/* TARJETA DEL EVENTO */}
                 <div
                   className="group py-6 md:py-8 transition-colors hover:bg-secondary/30 relative"
                   onMouseEnter={() => setHoveredIndex(index)}
@@ -173,7 +173,7 @@ export function EventsSection() {
                   </div>
                 </div>
 
-                {/* 👇 AQUÍ APARECE EL EMBED DENTRO DE TU WEB */}
+                {/* 👇 AQUÍ CARGA EL IFRAME CON TU URL */}
                 {isOpen && event.ticketLink && (
                   <div className="w-full max-w-5xl mx-auto px-4">
                     <FourVenuesEmbed url={event.ticketLink} />
@@ -184,7 +184,7 @@ export function EventsSection() {
           })}
         </div>
 
-        {/* ENLACE 'VER TODOS' AL FINAL */}
+        {/* BOTÓN 'VER TODOS' */}
         <div className="mt-16 text-center">
           <a
             href="https://www.fourvenues.com/mork-lab" 

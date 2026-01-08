@@ -8,8 +8,6 @@ import { X } from "lucide-react"
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  
-  // Guardamos el código del SCRIPT ENTERO
   const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
   
   const t = useTranslations("Events")
@@ -32,7 +30,7 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      // PEGA AQUÍ EL SCRIPT ENTERO (Tal cual te lo da Fourvenues)
+      // Script oficial de Fourvenues
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
     },
     {
@@ -147,31 +145,32 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* --- MODAL DE PAGO (NEGRO Y ROJO) --- */}
+      {/* --- MODAL NATIVO DARK MORK --- */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
           
-          {/* Contenedor: Borde Rojo y Sombra Roja */}
+          {/* Contenedor Modal: NEGRO + ROJO */}
           <div 
-            className="relative w-full md:max-w-4xl h-full md:h-[90vh] bg-black flex flex-col overflow-hidden md:rounded-lg"
+            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-hidden md:rounded-lg"
             style={{ 
-              border: '1px solid #ff0000', 
-              boxShadow: '0 0 40px rgba(255, 0, 0, 0.2)' 
+              backgroundColor: '#000000', // Negro puro para coincidir con el Dark Mode nativo
+              border: '2px solid #ff0000', // Borde Rojo Mork
+              boxShadow: '0 0 50px rgba(255, 0, 0, 0.3)' // Resplandor rojo sutil
             }}
           >
             
-            {/* Botón Cerrar (Rojo al pasar el ratón) */}
+            {/* Botón Cerrar */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="absolute top-5 right-5 z-50 bg-black text-white p-2 rounded-full transition-all border border-white/20 hover:border-[#ff0000] hover:text-[#ff0000] hover:bg-black/80"
+              className="absolute top-4 right-4 z-50 bg-black/50 text-white p-2 rounded-full hover:bg-[#ff0000] hover:text-white transition-all border border-white/10 hover:border-transparent"
             >
               <X className="w-6 h-6" /> 
             </button>
 
-            {/* CÁPSULA SEGURA */}
+            {/* CÁPSULA: Fondo transparente/negro esperando el contenido nativo */}
             <iframe
               title="Checkout Safe Frame"
-              className="w-full h-full border-none bg-transparent"
+              className="w-full h-full border-none"
               srcDoc={`
                 <!DOCTYPE html>
                 <html lang="es">
@@ -179,7 +178,7 @@ export function EventsSection() {
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-                      /* Fondo y Fuente base */
+                      /* Fondo negro base por si tarda en cargar */
                       body { 
                         margin: 0; 
                         padding: 20px 0; 
@@ -192,34 +191,6 @@ export function EventsSection() {
                         font-family: sans-serif;
                       }
                       iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
-
-                      /* --- INYECCIÓN DE ESTILO MORK (ROJO) --- */
-                      
-                      /* Textos a blanco */
-                      div, p, span, h1, h2, h3, label, li {
-                         color: #ffffff !important;
-                      }
-                      
-                      /* Inputs y selects legibles */
-                      input, select {
-                        color: #000 !important;
-                        background-color: #fff !important;
-                        border: 1px solid #333 !important;
-                      }
-                      
-                      /* Cajas de info (alerts): Fondo rojizo suave, borde rojo y texto rojo brillante */
-                      .fv-info-box, .alert-info, .alert {
-                         background-color: rgba(255, 0, 0, 0.1) !important;
-                         color: #ff4d4d !important; 
-                         border: 1px solid #ff0000 !important;
-                      }
-                      
-                      /* Enlaces en Rojo Mork */
-                      a { color: #ff0000 !important; text-decoration: underline; }
-                      
-                      /* Intentar forzar botones si se puede (depende del iframe interno) */
-                      button { cursor: pointer; }
-                      
                     </style>
                   </head>
                   <body>

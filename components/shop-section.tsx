@@ -42,41 +42,56 @@ export function ShopSection() {
 
   // --- DATOS PRODUCTOS ---
   const products: Product[] = [
+    // CAMISETAS
     { 
-      id: "tee-01", 
-      name: "T-Shirt Ritual 01", 
-      category: "apparel",
-      price: 35, 
-      image: "/modelo1.JPG", 
-      description: genericDesc,
-      sizes: ["S", "M", "L", "XL", "XXL"] 
+      id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, 
+      image: "/modelo1.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
     },
     { 
-      id: "tee-02", 
-      name: "T-Shirt Ritual 02", 
-      category: "apparel", 
-      price: 35, 
-      image: "/modelo2.JPG", 
-      description: genericDesc, 
-      sizes: ["S", "M", "L", "XL"] 
+      id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, 
+      image: "/modelo2.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
     },
     { 
-      id: "tee-03", 
-      name: "T-Shirt Ritual 03", 
-      category: "apparel", 
-      price: 35, 
-      image: "/modelo3.JPG", 
-      description: genericDesc, 
-      sizes: ["S", "M", "L", "XL"] 
+      id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, 
+      image: "/modelo3.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
     },
     { 
-      id: "keychain", 
-      name: "Keychain Limited", 
-      category: "accessories",
-      price: 12, 
-      image: "/llavero.png", 
-      description: "Premium metal keychain with MØRK logo engraving.", 
-      colors: ["BLACK", "RED"] 
+      id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, 
+      image: "/tshirt-4.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+    },
+    { 
+      id: "tee-05", name: "T-Shirt Ritual 05", category: "apparel", price: 35, 
+      image: "/tshirt-5.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+    },
+    { 
+      id: "tee-06", name: "T-Shirt Ritual 06", category: "apparel", price: 35, 
+      image: "/tshirt-6.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+    },
+    { 
+      id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, 
+      image: "/tshirt-7.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+    },
+    { 
+      id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, 
+      image: "/tshirt-8.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+    },
+    { 
+      id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, 
+      image: "/tshirt-9.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
+    },
+
+    // LLAVEROS
+    { 
+      id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, 
+      image: "/llavero.png", description: "Premium metal keychain.", colors: ["BLACK", "RED"] 
+    },
+    { 
+      id: "key-02", name: "Keychain Black", category: "accessories", price: 12, 
+      image: "/keychain-2.jpg", description: "Industrial rubber keychain.", colors: ["RED"] 
+    },
+    { 
+      id: "key-03", name: "Keychain Red", category: "accessories", price: 12, 
+      image: "/keychain-3.jpg", description: "Full neck lanyard.", colors: ["BLACK"] 
     }
   ]
 
@@ -132,7 +147,6 @@ export function ShopSection() {
     return message;
   }
 
-  // 1. WHATSAPP
   const handleCheckoutWhatsApp = () => {
     const phoneNumber = "34676182044"; 
     const message = generateOrderText();
@@ -140,9 +154,8 @@ export function ShopSection() {
     window.open(url, '_blank');
   }
 
-  // 2. EMAIL (Configurado con Rojo Oscuro)
   const handleCheckoutEmail = () => {
-    const shopEmail = "info@mork.com"; // ⚠️ RECUERDA CAMBIAR ESTO POR TU EMAIL REAL
+    const shopEmail = "info@mork.com"; 
     const subject = "NUEVO PEDIDO MØRK WEB";
     const body = generateOrderText();
     const url = `mailto:${shopEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -153,11 +166,23 @@ export function ShopSection() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <section id="shop" className="py-20 md:py-32 px-4 md:px-8 bg-black border-t border-white/5 relative">
-      <div className="max-w-7xl mx-auto">
+    <section id="shop" className="py-20 md:py-32 px-0 md:px-8 bg-black border-t border-white/5 relative overflow-hidden">
+      
+      {/* Estilos para ocultar la barra de scroll */}
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      `}</style>
+
+      <div className="max-w-[1400px] mx-auto">
         
         {/* CABECERA */}
-        <div className="mb-12 md:mb-16 flex flex-col items-center text-center">
+        <div className="mb-10 md:mb-16 flex flex-col items-center text-center px-4">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">
             {t('subtitle')}
           </p>
@@ -167,13 +192,13 @@ export function ShopSection() {
         </div>
 
         {/* FILTROS */}
-        <div className="flex justify-center mb-16 space-x-8 md:space-x-12 border-b border-white/10 pb-4">
+        <div className="flex justify-center mb-8 md:mb-12 space-x-6 md:space-x-12 border-b border-white/10 pb-4 px-4">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveCategory(tab.id)}
               className={clsx(
-                "text-xs md:text-sm tracking-[0.2em] uppercase transition-all duration-300 pb-4 relative",
+                "text-[10px] md:text-sm tracking-[0.2em] uppercase transition-all duration-300 pb-4 relative whitespace-nowrap",
                 activeCategory === tab.id 
                   ? "text-accent font-bold" 
                   : "text-muted-foreground hover:text-white"
@@ -187,37 +212,49 @@ export function ShopSection() {
           ))}
         </div>
 
-        {/* GRID PRODUCTOS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <div key={product.id} className="group cursor-pointer" onClick={() => !product.soldOut && setSelectedProduct(product)}>
-              
-              <div className={clsx(
-                  "relative aspect-[4/5] bg-zinc-900 border border-white/5 overflow-hidden mb-4 transition-all duration-300",
-                   product.soldOut ? "opacity-50" : "group-hover:border-white/20"
-              )}>
-                <Image 
-                  src={product.image || "/placeholder.svg"} 
-                  alt={product.name} 
-                  fill 
-                  className="object-cover brightness-[0.4] group-hover:brightness-100 group-hover:scale-105 transition-all duration-500" 
-                />
-                
-                {product.soldOut && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                    <span className="text-red-600 text-xs tracking-[0.2em] uppercase font-bold border border-red-600 px-3 py-1">Sold Out</span>
-                  </div>
-                )}
-              </div>
-              
-              <div className="space-y-1 text-center md:text-left">
-                <h3 className="text-sm font-bold tracking-wide uppercase truncate text-white group-hover:text-accent transition-colors">
-                  {product.name}
-                </h3>
-                <p className="text-accent font-mono text-sm">{product.price}€</p>
-              </div>
+        {/* --- CARRUSEL DE PRODUCTOS (SCROLL HORIZONTAL) --- */}
+        <div className="relative w-full">
+            <div className="flex overflow-x-auto gap-4 px-4 pb-8 snap-x snap-mandatory scrollbar-hide">
+                {filteredProducts.map((product) => (
+                    <div 
+                        key={product.id} 
+                        className="group cursor-pointer flex-shrink-0 snap-center"
+                        style={{ width: '45vw', maxWidth: '300px', minWidth: '160px' }} 
+                        onClick={() => !product.soldOut && setSelectedProduct(product)}
+                    >
+                    
+                    {/* Imagen: Ahora con efecto ROJO (borde + resplandor) al hacer hover */}
+                    <div className={clsx(
+                        "relative aspect-[3/4] bg-zinc-900 border border-white/5 overflow-hidden mb-3 transition-all duration-300 w-full",
+                        // LÓGICA DE BORDE Y RESPLANDOR ROJO
+                        product.soldOut 
+                          ? "opacity-50" 
+                          : "group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(255,0,0,0.5)]"
+                    )}>
+                        <Image 
+                        src={product.image || "/placeholder.svg"} 
+                        alt={product.name} 
+                        fill 
+                        className="object-cover brightness-[0.7] group-hover:brightness-100 group-hover:scale-105 transition-all duration-500" 
+                        />
+                        
+                        {product.soldOut && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                            <span className="text-red-600 text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold border border-red-600 px-2 py-1">Sold Out</span>
+                        </div>
+                        )}
+                    </div>
+                    
+                    {/* Texto */}
+                    <div className="space-y-1 text-left px-1">
+                        <h3 className="text-[10px] md:text-sm font-bold tracking-wide uppercase truncate text-white group-hover:text-accent transition-colors">
+                        {product.name}
+                        </h3>
+                        <p className="text-accent font-mono text-[10px] md:text-sm">{product.price}€</p>
+                    </div>
+                    </div>
+                ))}
             </div>
-          ))}
         </div>
 
         {/* BOTÓN FLOTANTE CARRITO */}
@@ -264,7 +301,7 @@ export function ShopSection() {
                     <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Select Size</p>
                     <div className="flex flex-wrap gap-2">
                       {selectedProduct.sizes.map((size) => (
-                        <button key={size} onClick={() => setSelectedSize(size)} className={clsx("px-6 py-3 border text-xs tracking-wider uppercase transition-all", selectedSize === size ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white")}>{size}</button>
+                        <button key={size} onClick={() => setSelectedSize(size)} className={clsx("px-4 py-2 md:px-6 md:py-3 border text-xs tracking-wider uppercase transition-all", selectedSize === size ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white")}>{size}</button>
                       ))}
                     </div>
                   </div>
@@ -274,7 +311,7 @@ export function ShopSection() {
                     <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Select Color</p>
                     <div className="flex flex-wrap gap-2">
                       {selectedProduct.colors.map((color) => (
-                        <button key={color} onClick={() => setSelectedColor(color)} className={clsx("px-6 py-3 border text-xs tracking-wider uppercase transition-all", selectedColor === color ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white")}>{color}</button>
+                        <button key={color} onClick={() => setSelectedColor(color)} className={clsx("px-4 py-2 md:px-6 md:py-3 border text-xs tracking-wider uppercase transition-all", selectedColor === color ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white")}>{color}</button>
                       ))}
                     </div>
                   </div>
@@ -345,21 +382,15 @@ export function ShopSection() {
                     <span className="text-2xl font-mono text-white">{cartTotal}€</span>
                   </div>
                   
-                  {/* WhatsApp (Verde) */}
                   <button onClick={handleCheckoutWhatsApp} className="w-full bg-green-600 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2">
                     <MessageCircle size={16} />
                     WhatsApp
                   </button>
 
-                  {/* 🔥 Email (ROJO OSCURO) */}
                   <button onClick={handleCheckoutEmail} className="w-full bg-red-900 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-800 transition-colors flex items-center justify-center gap-2">
                     <Mail size={16} />
                     Email Order
                   </button>
-
-                  <p className="text-gray-600 text-[10px] text-center tracking-wide leading-relaxed pt-2">
-                    Orders are processed manually. Select your preferred method.
-                  </p>
                 </div>
               </>
             )}

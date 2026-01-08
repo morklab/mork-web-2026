@@ -1,26 +1,49 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 import clsx from "clsx"
 import { X } from "lucide-react" 
 
+// --- COMPONENTE AUXILIAR PARA CARGAR EL SCRIPT DE FOURVENUES ---
+// Este componente se encarga de inyectar el script oficial dentro del modal
+const FourvenuesWidget = ({ scriptUrl }: { scriptUrl: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      // Limpiamos por si acaso
+      containerRef.current.innerHTML = "";
+      
+      const script = document.createElement("script");
+      script.src = scriptUrl;
+      script.async = true;
+      // Esto asegura que el script sepa dónde pintarse
+      containerRef.current.appendChild(script);
+    }
+  }, [scriptUrl]);
+
+  return <div ref={containerRef} className="w-full h-full" />;
+};
+
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const [selectedEventUrl, setSelectedEventUrl] = useState<string | null>(null)
+  
+  // Ahora guardamos la URL DEL SCRIPT (no la del iframe)
+  const [selectedScriptUrl, setSelectedScriptUrl] = useState<string | null>(null)
   
   const t = useTranslations("Events")
 
   // Bloquear scroll
   useEffect(() => {
-    if (selectedEventUrl) {
+    if (selectedScriptUrl) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'unset'
     }
     return () => { document.body.style.overflow = 'unset' }
-  }, [selectedEventUrl])
+  }, [selectedScriptUrl])
 
   // --- TUS EVENTOS ---
   const events = [
@@ -30,8 +53,9 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      // He añadido "?theme=dark" al final. A veces fuerza el modo oscuro si la plataforma lo permite.
-      ticketUrl: "https://www.fourvenues.com/es/iframe/mork-lab/V4HB?theme=dark", 
+      // PON AQUÍ EL ENLACE DEL SCRIPT COMPLETO que te da Fourvenues
+      // (El que termina en .js o no tiene extensión pero es del script tag)
+      ticketUrl: "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB", 
     },
     {
       date: "2025.03.07",
@@ -61,7 +85,7 @@ export function EventsSection() {
 
   const handleTicketClick = (url: string) => {
     if (url === "#" || !url) return;
-    setSelectedEventUrl(url)
+    setSelectedScriptUrl(url)
   }
 
   return (
@@ -145,30 +169,23 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* --- MODAL OSCURO --- */}
-      {selectedEventUrl && (
+      {/* --- MODAL CON SCRIPT OFICIAL --- */}
+      {selectedScriptUrl && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
           
-          {/* Contenedor Modal: NEGRO (bg-black) con borde sutil */}
           <div className="relative w-full md:max-w-4xl h-full md:h-[90vh] bg-black border border-white/10 md:rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden">
             
-            {/* Botón Cerrar: Ajustado para fondo negro */}
+            {/* Botón Cerrar */}
             <button 
-              onClick={() => setSelectedEventUrl(null)}
+              onClick={() => setSelectedScriptUrl(null)}
               className="absolute top-4 right-4 z-50 bg-white/10 text-white p-2 rounded-full hover:bg-accent hover:text-black transition-all backdrop-blur-md"
             >
               <X className="w-6 h-6" /> 
             </button>
 
-            {/* Iframe */}
-            <div className="flex-1 w-full h-full bg-black relative"> 
-              <iframe
-                src={selectedEventUrl}
-                className="w-full h-full border-none"
-                title="Ticket Checkout"
-                allow="payment; clipboard-read; clipboard-write; geolocation" 
-                style={{ backgroundColor: 'black' }} // Forzamos fondo negro antes de carga
-              />
+            {/* Aquí inyectamos el SCRIPT, no un iframe manual */}
+            <div className="flex-1 w-full h-full bg-black relative p-4 overflow-y-auto"> 
+               <FourvenuesWidget scriptUrl={selectedScriptUrl} />
             </div>
           </div>
         </div>

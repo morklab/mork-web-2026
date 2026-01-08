@@ -1,16 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 import clsx from "clsx"
+import { X } from "lucide-react" 
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [selectedEventUrl, setSelectedEventUrl] = useState<string | null>(null)
   
   const t = useTranslations("Events")
 
-  // --- TU LISTA MANUAL DE EVENTOS (RECUPERADA) ---
+  // Bloquear scroll
+  useEffect(() => {
+    if (selectedEventUrl) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [selectedEventUrl])
+
+  // --- TUS EVENTOS ---
   const events = [
     {
       date: "2026.02.14",
@@ -18,7 +30,8 @@ export function EventsSection() {
       artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
-      ticketUrl: "https://www.fourvenues.com/mork-lab/V4HB", // Ejemplo: Aquí tendrás que pegar el link real del evento
+      // He añadido "?theme=dark" al final. A veces fuerza el modo oscuro si la plataforma lo permite.
+      ticketUrl: "https://www.fourvenues.com/es/iframe/mork-lab/V4HB?theme=dark", 
     },
     {
       date: "2025.03.07",
@@ -26,7 +39,7 @@ export function EventsSection() {
       artist: "SOL ORTEGA",
       subtitle: `${t('night_with')} Sol Ortega`,
       venue: "Wave Club",
-      ticketUrl: "#",
+      ticketUrl: "#", 
     },
     {
       date: "2025.04.18",
@@ -34,7 +47,7 @@ export function EventsSection() {
       artist: "FREDDY K",
       subtitle: `${t('night_with')} Freddy K`,
       venue: "Wave Club",
-      ticketUrl: "#",
+      ticketUrl: "#", 
     },
     {
       date: "2025.05.9",
@@ -42,9 +55,14 @@ export function EventsSection() {
       artist: "SETAOC MASS",
       subtitle: `${t('night_with')} Setaoc Mass`,
       venue: "Wave Club",
-      ticketUrl: "#",
+      ticketUrl: "#", 
     },
   ]
+
+  const handleTicketClick = (url: string) => {
+    if (url === "#" || !url) return;
+    setSelectedEventUrl(url)
+  }
 
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
@@ -64,7 +82,6 @@ export function EventsSection() {
       />
       
       <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Cabecera */}
         <div className="mb-16 md:mb-24">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
@@ -72,28 +89,21 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* --- TUS EVENTOS PERSONALIZADOS (AQUÍ ESTÁ TU DISEÑO) --- */}
+        {/* Lista de Eventos */}
         <div className="border-t border-border">
           {events.map((event, index) => (
             <div key={index} className="border-b border-border">
-              <a
-                href={event.ticketUrl}
-                // Si quieres que se abra en nueva pestaña:
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="group block py-6 md:py-8 transition-colors hover:bg-secondary/30 relative"
+              <div
+                className="group block py-6 md:py-8 transition-colors hover:bg-secondary/30 relative cursor-pointer"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                onClick={() => handleTicketClick(event.ticketUrl)}
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                  
-                  {/* Fecha */}
                   <div className="flex items-center gap-4 md:w-48">
                     <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
                     <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
                   </div>
-
-                  {/* Artista */}
                   <div className="flex-1">
                     <h3
                       className={clsx(
@@ -105,49 +115,65 @@ export function EventsSection() {
                     </h3>
                     <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
                   </div>
-
-                  {/* Botón */}
                   <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                     <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
-                    <span className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation(); 
+                        handleTicketClick(event.ticketUrl);
+                      }}
+                      className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
+                    >
                       {t('ticket_btn')}
-                    </span>
+                    </button>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* --- CALENDARIO COMPLETO (WIDGET FOURVENUES) --- */}
-        {/* Lo dejamos al final por si el usuario quiere ver "más fechas".
-            Si no lo quieres, borra este bloque div entero. */}
-        <div className="mt-24 pt-12 border-t border-border/50">
-            <h4 className="text-center text-muted-foreground text-xs tracking-[0.3em] uppercase mb-8">Full Calendar</h4>
-            <div className="w-full flex justify-center">
-            <iframe
-                title="Fourvenues Widget"
-                className="w-full border-none"
-                style={{ height: '600px', backgroundColor: 'transparent' }} 
-                srcDoc={`
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                    <base target="_parent">
-                    <style>
-                        body { margin: 0; padding: 0; background-color: transparent; }
-                    </style>
-                    </head>
-                    <body>
-                    <script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>
-                    </body>
-                </html>
-                `}
-            />
-            </div>
+        <div className="mt-16 text-center">
+          <a
+            href="https://www.fourvenues.com/mork-lab"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground text-xs tracking-[0.3em] uppercase hover:text-accent transition-colors border-b border-transparent hover:border-accent pb-1"
+          >
+            {t('view_all')}
+          </a>
         </div>
-
       </div>
+
+      {/* --- MODAL OSCURO --- */}
+      {selectedEventUrl && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
+          
+          {/* Contenedor Modal: NEGRO (bg-black) con borde sutil */}
+          <div className="relative w-full md:max-w-4xl h-full md:h-[90vh] bg-black border border-white/10 md:rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden">
+            
+            {/* Botón Cerrar: Ajustado para fondo negro */}
+            <button 
+              onClick={() => setSelectedEventUrl(null)}
+              className="absolute top-4 right-4 z-50 bg-white/10 text-white p-2 rounded-full hover:bg-accent hover:text-black transition-all backdrop-blur-md"
+            >
+              <X className="w-6 h-6" /> 
+            </button>
+
+            {/* Iframe */}
+            <div className="flex-1 w-full h-full bg-black relative"> 
+              <iframe
+                src={selectedEventUrl}
+                className="w-full h-full border-none"
+                title="Ticket Checkout"
+                allow="payment; clipboard-read; clipboard-write; geolocation" 
+                style={{ backgroundColor: 'black' }} // Forzamos fondo negro antes de carga
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
     </section>
   )
 }

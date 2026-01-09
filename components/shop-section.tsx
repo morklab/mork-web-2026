@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
@@ -35,62 +35,31 @@ export function ShopSection() {
   const [selectedSize, setSelectedSize] = useState<string>("")
   const [selectedColor, setSelectedColor] = useState<string>("")
 
+  // --- LOGICA DE CARRUSEL TIPO 'RITUAL ECHOES' ---
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const isTouchingRef = useRef(false)
+  const scrollTimeoutRef = useRef<any>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const itemsRef = useRef<any[]>([])
+
   const t = useTranslations("Shop")
   const genericDesc = "Limited edition item. Official MØRK merchandising designed in Mallorca."
 
   // --- DATOS PRODUCTOS ---
   const products: Product[] = [
-    // CAMISETAS
-    { 
-      id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, 
-      image: "/tshirt-1.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
-    },
-    { 
-      id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, 
-      image: "/tshirt-2.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, 
-      image: "/tshirt-3.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, 
-      image: "/tshirt-4.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-05", name: "T-Shirt Ritual 05", category: "apparel", price: 35, 
-      image: "/tshirt-5.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-06", name: "T-Shirt Ritual 06", category: "apparel", price: 35, 
-      image: "/tshirt-6.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, 
-      image: "/tshirt-7.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, 
-      image: "/tshirt-8.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, 
-      image: "/tshirt-9.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
-    },
-
-    // LLAVEROS
-    { 
-      id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, 
-      image: "/bicolor.png", description: "Premium metal keychain.", colors: ["Black&RED"] 
-    },
-    { 
-      id: "key-02", name: "Keychain Black", category: "accessories", price: 12, 
-      image: "/negro.png", description: "Industrial rubber keychain.", colors: ["BLACK"] 
-    },
-    { 
-      id: "key-03", name: "Keychain Red", category: "accessories", price: 12, 
-      image: "/rojo.png", description: "Full neck lanyard.", colors: ["RED"] 
-    }
+    // ... (Tus productos intactos)
+    { id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, image: "/tshirt-1.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, image: "/tshirt-2.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, image: "/tshirt-3.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, image: "/tshirt-4.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-05", name: "T-Shirt Ritual 05", category: "apparel", price: 35, image: "/tshirt-5.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-06", name: "T-Shirt Ritual 06", category: "apparel", price: 35, image: "/tshirt-6.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, image: "/tshirt-7.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, image: "/tshirt-8.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, image: "/tshirt-9.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, image: "/bicolor.png", description: "Premium metal keychain.", colors: ["Black&RED"] },
+    { id: "key-02", name: "Keychain Black", category: "accessories", price: 12, image: "/negro.png", description: "Industrial rubber keychain.", colors: ["BLACK"] },
+    { id: "key-03", name: "Keychain Red", category: "accessories", price: 12, image: "/rojo.png", description: "Full neck lanyard.", colors: ["RED"] }
   ]
 
   const tabs = [
@@ -101,6 +70,39 @@ export function ShopSection() {
 
   const filteredProducts = products.filter((p) => activeCategory === "all" || p.category === activeCategory)
 
+  // --- CALCULO AUTOMATICO DEL CENTRO (Móvil) ---
+  const calculateCenterItem = () => {
+    if (!containerRef.current) return
+    const container = containerRef.current
+    const containerCenter = container.scrollLeft + (container.clientWidth / 2)
+    let closestIndex = null
+    let minDistance = Infinity
+    
+    // Solo iteramos sobre los visibles (filteredProducts)
+    // NOTA: itemsRef debe limpiarse o gestionarse con cuidado al filtrar
+    filteredProducts.forEach((_, index) => {
+        const el = itemsRef.current[index]
+        if (!el) return
+        const itemCenter = el.offsetLeft + (el.offsetWidth / 2)
+        const distance = Math.abs(containerCenter - itemCenter)
+        if (distance < minDistance) {
+            minDistance = distance
+            closestIndex = index
+        }
+    })
+    setHoveredIndex(closestIndex)
+  }
+
+  const handleScroll = () => {
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+    calculateCenterItem()
+    scrollTimeoutRef.current = setTimeout(() => {
+       if (!isTouchingRef.current) {
+         // Opcional: Centrar en desktop si quieres, o dejarlo libre
+       }
+    }, 100)
+  }
+
   // --- LÓGICA CARRITO ---
   const addToCart = (product: Product, size?: string, color?: string) => {
     if (product.soldOut) return
@@ -110,10 +112,7 @@ export function ShopSection() {
     } else {
       setCart([...cart, { ...product, quantity: 1, selectedSize: size, selectedColor: color }])
     }
-    setSelectedProduct(null)
-    setSelectedSize("")
-    setSelectedColor("")
-    setIsCartOpen(true)
+    setSelectedProduct(null); setSelectedSize(""); setSelectedColor(""); setIsCartOpen(true)
   }
 
   const removeFromCart = (id: string, size?: string, color?: string) => {
@@ -130,7 +129,7 @@ export function ShopSection() {
         }).filter((item) => item.quantity > 0))
   }
 
-  const generateOrderText = () => {
+  const handleCheckoutWhatsApp = () => {
     let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
     cart.forEach(item => {
         message += `▪️ ${item.quantity}x ${item.name}`;
@@ -140,22 +139,20 @@ export function ShopSection() {
     });
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`;
-    return message;
-  }
-
-  const handleCheckoutWhatsApp = () => {
-    const phoneNumber = "34676182044"; 
-    const message = generateOrderText();
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/34676182044?text=${encodeURIComponent(message)}`, '_blank');
   }
 
   const handleCheckoutEmail = () => {
-    const shopEmail = "info@mork.com"; 
-    const subject = "NUEVO PEDIDO MØRK WEB";
-    const body = generateOrderText();
-    const url = `mailto:${shopEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = url;
+    let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
+    cart.forEach(item => {
+        message += `▪️ ${item.quantity}x ${item.name}`;
+        if (item.selectedSize) message += ` [Talla: ${item.selectedSize}]`;
+        if (item.selectedColor) message += ` [Color: ${item.selectedColor}]`;
+        message += ` - ${item.price * item.quantity}€\n`;
+    });
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`;
+    window.location.href = `mailto:info@mork.com?subject=${encodeURIComponent("NUEVO PEDIDO MØRK WEB")}&body=${encodeURIComponent(message)}`;
   }
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -184,7 +181,7 @@ export function ShopSection() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveCategory(tab.id)}
+              onClick={() => { setActiveCategory(tab.id); setHoveredIndex(null); }} // Reset al cambiar filtro
               className={clsx(
                 "text-[10px] md:text-sm tracking-[0.2em] uppercase transition-all duration-300 pb-4 relative whitespace-nowrap",
                 activeCategory === tab.id 
@@ -200,67 +197,96 @@ export function ShopSection() {
           ))}
         </div>
 
-        {/* --- DOCK DE PRODUCTOS --- */}
-        <div className="relative w-full flex justify-center">
+        {/* --- DOCK DE PRODUCTOS (LÓGICA AUTOMÁTICA) --- */}
+        <div className="relative w-full flex flex-col items-center justify-center">
             
-            {/* 1. PADDING AUMENTADO ARRIBA: pt-40 para más aire */}
-            <div className="flex overflow-x-auto gap-2 md:gap-4 px-4 pt-40 pb-40 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
-                {filteredProducts.map((product) => (
-                    <div 
-                        key={product.id} 
-                        className={clsx(
-                            "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
-                            "w-20 md:w-32", 
-                            "hover:scale-[1.75] hover:z-50 hover:mx-6" 
-                        )}
-                        onClick={() => !product.soldOut && setSelectedProduct(product)}
-                    >
+            <div 
+                ref={containerRef}
+                onScroll={handleScroll}
+                className="flex overflow-x-auto gap-2 md:gap-4 px-[calc(50%-4rem)] pt-32 pb-12 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center"
+                onTouchStart={() => { isTouchingRef.current = true }}
+                onTouchEnd={() => { isTouchingRef.current = false; handleScroll(); }}
+            >
+                {filteredProducts.map((product, index) => {
                     
-                    {/* Imagen */}
-                    <div className={clsx(
-                        "relative aspect-[3/4] bg-zinc-900 border border-white/10 overflow-hidden mb-1 transition-all duration-300 w-full shadow-lg rounded-sm",
-                        product.soldOut 
-                          ? "opacity-50" 
-                          : "group-hover:border-accent group-hover:shadow-[0_0_30px_rgba(255,0,0,0.8)]"
-                    )}>
-                        <Image 
-                        src={product.image || "/placeholder.svg"} 
-                        alt={product.name} 
-                        fill 
-                        className="object-cover grayscale brightness-[0.6] group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-300" 
-                        />
-                        
-                        {product.soldOut && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                            <span className="text-red-600 text-[8px] md:text-[10px] tracking-widest uppercase font-bold border border-red-600 px-1">Sold</span>
-                        </div>
-                        )}
-                    </div>
+                    // Lógica de distancia para Zoom (Igual que en Ritual Echoes)
+                    const distanceFromHovered = hoveredIndex === null ? 999 : Math.abs(hoveredIndex - index)
+                    const isSelected = hoveredIndex === index
                     
-                    {/* Texto + Descripción */}
-                    <div className="text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute -bottom-16 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none">
-                        <div className="bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded flex flex-col items-center shadow-xl">
-                           <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
-                              {product.name}
-                           </h3>
-                           <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
-                              {product.description}
-                           </p>
-                           <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
-                              {product.price}€
-                           </p>
-                        </div>
-                    </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+                    // Clases dinámicas según la distancia al centro/cursor
+                    let scaleClass = "scale-75 opacity-60 grayscale brightness-[0.5] blur-[0.5px] z-10" 
+                    let widthClass = "w-20 md:w-32"
 
-        {/* --- NUEVO MENSAJE INFERIOR "TECHNØ MINDS" --- */}
-        <div className="mt-10 text-center px-4 pb-20">
-            <p className="text-red-600 font-mono uppercase tracking-[0.5em] text-xs md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
-                Designed for the Technø minds
-            </p>
+                    if (distanceFromHovered === 0) {
+                        scaleClass = "scale-[1.6] md:scale-[1.75] opacity-100 grayscale-0 brightness-100 blur-0 z-50 mx-4"
+                    } else if (distanceFromHovered === 1) {
+                        scaleClass = "scale-[1.1] md:scale-[1.2] opacity-80 grayscale-0 brightness-90 blur-0 z-40 mx-2"
+                    }
+
+                    return (
+                        <div 
+                            key={product.id} 
+                            ref={(el) => { itemsRef.current[index] = el }}
+                            className={clsx(
+                                "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
+                                widthClass,
+                                scaleClass
+                            )}
+                            // En Desktop usamos hover, en Móvil usamos el cálculo automático
+                            onMouseEnter={() => { if (!isTouchingRef.current) setHoveredIndex(index) }}
+                            onMouseLeave={() => { if (!isTouchingRef.current) setHoveredIndex(null) }}
+                            onClick={() => !product.soldOut && setSelectedProduct(product)}
+                        >
+                        
+                            {/* Imagen */}
+                            <div className={clsx(
+                                "relative aspect-[3/4] bg-zinc-900 border border-white/10 overflow-hidden mb-1 transition-all duration-300 w-full shadow-lg rounded-sm",
+                                isSelected ? "border-accent shadow-[0_0_30px_rgba(255,0,0,0.6)]" : "",
+                                product.soldOut ? "opacity-50" : ""
+                            )}>
+                                <Image 
+                                src={product.image || "/placeholder.svg"} 
+                                alt={product.name} 
+                                fill 
+                                className="object-cover" 
+                                />
+                                
+                                {product.soldOut && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                                    <span className="text-red-600 text-[8px] md:text-[10px] tracking-widest uppercase font-bold border border-red-600 px-1">Sold</span>
+                                </div>
+                                )}
+                            </div>
+                            
+                            {/* Texto: Solo visible si está seleccionado/centrado */}
+                            <div className={clsx(
+                                "text-center transition-opacity duration-200 absolute -bottom-20 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none",
+                                isSelected ? "opacity-100 visible" : "opacity-0 invisible"
+                            )}>
+                                <div className="bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded flex flex-col items-center shadow-xl">
+                                    <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
+                                        {product.description}
+                                    </p>
+                                    <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
+                                        {product.price}€
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+
+            {/* --- TEXTO INFERIOR (Subido para estar más cerca) --- */}
+            <div className="mt-8 mb-20 text-center px-4">
+                <p className="text-red-600 font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
+                    Designed for the Technø minds
+                </p>
+            </div>
+
         </div>
 
         {/* BOTÓN FLOTANTE CARRITO */}

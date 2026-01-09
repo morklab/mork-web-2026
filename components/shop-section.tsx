@@ -45,15 +45,15 @@ export function ShopSection() {
     // CAMISETAS
     { 
       id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, 
-      image: "/modelo1.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
+      image: "/tshirt-1.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
     },
     { 
       id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, 
-      image: "/modelo2.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+      image: "/tshirt-2.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
     },
     { 
       id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, 
-      image: "/modelo3.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
+      image: "/tshirt-3.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
     },
     { 
       id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, 
@@ -83,15 +83,15 @@ export function ShopSection() {
     // LLAVEROS
     { 
       id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, 
-      image: "/keychain r&b.jpg", description: "Premium metal keychain.", colors: ["Black&RED"] 
+      image: "/bicolor.png", description: "Premium metal keychain.", colors: ["Black&RED"] 
     },
     { 
       id: "key-02", name: "Keychain Black", category: "accessories", price: 12, 
-      image: "/keychain-2.jpg", description: "Industrial rubber keychain.", colors: ["BLACK"] 
+      image: "/negro.png", description: "Industrial rubber keychain.", colors: ["BLACK"] 
     },
     { 
       id: "key-03", name: "Keychain Red", category: "accessories", price: 12, 
-      image: "/keychain-3.jpg", description: "Full neck lanyard.", colors: ["RED"] 
+      image: "/rojo.png", description: "Full neck lanyard.", colors: ["RED"] 
     }
   ]
 

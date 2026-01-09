@@ -27,13 +27,11 @@ interface CartItem extends Product {
 }
 
 export function ShopSection() {
-  // Estados
   const [activeCategory, setActiveCategory] = useState<"all" | "apparel" | "accessories">("all")
   const [cart, setCart] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   
-  // Estados selección
   const [selectedSize, setSelectedSize] = useState<string>("")
   const [selectedColor, setSelectedColor] = useState<string>("")
 
@@ -95,7 +93,6 @@ export function ShopSection() {
     }
   ]
 
-  // Tabs
   const tabs = [
     { id: "all", label: t("cat_all") },
     { id: "apparel", label: t("cat_apparel") },
@@ -211,45 +208,54 @@ export function ShopSection() {
           ))}
         </div>
 
-        {/* --- CARRUSEL DE PRODUCTOS (SCROLL HORIZONTAL) --- */}
-        <div className="relative w-full">
-            <div className="flex overflow-x-auto gap-4 px-4 pb-12 pt-4 snap-x snap-mandatory scrollbar-hide">
+        {/* --- DOCK DE PRODUCTOS (Estilo Apple Dock Real) --- */}
+        <div className="relative w-full flex justify-center pb-32 pt-10"> {/* Padding grande abajo para el zoom */}
+            {/* items-end es CLAVE para que crezcan hacia arriba como un dock */}
+            <div className="flex overflow-x-auto gap-2 md:gap-3 px-4 pb-4 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
                 {filteredProducts.map((product) => (
                     <div 
                         key={product.id} 
-                        // CAMBIO CLAVE AQUÍ: Aplicamos la escala a TODO el contenedor
-                        className="group cursor-pointer flex-shrink-0 snap-center transition-all duration-700 ease-out transform scale-90 hover:scale-100 hover:z-10"
-                        style={{ width: '45vw', maxWidth: '300px', minWidth: '160px' }} 
+                        // EFECTO DOCK AGRESIVO:
+                        // 1. w-20 / w-32 -> Tamaño base MUY pequeño para que quepan todos.
+                        // 2. hover:scale-[1.75] -> Zoom GIGANTE (casi doble).
+                        // 3. origin-bottom -> Crecen hacia arriba.
+                        // 4. hover:mx-6 -> Empuja a los lados para hacer sitio.
+                        className={clsx(
+                            "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
+                            "w-20 md:w-32", // Ancho base reducido
+                            "hover:scale-[1.75] hover:z-50 hover:mx-6" // Escala masiva y margen
+                        )}
                         onClick={() => !product.soldOut && setSelectedProduct(product)}
                     >
                     
-                    {/* Imagen: Solo controlamos el color (Grayscale -> Color) */}
+                    {/* Imagen */}
                     <div className={clsx(
-                        "relative aspect-[3/4] bg-zinc-900 border border-white/5 overflow-hidden mb-3 transition-all duration-300 w-full",
+                        "relative aspect-[3/4] bg-zinc-900 border border-white/10 overflow-hidden mb-1 transition-all duration-300 w-full shadow-lg rounded-sm",
                         product.soldOut 
                           ? "opacity-50" 
-                          : "group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(255,0,0,0.5)]"
+                          : "group-hover:border-accent group-hover:shadow-[0_0_30px_rgba(255,0,0,0.8)]"
                     )}>
                         <Image 
                         src={product.image || "/placeholder.svg"} 
                         alt={product.name} 
                         fill 
-                        className="object-cover grayscale brightness-[0.6] group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 ease-out" 
+                        className="object-cover grayscale brightness-[0.6] group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-300" 
                         />
                         
                         {product.soldOut && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                            <span className="text-red-600 text-[10px] md:text-xs tracking-[0.2em] uppercase font-bold border border-red-600 px-2 py-1">Sold Out</span>
+                            <span className="text-red-600 text-[8px] md:text-[10px] tracking-widest uppercase font-bold border border-red-600 px-1">Sold</span>
                         </div>
                         )}
                     </div>
                     
-                    {/* Texto: Se escala junto con el padre */}
-                    <div className="space-y-1 text-left px-1">
-                        <h3 className="text-[10px] md:text-sm font-bold tracking-wide uppercase truncate text-white group-hover:text-accent transition-colors">
-                        {product.name}
+                    {/* Texto: Oculto por defecto para limpiar la vista, aparece al hacer hover */}
+                    <div className="text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute -bottom-12 left-0 right-0 w-[150%] -ml-[25%]">
+                        <h3 className="text-[10px] font-bold uppercase truncate text-white group-hover:text-accent bg-black/80 backdrop-blur-md py-1 px-2 rounded border border-white/10">
+                          {product.name}
                         </h3>
-                        <p className="text-accent font-mono text-[10px] md:text-sm">{product.price}€</p>
+                        {/* Precio opcional si quieres que se vea */}
+                        {/* <p className="text-accent font-mono text-[8px]">{product.price}€</p> */}
                     </div>
                     </div>
                 ))}

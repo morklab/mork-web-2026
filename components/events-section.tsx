@@ -12,7 +12,7 @@ export function EventsSection() {
   
   const t = useTranslations("Events")
 
-  // Bloquear scroll de la web de fondo, pero permitirlo en el modal
+  // Bloquear scroll de la web de fondo
   useEffect(() => {
     if (selectedScriptCode) {
       document.body.style.overflow = 'hidden'
@@ -27,7 +27,7 @@ export function EventsSection() {
     {
       date: "2026.02.14",
       day: "SAT",
-      artist: "REEKO b2b MANGLES",
+      artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       // Script oficial de Fourvenues
@@ -122,66 +122,71 @@ export function EventsSection() {
              {t('tba_subtitle')}
            </p>
         </div>
-
       </div>
 
-      {/* --- MODAL NEGRO PURO (SCROLLABLE) --- */}
+      {/* --- MODAL FULL SCREEN PERFECTO (Móvil & Mac) --- */}
       {selectedScriptCode && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
-          
-          <div 
-            // CAMBIO IMPORTANTE: 'overflow-y-auto' en lugar de 'overflow-hidden'
-            // Esto permite que si la descripción es larga, puedas bajar con el dedo/ratón
-            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-y-auto md:rounded-lg"
-            style={{ 
-              backgroundColor: '#000000', 
-              border: 'none', 
-              boxShadow: 'none'
-            }}
-          >
+        <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
             
-            {/* BOTÓN CERRAR (Fixed para que no desaparezca al hacer scroll, o absolute si prefieres que se mueva) */}
-            {/* Al ponerlo absolute dentro de un contenedor con scroll, se moverá con el contenido. 
-                Si la descripción es muy larga, estará arriba del todo. */}
+            {/* BOTÓN CERRAR - FLOTANTE Y VISIBLE */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-zinc-800 transition-all border border-white/10"
+              className="fixed top-6 right-6 z-[100] bg-black/80 text-white p-3 rounded-full hover:bg-red-600 transition-all border border-white/20 shadow-2xl backdrop-blur-md"
             >
-              <X className="w-6 h-6" /> 
+              <X className="w-8 h-8" /> 
             </button>
 
-            {/* CÁPSULA FOURVENUES */}
+            {/* IFRAME A PANTALLA COMPLETA */}
             <iframe
-              title="Checkout Safe Frame"
-              className="w-full border-none flex-1"
-              // Ajustamos estilos internos para permitir crecimiento
-              srcDoc={`
+            title="Checkout Safe Frame"
+            className="w-full h-full border-none block"
+            srcDoc={`
                 <!DOCTYPE html>
                 <html lang="es">
-                  <head>
+                <head>
                     <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                     <style>
-                      body { 
+                    /* 1. Reset total para ocupar toda la pantalla */
+                    html, body { 
+                        height: 100%;
+                        width: 100%;
                         margin: 0; 
                         padding: 0;
                         background-color: #000000; 
                         color: #ffffff; 
-                        display: block; /* Cambio a block para flujo natural */
-                        min-height: 100vh; 
                         font-family: sans-serif;
-                      }
-                      /* El iframe debe poder crecer lo que necesite (height: auto) */
-                      iframe { width: 100% !important; height: auto !important; min-height: 100vh !important; border: none !important; display: block; }
+                    }
+                    
+                    /* 2. El Body es el que hace scroll. Esto es clave para Móvil */
+                    body {
+                        overflow-y: auto; 
+                        overflow-x: hidden;
+                        -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
+                    }
+
+                    /* 3. Contenedor interno */
+                    .wrapper {
+                        width: 100%;
+                        max-width: 800px; /* En Mac no se estira infinito */
+                        margin: 0 auto;   /* Centrado en Mac */
+                        padding-top: 20px;
+                        /* ESPACIO DE SEGURIDAD ABAJO PARA MÓVILES */
+                        padding-bottom: 120px; 
+                    }
+
+                    /* 4. Estilos para el iframe inyectado por el script */
+                    iframe { width: 100% !important; border: none !important; }
                     </style>
-                  </head>
-                  <body>
-                    ${selectedScriptCode}
-                  </body>
+                </head>
+                <body>
+                    <div class="wrapper">
+                        ${selectedScriptCode}
+                    </div>
+                </body>
                 </html>
-              `}
+            `}
             />
-          </div>
         </div>
       )}
 

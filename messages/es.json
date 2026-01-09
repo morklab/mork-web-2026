@@ -93,7 +93,8 @@
   "ShopProducts": {
     "tee_desc": "100% Algodón Orgánico. Alto gramaje. Serigrafía trasera.",
     "keychain_desc": "Metal y Goma. Acento Rojo.",
-    "ticket_desc": "Wave Club Mallorca"
+    "ticket_desc": "Wave Club Mallorca",
+    "tagline": "DISEÑADO PARA MENTES TECHNO"
   },
   "Events": {
     "subtitle": "Próximamente",

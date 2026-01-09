@@ -35,7 +35,7 @@ export function ShopSection() {
   const [selectedSize, setSelectedSize] = useState<string>("")
   const [selectedColor, setSelectedColor] = useState<string>("")
 
-  // --- LOGICA DE CARRUSEL TIPO 'RITUAL ECHOES' ---
+  // --- LÓGICA DE DETECCIÓN DE CENTRO (IGUAL QUE VISUALS) ---
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const isTouchingRef = useRef(false)
   const scrollTimeoutRef = useRef<any>(null)
@@ -47,19 +47,20 @@ export function ShopSection() {
 
   // --- DATOS PRODUCTOS ---
   const products: Product[] = [
-    // ... (Tus productos intactos)
-    { id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, image: "/tshirt-1.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] },
-    { id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, image: "/tshirt-2.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
-    { id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, image: "/tshirt-3.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    // CAMISETAS
+    { id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, image: "/modelo1.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, image: "/modelo2.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, image: "/modelo3.JPG", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, image: "/tshirt-4.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-05", name: "T-Shirt Ritual 05", category: "apparel", price: 35, image: "/tshirt-5.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-06", name: "T-Shirt Ritual 06", category: "apparel", price: 35, image: "/tshirt-6.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, image: "/tshirt-7.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, image: "/tshirt-8.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, image: "/tshirt-9.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] },
-    { id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, image: "/bicolor.png", description: "Premium metal keychain.", colors: ["Black&RED"] },
-    { id: "key-02", name: "Keychain Black", category: "accessories", price: 12, image: "/negro.png", description: "Industrial rubber keychain.", colors: ["BLACK"] },
-    { id: "key-03", name: "Keychain Red", category: "accessories", price: 12, image: "/rojo.png", description: "Full neck lanyard.", colors: ["RED"] }
+    // LLAVEROS
+    { id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, image: "/keychain r&b.jpg", description: "Premium metal keychain.", colors: ["Black&RED"] },
+    { id: "key-02", name: "Keychain Black", category: "accessories", price: 12, image: "/keychain-2.jpg", description: "Industrial rubber keychain.", colors: ["BLACK"] },
+    { id: "key-03", name: "Keychain Red", category: "accessories", price: 12, image: "/keychain-3.jpg", description: "Full neck lanyard.", colors: ["RED"] }
   ]
 
   const tabs = [
@@ -70,7 +71,7 @@ export function ShopSection() {
 
   const filteredProducts = products.filter((p) => activeCategory === "all" || p.category === activeCategory)
 
-  // --- CALCULO AUTOMATICO DEL CENTRO (Móvil) ---
+  // --- CÁLCULO DE CENTRO (MÓVIL) ---
   const calculateCenterItem = () => {
     if (!containerRef.current) return
     const container = containerRef.current
@@ -78,8 +79,9 @@ export function ShopSection() {
     let closestIndex = null
     let minDistance = Infinity
     
-    // Solo iteramos sobre los visibles (filteredProducts)
-    // NOTA: itemsRef debe limpiarse o gestionarse con cuidado al filtrar
+    // Solo iteramos los visibles
+    // Nota: itemsRef debe limpiarse al cambiar categoría, pero para simplicidad 
+    // y rendimiento en React, el index coincidirá con filteredProducts map
     filteredProducts.forEach((_, index) => {
         const el = itemsRef.current[index]
         if (!el) return
@@ -97,9 +99,8 @@ export function ShopSection() {
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
     calculateCenterItem()
     scrollTimeoutRef.current = setTimeout(() => {
-       if (!isTouchingRef.current) {
-         // Opcional: Centrar en desktop si quieres, o dejarlo libre
-       }
+        // Al parar el scroll, nos aseguramos de que recalcule una vez más
+        calculateCenterItem()
     }, 100)
   }
 
@@ -129,7 +130,7 @@ export function ShopSection() {
         }).filter((item) => item.quantity > 0))
   }
 
-  const handleCheckoutWhatsApp = () => {
+  const generateOrderText = () => {
     let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
     cart.forEach(item => {
         message += `▪️ ${item.quantity}x ${item.name}`;
@@ -139,19 +140,16 @@ export function ShopSection() {
     });
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`;
+    return message;
+  }
+
+  const handleCheckoutWhatsApp = () => {
+    const message = generateOrderText();
     window.open(`https://wa.me/34676182044?text=${encodeURIComponent(message)}`, '_blank');
   }
 
   const handleCheckoutEmail = () => {
-    let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
-    cart.forEach(item => {
-        message += `▪️ ${item.quantity}x ${item.name}`;
-        if (item.selectedSize) message += ` [Talla: ${item.selectedSize}]`;
-        if (item.selectedColor) message += ` [Color: ${item.selectedColor}]`;
-        message += ` - ${item.price * item.quantity}€\n`;
-    });
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`;
+    const message = generateOrderText();
     window.location.href = `mailto:info@mork.com?subject=${encodeURIComponent("NUEVO PEDIDO MØRK WEB")}&body=${encodeURIComponent(message)}`;
   }
 
@@ -177,11 +175,11 @@ export function ShopSection() {
         </div>
 
         {/* FILTROS */}
-        <div className="flex justify-center mb-8 md:mb-12 space-x-6 md:space-x-12 border-b border-white/10 pb-4 px-4">
+        <div className="flex justify-center mb-4 md:mb-8 space-x-6 md:space-x-12 border-b border-white/10 pb-4 px-4">
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => { setActiveCategory(tab.id); setHoveredIndex(null); }} // Reset al cambiar filtro
+              onClick={() => { setActiveCategory(tab.id); setHoveredIndex(null); }} // Reset al cambiar
               className={clsx(
                 "text-[10px] md:text-sm tracking-[0.2em] uppercase transition-all duration-300 pb-4 relative whitespace-nowrap",
                 activeCategory === tab.id 
@@ -197,29 +195,32 @@ export function ShopSection() {
           ))}
         </div>
 
-        {/* --- DOCK DE PRODUCTOS (LÓGICA AUTOMÁTICA) --- */}
+        {/* --- DOCK DE PRODUCTOS (HÍBRIDO: Scroll en Móvil / Hover en Desktop) --- */}
         <div className="relative w-full flex flex-col items-center justify-center">
             
+            {/* Contenedor del Scroll: Ajustamos paddings para el zoom */}
             <div 
                 ref={containerRef}
                 onScroll={handleScroll}
-                className="flex overflow-x-auto gap-2 md:gap-4 px-[calc(50%-4rem)] pt-32 pb-12 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center"
+                className="flex overflow-x-auto gap-2 md:gap-3 px-[calc(50%-3.5rem)] md:px-[calc(50%-4rem)] pt-32 pb-4 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center"
                 onTouchStart={() => { isTouchingRef.current = true }}
                 onTouchEnd={() => { isTouchingRef.current = false; handleScroll(); }}
             >
                 {filteredProducts.map((product, index) => {
                     
-                    // Lógica de distancia para Zoom (Igual que en Ritual Echoes)
+                    // Calculamos distancia para el efecto
                     const distanceFromHovered = hoveredIndex === null ? 999 : Math.abs(hoveredIndex - index)
                     const isSelected = hoveredIndex === index
                     
-                    // Clases dinámicas según la distancia al centro/cursor
-                    let scaleClass = "scale-75 opacity-60 grayscale brightness-[0.5] blur-[0.5px] z-10" 
-                    let widthClass = "w-20 md:w-32"
+                    // CLASES DINÁMICAS (Lógica de Aladdin controlada por Estado, no CSS Hover puro)
+                    let scaleClass = "scale-75 opacity-50 grayscale brightness-[0.5] blur-[0.5px] z-10" 
+                    let widthClass = "w-24 md:w-32" // Base size
 
                     if (distanceFromHovered === 0) {
-                        scaleClass = "scale-[1.6] md:scale-[1.75] opacity-100 grayscale-0 brightness-100 blur-0 z-50 mx-4"
+                        // Elemento central/seleccionado: ZOOM GRANDE
+                        scaleClass = "scale-[1.7] md:scale-[1.8] opacity-100 grayscale-0 brightness-100 blur-0 z-50 mx-4"
                     } else if (distanceFromHovered === 1) {
+                        // Vecinos: ZOOM MEDIO
                         scaleClass = "scale-[1.1] md:scale-[1.2] opacity-80 grayscale-0 brightness-90 blur-0 z-40 mx-2"
                     }
 
@@ -232,7 +233,7 @@ export function ShopSection() {
                                 widthClass,
                                 scaleClass
                             )}
-                            // En Desktop usamos hover, en Móvil usamos el cálculo automático
+                            // En Desktop activamos con el ratón
                             onMouseEnter={() => { if (!isTouchingRef.current) setHoveredIndex(index) }}
                             onMouseLeave={() => { if (!isTouchingRef.current) setHoveredIndex(null) }}
                             onClick={() => !product.soldOut && setSelectedProduct(product)}
@@ -258,7 +259,7 @@ export function ShopSection() {
                                 )}
                             </div>
                             
-                            {/* Texto: Solo visible si está seleccionado/centrado */}
+                            {/* Texto: Solo visible si está seleccionado */}
                             <div className={clsx(
                                 "text-center transition-opacity duration-200 absolute -bottom-20 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none",
                                 isSelected ? "opacity-100 visible" : "opacity-0 invisible"
@@ -280,10 +281,12 @@ export function ShopSection() {
                 })}
             </div>
 
-            {/* --- TEXTO INFERIOR (Subido para estar más cerca) --- */}
-            <div className="mt-8 mb-20 text-center px-4">
+            {/* --- TEXTO INFERIOR (Acercado mucho más al carrusel) --- */}
+            {/* Antes tenía mt-10 mb-20, ahora mucho menos margen para pegar el texto */}
+            <div className="mt-2 mb-10 text-center px-4">
                 <p className="text-red-600 font-mono uppercase tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
-                    Designed for the Technø minds
+                    {/* TRADUCCIÓN: Usa la clave del JSON si existe, o el texto fijo si no */}
+                    {t('tagline') || "DESIGNED FOR THE TECHNØ MINDS"}
                 </p>
             </div>
 
@@ -302,7 +305,7 @@ export function ShopSection() {
         </button>
       </div>
 
-      {/* MODAL PRODUCTO (Detalle) */}
+      {/* MODAL PRODUCTO (Sin cambios) */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-zinc-950 border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid md:grid-cols-2 relative">
@@ -362,7 +365,7 @@ export function ShopSection() {
         </div>
       )}
 
-      {/* SIDEBAR CARRITO */}
+      {/* SIDEBAR CARRITO (Sin cambios) */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={() => setIsCartOpen(false)} />
@@ -407,18 +410,15 @@ export function ShopSection() {
                   ))}
                 </div>
                 
-                {/* FOOTER: BOTONES DE ACCIÓN */}
                 <div className="p-6 border-t border-white/10 space-y-3 bg-zinc-900/50">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-400 text-sm uppercase tracking-wide">Total</span>
                     <span className="text-2xl font-mono text-white">{cartTotal}€</span>
                   </div>
-                  
                   <button onClick={handleCheckoutWhatsApp} className="w-full bg-green-600 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2">
                     <MessageCircle size={16} />
                     WhatsApp
                   </button>
-
                   <button onClick={handleCheckoutEmail} className="w-full bg-red-900 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-800 transition-colors flex items-center justify-center gap-2">
                     <Mail size={16} />
                     Email Order

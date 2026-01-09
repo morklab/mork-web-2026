@@ -83,7 +83,7 @@ export function ShopSection() {
     // LLAVEROS
     { 
       id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, 
-      image: "/llavero.png", description: "Premium metal keychain.", colors: ["BLACK", "RED"] 
+      image: "/keychain r&b.jpg", description: "Premium metal keychain.", colors: ["BLACK", "RED"] 
     },
     { 
       id: "key-02", name: "Keychain Black", category: "accessories", price: 12, 

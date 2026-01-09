@@ -12,7 +12,7 @@ export function EventsSection() {
   
   const t = useTranslations("Events")
 
-  // Bloquear scroll
+  // Bloquear scroll de la web de fondo, pero permitirlo en el modal
   useEffect(() => {
     if (selectedScriptCode) {
       document.body.style.overflow = 'hidden'
@@ -125,12 +125,14 @@ export function EventsSection() {
 
       </div>
 
-      {/* --- MODAL NEGRO PURO (Limpio: Sin borde, sin parche) --- */}
+      {/* --- MODAL NEGRO PURO (SCROLLABLE) --- */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
           
           <div 
-            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-hidden md:rounded-lg"
+            // CAMBIO IMPORTANTE: 'overflow-y-auto' en lugar de 'overflow-hidden'
+            // Esto permite que si la descripción es larga, puedas bajar con el dedo/ratón
+            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-y-auto md:rounded-lg"
             style={{ 
               backgroundColor: '#000000', 
               border: 'none', 
@@ -138,16 +140,47 @@ export function EventsSection() {
             }}
           >
             
-            {/* BOTÓN CERRAR */}
+            {/* BOTÓN CERRAR (Fixed para que no desaparezca al hacer scroll, o absolute si prefieres que se mueva) */}
+            {/* Al ponerlo absolute dentro de un contenedor con scroll, se moverá con el contenido. 
+                Si la descripción es muy larga, estará arriba del todo. */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-zinc-800 transition-all"
+              className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-zinc-800 transition-all border border-white/10"
             >
               <X className="w-6 h-6" /> 
             </button>
 
             {/* CÁPSULA FOURVENUES */}
-            {selectedScriptCode}
+            <iframe
+              title="Checkout Safe Frame"
+              className="w-full border-none flex-1"
+              // Ajustamos estilos internos para permitir crecimiento
+              srcDoc={`
+                <!DOCTYPE html>
+                <html lang="es">
+                  <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                      body { 
+                        margin: 0; 
+                        padding: 0;
+                        background-color: #000000; 
+                        color: #ffffff; 
+                        display: block; /* Cambio a block para flujo natural */
+                        min-height: 100vh; 
+                        font-family: sans-serif;
+                      }
+                      /* El iframe debe poder crecer lo que necesite (height: auto) */
+                      iframe { width: 100% !important; height: auto !important; min-height: 100vh !important; border: none !important; display: block; }
+                    </style>
+                  </head>
+                  <body>
+                    ${selectedScriptCode}
+                  </body>
+                </html>
+              `}
+            />
           </div>
         </div>
       )}

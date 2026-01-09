@@ -133,7 +133,6 @@ export function ShopSection() {
         }).filter((item) => item.quantity > 0))
   }
 
-  // Generador de texto del pedido
   const generateOrderText = () => {
     let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
     cart.forEach(item => {
@@ -214,19 +213,19 @@ export function ShopSection() {
 
         {/* --- CARRUSEL DE PRODUCTOS (SCROLL HORIZONTAL) --- */}
         <div className="relative w-full">
-            <div className="flex overflow-x-auto gap-4 px-4 pb-8 snap-x snap-mandatory scrollbar-hide">
+            <div className="flex overflow-x-auto gap-4 px-4 pb-12 pt-4 snap-x snap-mandatory scrollbar-hide">
                 {filteredProducts.map((product) => (
                     <div 
                         key={product.id} 
-                        className="group cursor-pointer flex-shrink-0 snap-center"
+                        // CAMBIO CLAVE AQUÍ: Aplicamos la escala a TODO el contenedor
+                        className="group cursor-pointer flex-shrink-0 snap-center transition-all duration-700 ease-out transform scale-90 hover:scale-100 hover:z-10"
                         style={{ width: '45vw', maxWidth: '300px', minWidth: '160px' }} 
                         onClick={() => !product.soldOut && setSelectedProduct(product)}
                     >
                     
-                    {/* Imagen: EFECTO ALADDIN (Zoom + Grayscale to Color) */}
+                    {/* Imagen: Solo controlamos el color (Grayscale -> Color) */}
                     <div className={clsx(
                         "relative aspect-[3/4] bg-zinc-900 border border-white/5 overflow-hidden mb-3 transition-all duration-300 w-full",
-                        // LÓGICA DE BORDE Y RESPLANDOR ROJO
                         product.soldOut 
                           ? "opacity-50" 
                           : "group-hover:border-accent group-hover:shadow-[0_0_20px_rgba(255,0,0,0.5)]"
@@ -235,10 +234,7 @@ export function ShopSection() {
                         src={product.image || "/placeholder.svg"} 
                         alt={product.name} 
                         fill 
-                        // AQUÍ ESTÁ EL CAMBIO CLAVE: 
-                        // 1. scale-90 (Empieza pequeña) -> group-hover:scale-110 (Se hace grande)
-                        // 2. duration-700 ease-out (Movimiento suave y lento tipo Aladdin)
-                        className="object-cover grayscale brightness-[0.6] scale-90 group-hover:scale-110 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 ease-out" 
+                        className="object-cover grayscale brightness-[0.6] group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 ease-out" 
                         />
                         
                         {product.soldOut && (
@@ -248,7 +244,7 @@ export function ShopSection() {
                         )}
                     </div>
                     
-                    {/* Texto */}
+                    {/* Texto: Se escala junto con el padre */}
                     <div className="space-y-1 text-left px-1">
                         <h3 className="text-[10px] md:text-sm font-bold tracking-wide uppercase truncate text-white group-hover:text-accent transition-colors">
                         {product.name}
@@ -273,7 +269,7 @@ export function ShopSection() {
         </button>
       </div>
 
-      {/* MODAL PRODUCTO */}
+      {/* MODAL PRODUCTO (Detalle) */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-zinc-950 border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid md:grid-cols-2 relative">

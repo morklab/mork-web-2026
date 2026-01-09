@@ -42,6 +42,7 @@ export function EventsSection() {
 
     const handleTicketClick = (script: string | null) => {
         if (!script) return;
+        router.push(window.location.href.split('#')[0])
         setSelectedScriptCode(script)
     }
 
@@ -143,7 +144,7 @@ export function EventsSection() {
                 <div
                     className="fixed inset-0 z-[9999] flex items-center-safe justify-center overflow-y-auto bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
 
-                    <div className="relative w-full md:max-w-4xl flex flex-col md:rounded-lg"
+                    <div className="relative w-full md:max-w-4xl flex flex-col md:rounded-lg pt-12"
                          style={{
                              backgroundColor: '#000000',
                              border: 'none',

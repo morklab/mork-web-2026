@@ -27,12 +27,14 @@ export function EventsSection() {
     {
       date: "2026.02.14",
       day: "SAT",
-      artist: "REEKO b2b MANGLES",
+      artist: "MANGLES b2b REEKO",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       // Script oficial de Fourvenues
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
     },
+    // --- EVENTOS OCULTOS TEMPORALMENTE (TBA) ---
+    /*
     {
       date: "2025.03.07",
       day: "SAT",
@@ -57,6 +59,7 @@ export function EventsSection() {
       venue: "Wave Club",
       scriptTag: null, 
     },
+    */
   ]
 
   const handleTicketClick = (script: string | null) => {
@@ -66,26 +69,6 @@ export function EventsSection() {
 
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
-      
-      {/* ESTILOS PARA LA ANIMACIÓN DE INTERFERENCIA DEL BORDE */}
-      <style jsx global>{`
-        @keyframes border-interference {
-          0% { transform: translate(0, 0); opacity: 1; }
-          10% { transform: translate(-2px, 1px); opacity: 0.9; }
-          20% { transform: translate(2px, -1px); opacity: 1; }
-          30% { transform: translate(-1px, -2px); opacity: 0.8; }
-          40% { transform: translate(1px, 2px); opacity: 1; }
-          50% { transform: translate(-2px, 0px); opacity: 0.9; }
-          60% { transform: translate(2px, 0px); opacity: 1; }
-          70% { transform: translate(0px, 2px); opacity: 0.8; }
-          80% { transform: translate(0px, -2px); opacity: 1; }
-          90% { transform: translate(-1px, 1px); opacity: 0.9; }
-          100% { transform: translate(0, 0); opacity: 1; }
-        }
-        .animate-border-interference {
-           animation: border-interference 0.15s infinite linear alternate-reverse;
-        }
-      `}</style>
       
       {/* Fondo decorativo */}
       <div
@@ -109,7 +92,7 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* Lista de Eventos */}
+        {/* Lista de Eventos (Solo Mangles activo) */}
         <div className="border-t border-border">
           {events.map((event, index) => (
             <div key={index} className="border-b border-border">
@@ -153,7 +136,22 @@ export function EventsSection() {
           ))}
         </div>
 
-        <div className="mt-16 text-center">
+        {/* --- NUEVO: TBA SECTION --- */}
+        <div className="mt-24 md:mt-32 text-center opacity-50 hover:opacity-100 transition-opacity duration-500">
+           {/* Decoración superior sutil */}
+           <div className="w-[1px] h-12 bg-accent/50 mx-auto mb-8"></div>
+           
+           <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
+             <GlitchText>PROXIMAS FECHAS TBA</GlitchText>
+           </h3>
+           
+           <p className="text-xs tracking-[0.3em] uppercase text-zinc-600 mt-4 font-mono">
+             MØRK LAB SERIES 2026
+           </p>
+        </div>
+
+        {/* Botón original de "Ver todo" (Opcional, lo he dejado por si quieres mantener el enlace a Fourvenues) */}
+        <div className="mt-16 text-center hidden">
           <a
             href="https://www.fourvenues.com/mork-lab"
             target="_blank"
@@ -165,74 +163,61 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* --- MODAL CON EFECTO DE INTERFERENCIA --- */}
+      {/* --- MODAL LIMPIO Y ELEGANTE (Negro y Rojo) + PARCHE FLECHA --- */}
       {selectedScriptCode && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
           
-          {/* Wrapper relativo para posicionar las capas */}
-          <div className="relative w-full md:max-w-4xl h-full md:h-[90vh] md:rounded-lg overflow-hidden">
+          <div 
+            className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-hidden md:rounded-lg"
+            style={{ 
+              backgroundColor: '#000000', 
+              border: '2px solid #ff0000', 
+              boxShadow: '0 0 50px rgba(255, 0, 0, 0.3)' 
+            }}
+          >
+            
+            {/* 1. PARCHE "ANTI-ATRÁS" */}
+            <div className="absolute top-0 left-0 w-[60px] h-[70px] bg-black z-50" />
 
-             {/* CAPA 1: EL BORDE DE INTERFERENCIA ANIMADO (Detrás del contenido) */}
-             <div 
-                className="absolute inset-[-3px] z-0 animate-border-interference"
-                style={{
-                  // Patrón de rayas rojas y negras para simular ruido digital
-                  backgroundImage: `repeating-linear-gradient(
-                    90deg,
-                    #ff0000,
-                    #ff0000 2px,
-                    #000000 2px,
-                    #000000 8px
-                  )`,
-                  boxShadow: '0 0 30px rgba(255, 0, 0, 0.4)' // Un poco de resplandor externo
-                }}
-             />
+            {/* 2. BOTÓN CERRAR */}
+            <button 
+              onClick={() => setSelectedScriptCode(null)}
+              className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-[#ff0000] hover:text-white transition-all border border-white/10 hover:border-transparent"
+            >
+              <X className="w-6 h-6" /> 
+            </button>
 
-            {/* CAPA 2: CONTENEDOR PRINCIPAL NEGRO (Tapa el centro de la interferencia) */}
-            <div className="relative z-10 w-full h-full bg-black flex flex-col">
-                
-                {/* Botón Cerrar */}
-                <button 
-                onClick={() => setSelectedScriptCode(null)}
-                className="absolute top-4 right-4 z-50 bg-black/80 text-white p-2 rounded-full hover:bg-[#ff0000] hover:text-white transition-all border border-white/10 hover:border-transparent hover:shadow-[0_0_15px_rgba(255,0,0,0.8)]"
-                >
-                <X className="w-6 h-6" /> 
-                </button>
-
-                {/* CÁPSULA Iframe */}
-                <div className="flex-1 w-full h-full relative">
-                    <iframe
-                    title="Checkout Safe Frame"
-                    className="w-full h-full border-none"
-                    srcDoc={`
-                        <!DOCTYPE html>
-                        <html lang="es">
-                        <head>
-                            <meta charset="utf-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <style>
-                            body { 
-                                margin: 0; 
-                                padding: 20px 0; 
-                                background-color: transparent; /* Transparente para ver el negro del padre */
-                                color: #ffffff; 
-                                display: flex; 
-                                justify-content: center; 
-                                align-items: flex-start; 
-                                min-height: 100vh; 
-                                font-family: sans-serif;
-                            }
-                            iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
-                            </style>
-                        </head>
-                        <body>
-                            ${selectedScriptCode}
-                        </body>
-                        </html>
-                    `}
-                    />
-                </div>
-            </div>
+            {/* 3. CÁPSULA */}
+            <iframe
+              title="Checkout Safe Frame"
+              className="w-full h-full border-none"
+              srcDoc={`
+                <!DOCTYPE html>
+                <html lang="es">
+                  <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                      body { 
+                        margin: 0; 
+                        padding: 20px 0; 
+                        background-color: #000000; 
+                        color: #ffffff; 
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: flex-start; 
+                        min-height: 100vh; 
+                        font-family: sans-serif;
+                      }
+                      iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
+                    </style>
+                  </head>
+                  <body>
+                    ${selectedScriptCode}
+                  </body>
+                </html>
+              `}
+            />
           </div>
         </div>
       )}

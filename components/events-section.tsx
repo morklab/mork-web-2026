@@ -147,36 +147,7 @@ export function EventsSection() {
             </button>
 
             {/* CÁPSULA FOURVENUES */}
-            <iframe
-              title="Checkout Safe Frame"
-              className="w-full h-full border-none"
-              srcDoc={`
-                <!DOCTYPE html>
-                <html lang="es">
-                  <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <style>
-                      body { 
-                        margin: 0; 
-                        padding: 20px 0; 
-                        background-color: #000000; 
-                        color: #ffffff; 
-                        display: flex; 
-                        justify-content: center; 
-                        align-items: flex-start; 
-                        min-height: 100vh; 
-                        font-family: sans-serif;
-                      }
-                      iframe { width: 100% !important; height: auto !important; min-height: 90vh !important; border: none !important; }
-                    </style>
-                  </head>
-                  <body>
-                    ${selectedScriptCode}
-                  </body>
-                </html>
-              `}
-            />
+            {selectedScriptCode}
           </div>
         </div>
       )}

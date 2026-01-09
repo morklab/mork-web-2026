@@ -43,7 +43,7 @@
     "r3_d": "Enjoy the moment. Our staff will capture the event. Flash-free dancefloor.",
     "r4_t": "LEAVE BAD ENERGY OUTSIDE",
     "r4_d": "Good vibes or the door. Bring your best self.",
-    "r5_t": "CELEBRATE DIVERSITY",
+    "r5_t": "CELEBRA DIVERSITY",
     "r5_d": "All bodies, genders, and styles are welcome. Here we all dance.",
     "r6_t": "TAKE CARE OF THE DANCEFLOOR",
     "r6_d": "If you see something off, tell the staff. We are here to help."
@@ -99,6 +99,8 @@
     "title": "NEXT EVENTS",
     "ticket_btn": "Tickets",
     "view_all": "View All Events →",
-    "night_with": "A Night With"
+    "night_with": "A Night With",
+    "tba_title": "NEXT DATES TBA",
+    "tba_subtitle": "MØRK LAB SERIES 2026"
   }
 }

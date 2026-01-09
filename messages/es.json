@@ -72,13 +72,17 @@
     "btn_mixcloud": "Mixcloud"
   },
   "Shop": {
-    "subtitle": "MERCH OFICIAL",
-    "title": "TIENDA",
-    "cat_all": "COLECCIÓN",
-    "cat_apparel": "INDUMENTARIA",
-    "cat_accessories": "ACCESORIOS",
-    "btn_buy": "COMPRAR"
-  },
+  "title": "TIENDA",
+  "subtitle": "MERCH OFICIAL",
+  "cat_all": "COLECCIÓN",
+  "cat_apparel": "INDUMENTARIA",
+  "cat_accessories": "ACCESORIOS",
+  "btn_buy": "COMPRAR AHORA",
+  
+  "tagline": "DISEÑADO PARA MENTES TECHNO",
+  "description_tee": "Algodón 100% de alto gramaje. Corte Oversize. Merchandising oficial de MØRK diseñado en Mallorca.",
+  "description_keychain": "Accesorio premium. Merchandising oficial de MØRK."
+},
   "Artists": {
     "subtitle": "Los Arquitectos",
     "title": "CORE ARTISTS"

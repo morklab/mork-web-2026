@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
 import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
@@ -35,62 +35,32 @@ export function ShopSection() {
   const [selectedSize, setSelectedSize] = useState<string>("")
   const [selectedColor, setSelectedColor] = useState<string>("")
 
+  // --- LÓGICA DE SCROLL (Solo para Móvil) ---
+  const [centerIndex, setCenterIndex] = useState<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const itemsRef = useRef<any[]>([])
+
   const t = useTranslations("Shop")
-  const genericDesc = "Limited edition item. Official MØRK merchandising designed in Mallorca."
+  
+  // --- VARIABLES DE TEXTO TRADUCIDO ---
+  const descTee = t('description_tee')
+  const descKey = t('description_keychain')
+  const taglineText = t('tagline')
 
   // --- DATOS PRODUCTOS ---
   const products: Product[] = [
-    // CAMISETAS
-    { 
-      id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, 
-      image: "/tshirt-1.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
-    },
-    { 
-      id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, 
-      image: "/tshirt-2.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, 
-      image: "/tshirt-3.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, 
-      image: "/tshirt-4.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-05", name: "T-Shirt Ritual 05", category: "apparel", price: 35, 
-      image: "/tshirt-5.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-06", name: "T-Shirt Ritual 06", category: "apparel", price: 35, 
-      image: "/tshirt-6.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, 
-      image: "/tshirt-7.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, 
-      image: "/tshirt-8.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL"] 
-    },
-    { 
-      id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, 
-      image: "/tshirt-9.jpg", description: genericDesc, sizes: ["S", "M", "L", "XL", "XXL"] 
-    },
-
-    // LLAVEROS
-    { 
-      id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, 
-      image: "/bicolor.png", description: "Premium metal keychain.", colors: ["Black&RED"] 
-    },
-    { 
-      id: "key-02", name: "Keychain Black", category: "accessories", price: 12, 
-      image: "/negro.png", description: "Industrial rubber keychain.", colors: ["BLACK"] 
-    },
-    { 
-      id: "key-03", name: "Keychain Red", category: "accessories", price: 12, 
-      image: "/rojo.png", description: "Full neck lanyard.", colors: ["RED"] 
-    }
+    { id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, image: "/tshirt-1.jpg", description: descTee, sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, image: "/tshirt-2.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-03", name: "T-Shirt Ritual 03", category: "apparel", price: 35, image: "/tshirt-3.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-04", name: "T-Shirt Ritual 04", category: "apparel", price: 35, image: "/tshirt-4.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-05", name: "T-Shirt Ritual 05", category: "apparel", price: 35, image: "/tshirt-5.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-06", name: "T-Shirt Ritual 06", category: "apparel", price: 35, image: "/tshirt-6.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, image: "/tshirt-7.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, image: "/tshirt-8.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
+    { id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, image: "/tshirt-9.jpg", description: descTee, sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, image: "/bicolor.png", description: descKey, colors: ["Black&RED"] },
+    { id: "key-02", name: "Keychain Black", category: "accessories", price: 12, image: "/negro.png", description: descKey, colors: ["BLACK"] },
+    { id: "key-03", name: "Keychain Red", category: "accessories", price: 12, image: "/rojo.png", description: descKey, colors: ["RED"] }
   ]
 
   const tabs = [
@@ -101,6 +71,27 @@ export function ShopSection() {
 
   const filteredProducts = products.filter((p) => activeCategory === "all" || p.category === activeCategory)
 
+  // --- FUNCIÓN SCROLL ---
+  const handleScroll = () => {
+    if (!containerRef.current) return
+    const container = containerRef.current
+    const containerCenter = container.scrollLeft + (container.clientWidth / 2)
+    let closestIndex = null
+    let minDistance = Infinity
+    
+    filteredProducts.forEach((_, index) => {
+        const el = itemsRef.current[index]
+        if (!el) return
+        const itemCenter = el.offsetLeft + (el.offsetWidth / 2)
+        const distance = Math.abs(containerCenter - itemCenter)
+        if (distance < minDistance) {
+            minDistance = distance
+            closestIndex = index
+        }
+    })
+    setCenterIndex(closestIndex)
+  }
+
   // --- LÓGICA CARRITO ---
   const addToCart = (product: Product, size?: string, color?: string) => {
     if (product.soldOut) return
@@ -110,10 +101,7 @@ export function ShopSection() {
     } else {
       setCart([...cart, { ...product, quantity: 1, selectedSize: size, selectedColor: color }])
     }
-    setSelectedProduct(null)
-    setSelectedSize("")
-    setSelectedColor("")
-    setIsCartOpen(true)
+    setSelectedProduct(null); setSelectedSize(""); setSelectedColor(""); setIsCartOpen(true)
   }
 
   const removeFromCart = (id: string, size?: string, color?: string) => {
@@ -131,31 +119,31 @@ export function ShopSection() {
   }
 
   const generateOrderText = () => {
-    let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`;
+    let message = `Hola MØRK, me gustaría confirmar el siguiente pedido:\n\n`
     cart.forEach(item => {
-        message += `▪️ ${item.quantity}x ${item.name}`;
-        if (item.selectedSize) message += ` [Talla: ${item.selectedSize}]`;
-        if (item.selectedColor) message += ` [Color: ${item.selectedColor}]`;
-        message += ` - ${item.price * item.quantity}€\n`;
-    });
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`;
-    return message;
+        message += `▪️ ${item.quantity}x ${item.name}`
+        if (item.selectedSize) message += ` [Talla: ${item.selectedSize}]`
+        if (item.selectedColor) message += ` [Color: ${item.selectedColor}]`
+        message += ` - ${item.price * item.quantity}€\n`
+    })
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`
+    return message
   }
 
   const handleCheckoutWhatsApp = () => {
-    const phoneNumber = "34676182044"; 
-    const message = generateOrderText();
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    const phoneNumber = "34676182044"
+    const message = generateOrderText()
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+    window.open(url, '_blank')
   }
 
   const handleCheckoutEmail = () => {
-    const shopEmail = "info@mork.com"; 
-    const subject = "NUEVO PEDIDO MØRK WEB";
-    const body = generateOrderText();
-    const url = `mailto:${shopEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = url;
+    const shopEmail = "info@mork.com"
+    const subject = "NUEVO PEDIDO MØRK WEB"
+    const body = generateOrderText()
+    const url = `mailto:${shopEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.location.href = url
   }
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -201,66 +189,104 @@ export function ShopSection() {
         </div>
 
         {/* --- DOCK DE PRODUCTOS --- */}
-        <div className="relative w-full flex justify-center">
+        <div className="relative w-full flex flex-col items-center justify-center">
             
-            {/* 1. PADDING AUMENTADO ARRIBA: pt-40 para más aire */}
-            <div className="flex overflow-x-auto gap-2 md:gap-4 px-4 pt-40 pb-40 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
-                {filteredProducts.map((product) => (
-                    <div 
-                        key={product.id} 
-                        className={clsx(
-                            "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
-                            "w-20 md:w-32", 
-                            "hover:scale-[1.75] hover:z-50 hover:mx-6" 
-                        )}
-                        onClick={() => !product.soldOut && setSelectedProduct(product)}
-                    >
-                    
-                    {/* Imagen */}
-                    <div className={clsx(
-                        "relative aspect-[3/4] bg-zinc-900 border border-white/10 overflow-hidden mb-1 transition-all duration-300 w-full shadow-lg rounded-sm",
-                        product.soldOut 
-                          ? "opacity-50" 
-                          : "group-hover:border-accent group-hover:shadow-[0_0_30px_rgba(255,0,0,0.8)]"
-                    )}>
-                        <Image 
-                        src={product.image || "/placeholder.svg"} 
-                        alt={product.name} 
-                        fill 
-                        className="object-cover grayscale brightness-[0.6] group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-300" 
-                        />
-                        
-                        {product.soldOut && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                            <span className="text-red-600 text-[8px] md:text-[10px] tracking-widest uppercase font-bold border border-red-600 px-1">Sold</span>
-                        </div>
-                        )}
-                    </div>
-                    
-                    {/* Texto + Descripción */}
-                    <div className="text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute -bottom-16 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none">
-                        <div className="bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded flex flex-col items-center shadow-xl">
-                           <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
-                              {product.name}
-                           </h3>
-                           <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
-                              {product.description}
-                           </p>
-                           <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
-                              {product.price}€
-                           </p>
-                        </div>
-                    </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+            <div 
+                ref={containerRef}
+                onScroll={handleScroll}
+                className={clsx(
+                    "flex overflow-x-auto gap-2 md:gap-4 scrollbar-hide items-end w-full",
+                    // Config Móvil
+                    "px-[calc(50%-3.5rem)] pt-40 pb-40 snap-x snap-mandatory",
+                    // Config Escritorio
+                    "md:px-10 md:justify-start md:snap-none"
+                )}
+            >
+                {filteredProducts.map((product, index) => {
+                    const isCenter = centerIndex === index
 
-        {/* --- NUEVO MENSAJE INFERIOR "TECHNØ MINDS" --- */}
-        <div className="mt-10 text-center px-4 pb-20">
-            <p className="text-red-600 font-mono uppercase tracking-[0.5em] text-xs md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
-                Designed for the Technø minds
-            </p>
+                    return (
+                        <div 
+                            key={product.id} 
+                            ref={(el) => { itemsRef.current[index] = el }}
+                            className={clsx(
+                                "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
+                                "w-20 md:w-32", // Tamaño base
+                                
+                                // --- VERSIÓN ESCRITORIO (md:) ---
+                                "md:scale-100 md:opacity-100 md:grayscale-0 md:blur-0 md:z-auto", // Reset de estilos móviles
+                                // AQUÍ SE HA REDUCIDO LA ESCALA AL PASAR EL RATÓN
+                                "md:hover:scale-[1.55] md:hover:z-50 md:hover:mx-6", 
+
+                                // --- VERSIÓN MÓVIL (Sin prefijo md:) ---
+                                isCenter 
+                                    ? "scale-[1.75] z-50 mx-4 opacity-100" 
+                                    : "scale-75 z-10 opacity-60"
+                            )}
+                            onClick={() => !product.soldOut && setSelectedProduct(product)}
+                        >
+                    
+                            {/* Imagen */}
+                            <div className={clsx(
+                                "relative aspect-[3/4] bg-zinc-900 border border-white/10 overflow-hidden mb-1 transition-all duration-300 w-full shadow-lg rounded-sm",
+                                
+                                // ESCRITORIO: AQUÍ SE HA AJUSTADO EL BRILLO
+                                "md:group-hover:border-accent md:group-hover:shadow-[0_0_15px_rgba(220,38,38,0.6)]",
+                                
+                                // MÓVIL
+                                isCenter ? "border-accent shadow-[0_0_30px_rgba(255,0,0,0.8)]" : "",
+
+                                product.soldOut ? "opacity-50" : ""
+                            )}>
+                                <Image 
+                                src={product.image || "/placeholder.svg"} 
+                                alt={product.name} 
+                                fill 
+                                className={clsx(
+                                    "object-cover transition-all duration-300",
+                                    "grayscale brightness-[0.6]", // Base
+                                    "md:group-hover:grayscale-0 md:group-hover:brightness-100", // Desktop Hover
+                                    isCenter ? "grayscale-0 brightness-100" : "" // Mobile Center
+                                )} 
+                                />
+                                
+                                {product.soldOut && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                                    <span className="text-red-600 text-[8px] md:text-[10px] tracking-widest uppercase font-bold border border-red-600 px-1">Sold</span>
+                                </div>
+                                )}
+                            </div>
+                            
+                            {/* Texto + Descripción */}
+                            <div className={clsx(
+                                "text-center transition-opacity duration-200 absolute -bottom-20 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none",
+                                isCenter ? "opacity-100 visible" : "opacity-0 invisible",
+                                "md:opacity-0 md:group-hover:opacity-100 md:group-hover:visible"
+                            )}>
+                                <div className="bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded flex flex-col items-center shadow-xl">
+                                    <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
+                                        {product.description}
+                                    </p>
+                                    <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
+                                        {product.price}€
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+
+            {/* --- TEXTO ROJO ABAJO --- */}
+            <div className="mt-10 text-center px-4 pb-20">
+                <p className="text-red-600 font-mono uppercase tracking-[0.5em] text-xs md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
+                    {taglineText}
+                </p>
+            </div>
+
         </div>
 
         {/* BOTÓN FLOTANTE CARRITO */}
@@ -381,18 +407,15 @@ export function ShopSection() {
                   ))}
                 </div>
                 
-                {/* FOOTER: BOTONES DE ACCIÓN */}
                 <div className="p-6 border-t border-white/10 space-y-3 bg-zinc-900/50">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-400 text-sm uppercase tracking-wide">Total</span>
                     <span className="text-2xl font-mono text-white">{cartTotal}€</span>
                   </div>
-                  
                   <button onClick={handleCheckoutWhatsApp} className="w-full bg-green-600 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2">
                     <MessageCircle size={16} />
                     WhatsApp
                   </button>
-
                   <button onClick={handleCheckoutEmail} className="w-full bg-red-900 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-800 transition-colors flex items-center justify-center gap-2">
                     <Mail size={16} />
                     Email Order

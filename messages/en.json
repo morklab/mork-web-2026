@@ -72,13 +72,17 @@
     "btn_mixcloud": "Mixcloud"
   },
   "Shop": {
-    "subtitle": "OFFICIAL MERCH",
-    "title": "SHOP",
-    "cat_all": "COLLECTION",
-    "cat_apparel": "APPAREL",
-    "cat_accessories": "ACCESSORIES",
-    "btn_buy": "BUY NOW"
-  },
+  "title": "SHOP",
+  "subtitle": "OFFICIAL MERCH",
+  "cat_all": "COLLECTION",
+  "cat_apparel": "APPAREL",
+  "cat_accessories": "ACCESSORIES",
+  "btn_buy": "BUY NOW",
+
+  "tagline": "DESIGNED FOR THE TECHNØ MINDS",
+  "description_tee": "100% Heavyweight Cotton. Oversized fit. Official MØRK merchandising designed in Mallorca.",
+  "description_keychain": "Premium accessory. Official MØRK merchandising."
+},
   "Artists": {
     "subtitle": "The Architects",
     "title": "CORE ARTISTS"

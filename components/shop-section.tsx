@@ -83,15 +83,15 @@ export function ShopSection() {
     // LLAVEROS
     { 
       id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, 
-      image: "/keychain r&b.jpg", description: "Premium metal keychain.", colors: ["BLACK", "RED"] 
+      image: "/keychain r&b.jpg", description: "Premium metal keychain.", colors: ["Black&RED"] 
     },
     { 
       id: "key-02", name: "Keychain Black", category: "accessories", price: 12, 
-      image: "/keychain-2.jpg", description: "Industrial rubber keychain.", colors: ["RED"] 
+      image: "/keychain-2.jpg", description: "Industrial rubber keychain.", colors: ["BLACK"] 
     },
     { 
       id: "key-03", name: "Keychain Red", category: "accessories", price: 12, 
-      image: "/keychain-3.jpg", description: "Full neck lanyard.", colors: ["BLACK"] 
+      image: "/keychain-3.jpg", description: "Full neck lanyard.", colors: ["RED"] 
     }
   ]
 

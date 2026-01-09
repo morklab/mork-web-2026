@@ -27,7 +27,7 @@ export function EventsSection() {
     {
       date: "2026.02.14",
       day: "SAT",
-      artist: "MANGLES b2b REEKO",
+      artist: "REEKO b2b MANGLES",
       subtitle: `${t('night_with')} Lanna Family`,
       venue: "Wave Club",
       // Script oficial de Fourvenues

@@ -38,7 +38,7 @@ export function ShopSection() {
   const t = useTranslations("Shop")
   const genericDesc = "Limited edition item. Official MØRK merchandising designed in Mallorca."
 
-  // --- DATOS PRODUCTOS (Tus imágenes actualizadas) ---
+  // --- DATOS PRODUCTOS ---
   const products: Product[] = [
     // CAMISETAS
     { 
@@ -200,19 +200,18 @@ export function ShopSection() {
           ))}
         </div>
 
-        {/* --- DOCK DE PRODUCTOS (Estilo Apple Dock Real) --- */}
+        {/* --- DOCK DE PRODUCTOS --- */}
         <div className="relative w-full flex justify-center">
             
-            {/* 1. PADDING MASIVO: pt-32 y pb-40 para que al hacer Zoom (scale-175) no se corte ni arriba ni abajo */}
-            <div className="flex overflow-x-auto gap-2 md:gap-4 px-4 pt-32 pb-40 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
+            {/* 1. PADDING AUMENTADO ARRIBA: pt-40 para más aire */}
+            <div className="flex overflow-x-auto gap-2 md:gap-4 px-4 pt-40 pb-40 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
                 {filteredProducts.map((product) => (
                     <div 
                         key={product.id} 
-                        // 2. EFECTO DOCK:
                         className={clsx(
                             "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
-                            "w-20 md:w-32", // Tamaño base pequeño
-                            "hover:scale-[1.75] hover:z-50 hover:mx-6" // Zoom grande y márgenes laterales
+                            "w-20 md:w-32", 
+                            "hover:scale-[1.75] hover:z-50 hover:mx-6" 
                         )}
                         onClick={() => !product.soldOut && setSelectedProduct(product)}
                     >
@@ -238,29 +237,30 @@ export function ShopSection() {
                         )}
                     </div>
                     
-                    {/* 3. TEXTO + DESCRIPCIÓN: Aparece debajo al hacer Hover */}
+                    {/* Texto + Descripción */}
                     <div className="text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute -bottom-16 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none">
-                        
-                        {/* Nombre y Precio */}
                         <div className="bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded flex flex-col items-center shadow-xl">
                            <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
                               {product.name}
                            </h3>
-                           
-                           {/* DESCRIPCIÓN AÑADIDA */}
                            <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
                               {product.description}
                            </p>
-
                            <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
                               {product.price}€
                            </p>
                         </div>
-
                     </div>
                     </div>
                 ))}
             </div>
+        </div>
+
+        {/* --- NUEVO MENSAJE INFERIOR "TECHNØ MINDS" --- */}
+        <div className="mt-10 text-center px-4 pb-20">
+            <p className="text-red-600 font-mono uppercase tracking-[0.5em] text-xs md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
+                Designed for the Technø minds
+            </p>
         </div>
 
         {/* BOTÓN FLOTANTE CARRITO */}

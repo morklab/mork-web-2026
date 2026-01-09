@@ -38,7 +38,7 @@ export function ShopSection() {
   const t = useTranslations("Shop")
   const genericDesc = "Limited edition item. Official MØRK merchandising designed in Mallorca."
 
-  // --- DATOS PRODUCTOS ---
+  // --- DATOS PRODUCTOS (Tus imágenes actualizadas) ---
   const products: Product[] = [
     // CAMISETAS
     { 
@@ -164,24 +164,16 @@ export function ShopSection() {
   return (
     <section id="shop" className="py-20 md:py-32 px-0 md:px-8 bg-black border-t border-white/5 relative overflow-hidden">
       
-      {/* Estilos para ocultar la barra de scroll */}
       <style jsx global>{`
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
       <div className="max-w-[1400px] mx-auto">
         
         {/* CABECERA */}
         <div className="mb-10 md:mb-16 flex flex-col items-center text-center px-4">
-          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">
-            {t('subtitle')}
-          </p>
+          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white">
             <GlitchText>{t('title')}</GlitchText>
           </h2>
@@ -209,21 +201,18 @@ export function ShopSection() {
         </div>
 
         {/* --- DOCK DE PRODUCTOS (Estilo Apple Dock Real) --- */}
-        <div className="relative w-full flex justify-center pb-32 pt-10"> {/* Padding grande abajo para el zoom */}
-            {/* items-end es CLAVE para que crezcan hacia arriba como un dock */}
-            <div className="flex overflow-x-auto gap-2 md:gap-3 px-4 pb-4 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
+        <div className="relative w-full flex justify-center">
+            
+            {/* 1. PADDING MASIVO: pt-32 y pb-40 para que al hacer Zoom (scale-175) no se corte ni arriba ni abajo */}
+            <div className="flex overflow-x-auto gap-2 md:gap-4 px-4 pt-32 pb-40 snap-x snap-mandatory scrollbar-hide items-end w-full md:w-auto md:justify-center">
                 {filteredProducts.map((product) => (
                     <div 
                         key={product.id} 
-                        // EFECTO DOCK AGRESIVO:
-                        // 1. w-20 / w-32 -> Tamaño base MUY pequeño para que quepan todos.
-                        // 2. hover:scale-[1.75] -> Zoom GIGANTE (casi doble).
-                        // 3. origin-bottom -> Crecen hacia arriba.
-                        // 4. hover:mx-6 -> Empuja a los lados para hacer sitio.
+                        // 2. EFECTO DOCK:
                         className={clsx(
                             "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
-                            "w-20 md:w-32", // Ancho base reducido
-                            "hover:scale-[1.75] hover:z-50 hover:mx-6" // Escala masiva y margen
+                            "w-20 md:w-32", // Tamaño base pequeño
+                            "hover:scale-[1.75] hover:z-50 hover:mx-6" // Zoom grande y márgenes laterales
                         )}
                         onClick={() => !product.soldOut && setSelectedProduct(product)}
                     >
@@ -249,13 +238,25 @@ export function ShopSection() {
                         )}
                     </div>
                     
-                    {/* Texto: Oculto por defecto para limpiar la vista, aparece al hacer hover */}
-                    <div className="text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute -bottom-12 left-0 right-0 w-[150%] -ml-[25%]">
-                        <h3 className="text-[10px] font-bold uppercase truncate text-white group-hover:text-accent bg-black/80 backdrop-blur-md py-1 px-2 rounded border border-white/10">
-                          {product.name}
-                        </h3>
-                        {/* Precio opcional si quieres que se vea */}
-                        {/* <p className="text-accent font-mono text-[8px]">{product.price}€</p> */}
+                    {/* 3. TEXTO + DESCRIPCIÓN: Aparece debajo al hacer Hover */}
+                    <div className="text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute -bottom-16 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none">
+                        
+                        {/* Nombre y Precio */}
+                        <div className="bg-black/90 backdrop-blur-md border border-white/10 p-2 rounded flex flex-col items-center shadow-xl">
+                           <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
+                              {product.name}
+                           </h3>
+                           
+                           {/* DESCRIPCIÓN AÑADIDA */}
+                           <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
+                              {product.description}
+                           </p>
+
+                           <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
+                              {product.price}€
+                           </p>
+                        </div>
+
                     </div>
                     </div>
                 ))}

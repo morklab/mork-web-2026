@@ -33,33 +33,7 @@ export function EventsSection() {
       // Script oficial de Fourvenues
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
     },
-    // --- EVENTOS OCULTOS TEMPORALMENTE (TBA) ---
-    /*
-    {
-      date: "2025.03.07",
-      day: "SAT",
-      artist: "SOL ORTEGA",
-      subtitle: `${t('night_with')} Sol Ortega`,
-      venue: "Wave Club",
-      scriptTag: null, 
-    },
-    {
-      date: "2025.04.18",
-      day: "SAT",
-      artist: "FREDDY K",
-      subtitle: `${t('night_with')} Freddy K`,
-      venue: "Wave Club",
-      scriptTag: null, 
-    },
-    {
-      date: "2025.05.9",
-      day: "SAT",
-      artist: "SETAOC MASS",
-      subtitle: `${t('night_with')} Setaoc Mass`,
-      venue: "Wave Club",
-      scriptTag: null, 
-    },
-    */
+    // Eventos ocultos...
   ]
 
   const handleTicketClick = (script: string | null) => {
@@ -92,7 +66,7 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* Lista de Eventos (Solo Mangles activo) */}
+        {/* Lista de Eventos */}
         <div className="border-t border-border">
           {events.map((event, index) => (
             <div key={index} className="border-b border-border">
@@ -136,34 +110,23 @@ export function EventsSection() {
           ))}
         </div>
 
-        {/* --- NUEVO: TBA SECTION --- */}
-        <div className="mt-24 md:mt-32 text-center opacity-50 hover:opacity-100 transition-opacity duration-500">
-           {/* Decoración superior sutil */}
-           <div className="w-[1px] h-12 bg-accent/50 mx-auto mb-8"></div>
+        {/* --- TBA SECTION (Traducida) --- */}
+        <div className="mt-8 md:mt-12 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
+           <div className="w-[1px] h-8 bg-accent/30 mx-auto mb-6"></div>
            
            <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
-             <GlitchText>PROXIMAS FECHAS TBA</GlitchText>
+             {/* Aquí se usa la traducción 'tba_title' del JSON */}
+             <GlitchText>{t('tba_title')}</GlitchText>
            </h3>
            
            <p className="text-xs tracking-[0.3em] uppercase text-zinc-600 mt-4 font-mono">
-             MØRK LAB SERIES 2026
+             {t('tba_subtitle')}
            </p>
         </div>
 
-        {/* Botón original de "Ver todo" (Opcional, lo he dejado por si quieres mantener el enlace a Fourvenues) */}
-        <div className="mt-16 text-center hidden">
-          <a
-            href="https://www.fourvenues.com/mork-lab"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground text-xs tracking-[0.3em] uppercase hover:text-accent transition-colors border-b border-transparent hover:border-accent pb-1"
-          >
-            {t('view_all')}
-          </a>
-        </div>
       </div>
 
-      {/* --- MODAL LIMPIO Y ELEGANTE (Negro y Rojo) + PARCHE FLECHA --- */}
+      {/* --- MODAL NEGRO PURO (Sin borde rojo) --- */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
           
@@ -171,23 +134,23 @@ export function EventsSection() {
             className="relative w-full md:max-w-4xl h-full md:h-[90vh] flex flex-col overflow-hidden md:rounded-lg"
             style={{ 
               backgroundColor: '#000000', 
-              border: '2px solid #ff0000', 
-              boxShadow: '0 0 50px rgba(255, 0, 0, 0.3)' 
+              border: 'none',        // SIN BORDE
+              boxShadow: 'none'      // SIN SOMBRA ROJA
             }}
           >
             
-            {/* 1. PARCHE "ANTI-ATRÁS" */}
-            <div className="absolute top-0 left-0 w-[60px] h-[70px] bg-black z-50" />
+            {/* 1. PARCHE ANTI-ATRÁS (Caja negra invisible sobre la flecha) */}
+            <div className="absolute top-0 left-0 w-[60px] h-[70px] bg-black z-50 cursor-default" />
 
             {/* 2. BOTÓN CERRAR */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-[#ff0000] hover:text-white transition-all border border-white/10 hover:border-transparent"
+              className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-zinc-800 transition-all"
             >
               <X className="w-6 h-6" /> 
             </button>
 
-            {/* 3. CÁPSULA */}
+            {/* 3. CÁPSULA FOURVENUES */}
             <iframe
               title="Checkout Safe Frame"
               className="w-full h-full border-none"

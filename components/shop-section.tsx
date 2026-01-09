@@ -223,7 +223,7 @@ export function ShopSection() {
                         onClick={() => !product.soldOut && setSelectedProduct(product)}
                     >
                     
-                    {/* Imagen: Ahora con efecto ROJO (borde + resplandor) al hacer hover */}
+                    {/* Imagen: Efecto Grayscale a Color */}
                     <div className={clsx(
                         "relative aspect-[3/4] bg-zinc-900 border border-white/5 overflow-hidden mb-3 transition-all duration-300 w-full",
                         // LÓGICA DE BORDE Y RESPLANDOR ROJO
@@ -235,7 +235,8 @@ export function ShopSection() {
                         src={product.image || "/placeholder.svg"} 
                         alt={product.name} 
                         fill 
-                        className="object-cover brightness-[0.7] group-hover:brightness-100 group-hover:scale-105 transition-all duration-500" 
+                        // AQUÍ ESTÁ EL CAMBIO CLAVE: grayscale y brightness reducido por defecto -> normal en hover
+                        className="object-cover grayscale brightness-[0.6] group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-500" 
                         />
                         
                         {product.soldOut && (

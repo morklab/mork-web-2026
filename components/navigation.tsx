@@ -13,7 +13,7 @@ export function Navigation() {
 
   // ESTILOS:
   // 1. text-xs (12px): Tamaño legible, no diminuto.
-  // 2. whitespace-nowrap: Prohibido partir líneas (ECOS RITUALES se queda en una).
+  // 2. whitespace-nowrap: Prohibido partir líneas.
   // 3. tracking: Un poco más ajustado en portátiles para que quepa todo.
   const linkStyles = "text-muted-foreground hover:text-accent text-xs tracking-[0.15em] lg:tracking-[0.2em] uppercase transition-colors whitespace-nowrap"
 
@@ -23,7 +23,6 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16 md:h-20">
           
           {/* IZQUIERDA: LOGO */}
-          {/* shrink-0 evita que el logo se aplaste si falta espacio */}
           <Link href="/" className="flex items-center shrink-0">
             <Image
               src="/GALLETA_ROJA.PNG"
@@ -34,9 +33,7 @@ export function Navigation() {
             />
           </Link>
 
-          {/* CENTRO: ENLACES */}
-          {/* Quitamos 'absolute'. Usamos flex para que empujen, no tapen. */}
-          {/* gap-3 en pantallas pequeñas, gap-6 en grandes */}
+          {/* CENTRO: ENLACES (Escritorio) */}
           <div className="hidden md:flex items-center gap-4 lg:gap-6 xl:gap-8 mx-4">
             <Link href="#events" className={linkStyles}>
               {t('events')} 
@@ -50,6 +47,13 @@ export function Navigation() {
              <Link href="#visuals" className={linkStyles}>
               {t('visuals')}
             </Link>
+            
+            {/* --- NUEVO ENLACE MEDIA --- */}
+            <Link href="#media" className={linkStyles}>
+              {t('media')}
+            </Link>
+            {/* -------------------------- */}
+
             <Link href="#team" className={linkStyles}>
               {t('team')}
             </Link>
@@ -62,7 +66,6 @@ export function Navigation() {
           </div>
 
           {/* DERECHA: BANDERAS Y SEGUIR */}
-          {/* shrink-0 para asegurar que esto nunca desaparezca ni se aplaste */}
           <div className="flex items-center gap-4 shrink-0">
             <div className="hidden md:block">
                 <LanguageSwitcher />
@@ -100,6 +103,13 @@ export function Navigation() {
             <Link href="#visuals" onClick={() => setIsOpen(false)} className="text-foreground text-lg tracking-[0.2em] uppercase py-3 border-b border-border">
               {t('visuals')}
             </Link>
+
+            {/* --- NUEVO ENLACE MEDIA (MÓVIL) --- */}
+            <Link href="#media" onClick={() => setIsOpen(false)} className="text-foreground text-lg tracking-[0.2em] uppercase py-3 border-b border-border">
+              {t('media')}
+            </Link>
+            {/* ---------------------------------- */}
+
             <Link href="#team" onClick={() => setIsOpen(false)} className="text-foreground text-lg tracking-[0.2em] uppercase py-3 border-b border-border">
               {t('team')}
             </Link>

@@ -4,6 +4,7 @@
     "artists": "CORE ARTISTS",
     "manifesto": "MANIFESTO",
     "visuals": "RITUAL ECHOES",
+    "media": "ARCHIVE",
     "team": "TEAM",
     "sound": "SOUND",
     "shop": "SHOP",
@@ -99,6 +100,11 @@
     "keychain_desc": "Metal & Rubber. Red Accent.",
     "ticket_desc": "Wave Club Mallorca",
     "tagline": "DESIGNED FOR THE TECHNØ MINDS"
+  },
+  "Media": {
+    "title": "ARCHIVE",
+    "subtitle": "SEEN",
+    "disclaimer": "IMAGES CAPTURED BY OUR AUTHORIZED TEAM WITH TOTAL RESPECT FOR THE VIBE."
   },
   "Events": {
     "subtitle": "Upcoming",

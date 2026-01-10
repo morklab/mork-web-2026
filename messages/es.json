@@ -4,6 +4,7 @@
     "artists": "CORE ARTISTS",
     "manifesto": "MANIFIESTO",
     "visuals": "ECOS RITUALES",
+    "media": "ARCHIVO", 
     "team": "EQUIPO",
     "sound": "SONIDO",
     "shop": "TIENDA",
@@ -99,6 +100,11 @@
     "keychain_desc": "Metal y Goma. Acento Rojo.",
     "ticket_desc": "Wave Club Mallorca",
     "tagline": "DISEÑADO PARA MENTES TECHNO"
+  },
+  "Media": {
+    "title": "ARCHIVO",
+    "subtitle": "VIVIDO",
+    "disclaimer": "IMÁGENES CAPTURADAS POR NUESTRO EQUIPO AUTORIZADO CON TOTAL RESPETO POR EL VIBE."
   },
   "Events": {
     "subtitle": "Próximamente",

@@ -11,10 +11,21 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const t = useTranslations("Navigation")
 
+  // FUNCIÓN PARA IR ARRIBA SUAVEMENTE
+  const scrollToTop = () => {
+    // 1. Subir arriba con animación suave
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    
+    // 2. Limpiar la URL (quitar #events, #media, etc.) sin recargar
+    if (typeof window !== 'undefined') {
+        window.history.pushState(null, '', window.location.pathname)
+    }
+    
+    // Si el menú móvil está abierto, lo cerramos
+    setIsOpen(false)
+  }
+
   // ESTILOS:
-  // 1. text-xs (12px): Tamaño legible, no diminuto.
-  // 2. whitespace-nowrap: Prohibido partir líneas.
-  // 3. tracking: Un poco más ajustado en portátiles para que quepa todo.
   const linkStyles = "text-muted-foreground hover:text-accent text-xs tracking-[0.15em] lg:tracking-[0.2em] uppercase transition-colors whitespace-nowrap"
 
   return (
@@ -22,8 +33,12 @@ export function Navigation() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           
-          {/* IZQUIERDA: LOGO */}
-          <Link href="/" className="flex items-center shrink-0">
+          {/* IZQUIERDA: LOGO (AHORA ES UN BOTÓN DE RESET) */}
+          <button 
+            onClick={scrollToTop} 
+            className="flex items-center shrink-0 hover:opacity-80 transition-opacity cursor-pointer"
+            aria-label="Back to top"
+          >
             <Image
               src="/GALLETA_ROJA.PNG"
               alt="MØRK Lab"
@@ -31,7 +46,7 @@ export function Navigation() {
               height={40}
               className="rounded"
             />
-          </Link>
+          </button>
 
           {/* CENTRO: ENLACES (Escritorio) */}
           <div className="hidden md:flex items-center gap-4 lg:gap-6 xl:gap-8 mx-4">
@@ -48,11 +63,9 @@ export function Navigation() {
               {t('visuals')}
             </Link>
             
-            {/* --- NUEVO ENLACE MEDIA --- */}
             <Link href="#media" className={linkStyles}>
               {t('media')}
             </Link>
-            {/* -------------------------- */}
 
             <Link href="#team" className={linkStyles}>
               {t('team')}
@@ -104,11 +117,9 @@ export function Navigation() {
               {t('visuals')}
             </Link>
 
-            {/* --- NUEVO ENLACE MEDIA (MÓVIL) --- */}
             <Link href="#media" onClick={() => setIsOpen(false)} className="text-foreground text-lg tracking-[0.2em] uppercase py-3 border-b border-border">
               {t('media')}
             </Link>
-            {/* ---------------------------------- */}
 
             <Link href="#team" onClick={() => setIsOpen(false)} className="text-foreground text-lg tracking-[0.2em] uppercase py-3 border-b border-border">
               {t('team')}

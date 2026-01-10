@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
-import { X, Maximize2 } from "lucide-react"
+import { X, Maximize2, ChevronLeft, ChevronRight } from "lucide-react" // 👈 Importamos las flechas
 import { GlitchText } from "@/components/ui/glitch-text"
 import clsx from "clsx"
 import { useTranslations } from "next-intl"
 
 export function MediaSection() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  // AHORA GUARDAMOS EL ÍNDICE (NÚMERO) EN LUGAR DE LA URL
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const t = useTranslations("Media")
 
   // --- 18 FOTOS CARGADAS ---
@@ -33,6 +34,31 @@ export function MediaSection() {
     { id: 18, src: "/gallery-18.jpg", alt: "MØRK Experience 18" },
   ]
 
+  // --- FUNCIONES DE NAVEGACIÓN ---
+  const handleNext = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setSelectedIndex((prev) => (prev === null ? null : (prev + 1) % photos.length))
+  }, [photos.length])
+
+  const handlePrev = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setSelectedIndex((prev) => (prev === null ? null : (prev - 1 + photos.length) % photos.length))
+  }, [photos.length])
+
+  // --- ESCUCHAR TECLADO (ESCAPE + FLECHAS) ---
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedIndex(null)
+      if (e.key === "ArrowRight") handleNext()
+      if (e.key === "ArrowLeft") handlePrev()
+    }
+
+    if (selectedIndex !== null) {
+      window.addEventListener("keydown", handleKeyDown)
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [selectedIndex, handleNext, handlePrev])
+
   return (
     <section id="media" className="py-20 md:py-32 bg-black border-t border-white/5 relative overflow-hidden">
       
@@ -42,10 +68,8 @@ export function MediaSection() {
               src="/FONDO_PARA_ARCHIVE_YN.jpg"
               alt="Archive Background"
               fill
-              // CAMBIO 1: Quitamos blur-sm y subimos opacidad a 90%
               className="object-cover opacity-90 grayscale" 
           />
-          {/* CAMBIO 2: Overlay mucho más suave en el centro (via-black/20) */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/80 z-10" />
       </div>
 
@@ -54,7 +78,7 @@ export function MediaSection() {
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* Contenedor principal con z-10 para estar sobre el fondo */}
+      {/* Contenedor principal */}
       <div className="max-w-[1400px] mx-auto relative z-10">
         
         {/* CABECERA */}
@@ -74,16 +98,18 @@ export function MediaSection() {
                 "px-6", 
                 "md:px-10"
             )}>
-                {photos.map((photo) => (
+                {/* AHORA USAMOS EL INDEX EN EL MAP */}
+                {photos.map((photo, index) => (
                     <div 
                         key={photo.id} 
                         className={clsx(
-                            "relative flex-shrink-0 snap-center group cursor-pointer overflow-hidden border border-white/10 transition-all duration-500 bg-zinc-900/50 backdrop-blur-sm", // Menos opacidad en el fondo de la tarjeta
+                            "relative flex-shrink-0 snap-center group cursor-pointer overflow-hidden border border-white/10 transition-all duration-500 bg-zinc-900/50 backdrop-blur-sm",
                             "w-[70vw] aspect-[4/3]", 
                             "md:w-[400px]", 
                             "hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.2)]"
                         )}
-                        onClick={() => setSelectedImage(photo.src)}
+                        // Al hacer click, guardamos el índice (0, 1, 2...)
+                        onClick={() => setSelectedIndex(index)}
                     >
                         <Image 
                             src={photo.src || "/placeholder.svg"} 
@@ -109,22 +135,52 @@ export function MediaSection() {
 
       </div>
 
-      {/* --- LIGHTBOX (MODAL) --- */}
-      {selectedImage && (
+      {/* --- LIGHTBOX (MODAL CON NAVEGACIÓN) --- */}
+      {selectedIndex !== null && (
         <div 
-            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-300"
-            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-300 select-none"
+            onClick={() => setSelectedIndex(null)}
         >
-            <button className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors p-2 z-[110]">
-                <X size={32} />
-            </button>
             
-            <div className="relative w-full max-w-7xl h-[80vh] border border-white/10 shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            {/* BOTÓN ANTERIOR (Izquierda) */}
+            <button
+                onClick={handlePrev}
+                className="fixed left-2 md:left-8 z-[10000] text-white/50 hover:text-white bg-black/50 hover:bg-red-600/80 p-3 rounded-full transition-all border border-white/10 hover:border-red-500 hover:scale-110"
+            >
+                <ChevronLeft size={40} />
+            </button>
+
+            {/* BOTÓN SIGUIENTE (Derecha) */}
+            <button
+                onClick={handleNext}
+                className="fixed right-2 md:right-8 z-[10000] text-white/50 hover:text-white bg-black/50 hover:bg-red-600/80 p-3 rounded-full transition-all border border-white/10 hover:border-red-500 hover:scale-110"
+            >
+                <ChevronRight size={40} />
+            </button>
+
+            {/* CONTENEDOR DE IMAGEN */}
+            <div 
+                className="relative max-w-[85vw] max-h-[85vh] w-auto h-auto shadow-2xl overflow-hidden bg-black cursor-default border border-white/10 group" 
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* BOTÓN CRUZ ROJA (Dentro del contenedor) */}
+                <button 
+                    className="absolute top-4 right-4 z-50 text-red-600 bg-black/50 hover:bg-red-600 hover:text-white p-2 rounded-full transition-all border border-red-600/30 hover:scale-110 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedIndex(null);
+                    }}
+                >
+                    <X size={32} strokeWidth={2.5} />
+                </button>
+
+                {/* IMAGEN SELECCIONADA */}
                 <Image 
-                    src={selectedImage} 
+                    src={photos[selectedIndex].src} 
                     alt="Full size" 
-                    fill 
-                    className="object-contain bg-black"
+                    width={1920} 
+                    height={1080}
+                    className="object-contain w-auto h-auto max-h-[85vh]"
                 />
             </div>
         </div>

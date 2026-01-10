@@ -29,15 +29,22 @@ export function EventsSection() {
     // --- TUS EVENTOS ---
     const events = [
         {
-            date: "2026.02.14",
-            day: "SAT",
-            artist: "MANGLES b2b REEKO",
-            subtitle: `${t('night_with')} Lanna Family`,
+            date: "2026.05.24",
+            day: "MAY",
+            
+            // CAMBIO 1: TRADUCCIÓN AUTOMÁTICA
+            // Usamos t('night_with') para que diga "UNA NOCHE CON" o "A NIGHT WITH" según el idioma
+            artist: `${t('night_with')} LANNA FAMILY`, 
+            
+            // SUBTÍTULO (DJs)
+            subtitle: "REEKO VS MANGLES",
+            
+            // CAMBIO 2: VENUE ACTUALIZADO
             venue: "Wave Club",
-            // Script oficial de Fourvenues
+            
             scriptTag: "https://www.fourvenues.com/assets/iframe/mork-lab/V4HB",
         },
-        // Eventos ocultos...
+        // ... otros eventos
     ]
 
     const handleTicketClick = (script: string | null) => {
@@ -87,33 +94,42 @@ export function EventsSection() {
                                 onClick={() => handleTicketClick(event.scriptTag)}
                             >
                                 <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                                    <div className="flex items-center gap-4 md:w-48">
-                                        <span
-                                            className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
-                                        <span
-                                            className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
+                                    
+                                    {/* FECHA */}
+                                    <div className="flex items-center gap-4 md:w-48 shrink-0">
+                                        <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
+                                        <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
                                     </div>
-                                    <div className="flex-1">
+                                    
+                                    {/* INFO PRINCIPAL */}
+                                    <div className="flex-1 overflow-hidden">
+                                        {/* TÍTULO (A NIGHT WITH...) */}
                                         <h3
                                             className={clsx(
-                                                "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors",
+                                                "text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-black tracking-[0.05em] uppercase transition-colors whitespace-nowrap overflow-hidden text-ellipsis",
                                                 hoveredIndex === index ? "text-accent" : "text-foreground"
                                             )}
                                         >
                                             {event.artist}
                                         </h3>
-                                        <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase">{event.subtitle}</p>
+                                        
+                                        {/* SUBTÍTULO (DJs) */}
+                                        <p className="text-foreground text-lg md:text-2xl font-bold tracking-wider mt-2 uppercase">
+                                            {event.subtitle}
+                                        </p>
                                     </div>
-                                    <div
-                                        className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
-                                        <span
-                                            className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
+
+                                    {/* VENUE Y BOTÓN */}
+                                    <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0 shrink-0">
+                                        <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">
+                                            {event.venue}
+                                        </span>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleTicketClick(event.scriptTag);
                                             }}
-                                            className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
+                                            className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold whitespace-nowrap"
                                         >
                                             {t('ticket_btn')}
                                         </button>
@@ -139,30 +155,17 @@ export function EventsSection() {
 
             </div>
 
-            {/* --- MODAL NEGRO PURO (SCROLLABLE) --- */}
+            {/* --- MODAL --- */}
             {selectedScriptCode && (
-                <div
-                    className="fixed inset-0 z-[9999] flex items-center-safe justify-center overflow-y-auto bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
-
+                <div className="fixed inset-0 z-[9999] flex items-center-safe justify-center overflow-y-auto bg-black/95 backdrop-blur-md p-0 md:p-4 animate-in fade-in duration-300">
                     <div className="relative w-full md:max-w-4xl flex flex-col md:rounded-lg pt-12"
-                         style={{
-                             backgroundColor: '#000000',
-                             border: 'none',
-                             boxShadow: 'none'
-                         }}
-                    >
-
-                        {/* BOTÓN CERRAR (Fixed para que no desaparezca al hacer scroll, o absolute si prefieres que se mueva) */}
-                        {/* Al ponerlo absolute dentro de un contenedor con scroll, se moverá con el contenido.
-                Si la descripción es muy larga, estará arriba del todo. */}
+                         style={{ backgroundColor: '#000000', border: 'none', boxShadow: 'none' }}>
                         <button
                             onClick={closeEvent}
                             className="absolute top-4 right-4 z-[60] bg-black/50 text-white p-2 rounded-full hover:bg-zinc-800 transition-all border border-white/10"
                         >
                             <X className="w-6 h-6"/>
                         </button>
-
-                        {/* CÁPSULA FOURVENUES */}
                         <Iframe scriptSrc={selectedScriptCode}/>
                     </div>
                 </div>
@@ -172,9 +175,6 @@ export function EventsSection() {
     )
 }
 
-//
-// Componente oficial - NO TOCAR
-//
 function Iframe({scriptSrc}: { scriptSrc: string }) {
     const containerId = 'fourvenues-iframe'
     const scriptId = 'fv_dynamic_script'
@@ -184,7 +184,6 @@ function Iframe({scriptSrc}: { scriptSrc: string }) {
         if (loaderRef.current) return
         loaderRef.current = true
 
-        // Ensure container exists
         let container = document.getElementById(containerId)
         if (!container) {
             container = document.createElement('div')
@@ -192,7 +191,6 @@ function Iframe({scriptSrc}: { scriptSrc: string }) {
             document.body.appendChild(container)
         }
 
-        // Remove existing dynamic script on hot reload
         const existing = document.getElementById(scriptId)
         if (existing) existing.remove()
 

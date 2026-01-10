@@ -108,11 +108,13 @@
   },
   "Events": {
     "subtitle": "Próximamente",
-    "title": "PROXIMOS EVENTOS",
+    "title": "PRÓXIMOS EVENTOS",
     "ticket_btn": "Entradas",
     "view_all": "Ver todos los eventos →",
     "night_with": "Una Noche Con",
     "tba_title": "PRÓXIMAS FECHAS TBA",
-    "tba_subtitle": "MØRK LAB SERIES 2026"
+    "tba_subtitle": "MØRK LAB SERIES 2026",
+    "event1_title": "A NIGHT WITH LANNA FAMILY",
+    "event1_desc": "REEKO VS MANGLES"
   }
 }

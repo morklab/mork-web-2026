@@ -170,3 +170,24 @@
   text-shadow: none !important;
   filter: none !important;
 }
+/* --- ANIMACIÓN LATIDO (SOLO FADE/OPACIDAD) --- */
+@keyframes latido-lento {
+  0%, 100% {
+    /* Estado "apagado" (reposo) */
+    opacity: 0.3; /* Muy transparente, casi desaparecido */
+    text-shadow: none;
+    /* IMPORTANTE: Sin transform scale */
+  }
+  50% {
+    /* Estado "encendido" (latido) */
+    opacity: 1;   /* Totalmente visible */
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.8); /* Brillo rojo intenso al latir */
+  }
+}
+
+.latido-mork {
+  /* Duración de 4s para que sea muy lento y solemne */
+  animation: latido-lento 4s ease-in-out infinite;
+  /* Asegura que el texto esté centrado para que el brillo se vea bien */
+  display: inline-block; 
+}

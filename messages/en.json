@@ -50,7 +50,9 @@
     "r6_d": "If you see something off, tell the staff. We are here to help."
   },
   "Visuals": {
-    "subtitle": "Visual Archive"
+  "subtitle": "YOUR CURRENT SUBTITLE",
+  "description": "aftermovies of past rituals",
+  "dragHint": "DRAG TO EXPLORE"
   },
   "Team": {
     "subtitle": "THE FAMILY",
@@ -86,14 +88,15 @@
 },
   "Artists": {
     "subtitle": "The Architects",
-    "title": "CORE ARTISTS"
+    "title": "CORE ARTISTS",
+    "quote": "“Between the mechanical and the animal, techno beats as the sound of life.”"
   },
   "Footer": {
     "text": "Underground electronic music culture in Mallorca. Pure techno, pure experience.",
     "rights": "All rights reserved.",
     "col_nav": "NAVIGATION",
     "col_connect": "CONNECT",
-    "pure_mork": "PURE TECHNO. PURE MØRK."
+    "pure_mork": "WE ARE TECHNO, WE ARE MØRK."
   },
   "ShopProducts": {
     "tee_desc": "100% Organic Cotton. Heavyweight. Screen printed back.",

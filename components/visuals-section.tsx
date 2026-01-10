@@ -82,19 +82,33 @@ export function VisualsSection() {
   }
 
   return (
-    <section id="visuals" className="py-20 bg-black border-t border-white/10 overflow-hidden">
-      <div className="w-full">
+    <section id="visuals" className="relative py-20 bg-black border-t border-white/10 overflow-hidden">
+      
+      {/* ----------------- IMAGEN DE FONDO (Escala de grises) ----------------- */}
+      <Image
+        src="/tu-fondo-visuals.jpg"
+        alt="Visuals background"
+        fill
+        className="object-cover z-0 opacity-30 grayscale select-none pointer-events-none"
+        priority
+      />
+      {/* ----------------- FIN IMAGEN DE FONDO ----------------- */}
+
+      {/* Contenedor principal del contenido */}
+      <div className="relative z-10 w-full">
         <div className="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-end mb-2">
-          <div>
+          <div className="flex flex-col">
             <p className="text-accent text-xs tracking-[0.4em] uppercase mb-2 font-bold no-glow">
               {t('subtitle')}
             </p>
-            {/* Título unificado con tracking-tighter */}
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white">
               <GlitchText>RITUAL ECHOES</GlitchText> ({items.length})
             </h2>
+            <p className="text-zinc-400 text-sm md:text-base mt-2 font-light tracking-wide uppercase">
+               {t('description')}
+            </p>
           </div>
-          <Link href="https://www.instagram.com/mork.lab/" target="_blank" className="hidden md:flex text-white border border-white/30 px-6 py-3 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all items-center gap-2">
+          <Link href="https://www.instagram.com/mork.lab/" target="_blank" className="hidden md:flex text-white border border-white/30 px-6 py-3 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all items-center gap-2 mb-2">
             <Instagram size={16} />
             Instagram
           </Link>
@@ -104,7 +118,8 @@ export function VisualsSection() {
           ref={containerRef}
           onScroll={handleScroll}
           className={clsx(
-              "flex overflow-x-auto pt-8 md:pt-20 pb-8 md:pb-12 gap-6 snap-x snap-mandatory no-scrollbar items-end h-[220px] md:h-[340px]",
+              "flex overflow-x-auto pt-8 md:pt-20 pb-8 md:pb-12 gap-6 snap-x snap-mandatory no-scrollbar items-end",
+              "h-[280px] md:h-[400px]", 
               "px-[calc(50%-3.5rem)] md:px-[calc(50%-4rem)]"
           )}
           onTouchMove={() => {
@@ -157,7 +172,8 @@ export function VisualsSection() {
                   } 
                 }}
                 className={clsx(
-                    "relative flex-shrink-0 aspect-square border bg-gray-900 overflow-visible snap-center rounded-lg",
+                    // CAMBIO AQUÍ: bg-black/90 (menos transparencia que antes)
+                    "relative flex-shrink-0 aspect-square border bg-black/90 backdrop-blur-md overflow-visible snap-center rounded-lg",
                     "w-28 md:w-32", 
                     "transition-all duration-300 ease-out origin-bottom transform-gpu will-change-transform",
                     scaleClass, borderClass, shadowClass, zIndex
@@ -184,6 +200,12 @@ export function VisualsSection() {
               </Link>
             )
           })}
+        </div>
+
+        <div className="flex justify-center w-full mt-8 md:mt-12 relative z-0 pointer-events-none">
+          <p className="text-[10px] text-red-600 tracking-[0.3em] uppercase animate-pulse font-bold">
+            &lt; {t('dragHint')} &gt;
+          </p>
         </div>
       </div>
     </section>

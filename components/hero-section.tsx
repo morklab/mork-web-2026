@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 import { ChevronDown } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
-// 👇 1. Importamos la herramienta de traducción
 import { useTranslations } from "next-intl"
 
 export function HeroSection() {
@@ -12,7 +11,6 @@ export function HeroSection() {
   const rafId = useRef<number | null>(null)
   const lastScrollY = useRef(0)
   
-  // 👇 2. Conectamos con la sección "Hero" del JSON
   const t = useTranslations("Hero")
 
   useEffect(() => {
@@ -100,13 +98,15 @@ export function HeroSection() {
           {t('text')}
         </p>
 
-        {/* 👇 BOTÓN (CTA) */}
-        <a
+        {/* 👇 BOTÓN (CTA) - OCULTO TEMPORALMENTE (COMENTADO) */}
+        {/* <a
           href="#shop"
           className="inline-block border border-foreground text-foreground px-8 py-4 text-xs tracking-[0.3em] uppercase hover:bg-foreground hover:text-background transition-all min-h-11"
         >
           {t('cta')}
-        </a>
+        </a> 
+        */}
+
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">

@@ -50,7 +50,9 @@
     "r6_d": "Si ves algo raro, avisa al staff. Estamos aquí para ayudarte."
   },
   "Visuals": {
-    "subtitle": "Archivo Visual"
+    "subtitle": "TU SUBTITULO ACTUAL",
+    "description": "aftermovies de rituales pasados",
+    "dragHint": "DESLIZA PARA EXPLORAR"
   },
   "Team": {
     "subtitle": "LA FAMILIA",
@@ -86,14 +88,15 @@
 },
   "Artists": {
     "subtitle": "Los Arquitectos",
-    "title": "CORE ARTISTS"
+    "title": "CORE ARTISTS",
+    "quote": "“Entre lo mecánico y lo animal, el techno late como el sonido de la vida.”"
   },
   "Footer": {
     "text": "Cultura de música electrónica underground en Mallorca. Puro techno, pura experiencia.",
     "rights": "Todos los derechos reservados.",
     "col_nav": "NAVEGACIÓN",
     "col_connect": "CONECTAR",
-    "pure_mork": "PURO TECHNO. PURO MØRK."
+    "pure_mork": "SOMOS TECHNO, SOMOS MØRK."
   },
   "ShopProducts": {
     "tee_desc": "100% Algodón Orgánico. Alto gramaje. Serigrafía trasera.",

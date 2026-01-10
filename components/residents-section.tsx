@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import Image from "next/image"
 import clsx from "clsx"
 import { GlitchText } from "@/components/ui/glitch-text"
-import { useTranslations } from "next-intl" // 👈 Importamos traducciones
+import { useTranslations } from "next-intl"
 
 const residents = [
   {
@@ -43,25 +43,23 @@ export function ResidentsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const isTouchRef = useRef(false)
   
-  // 👇 Activamos el diccionario "Artists"
   const t = useTranslations("Artists")
 
   return (
-    <section id="core-artists" className="py-20 md:py-32 bg-card border-t border-white/10 overflow-hidden">
+    <section id="core-artists" className="pt-16 pb-80 md:pt-24 md:pb-96 bg-card border-t border-white/10 overflow-hidden flex flex-col justify-center min-h-screen">
       <div className="w-full">
         
         {/* Section Header */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8 mb-12 md:mb-16">
-          {/* 👇 AQUÍ ESTÁ EL CAMBIO: Usamos t('subtitle') en vez de texto fijo */}
+        <div className="max-w-7xl mx-auto px-4 md:px-8 mb-8 md:mb-10">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4">{t('subtitle')}</p>
           
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
-  <GlitchText>{t('title')}</GlitchText>
-</h2>
+            <GlitchText>{t('title')}</GlitchText>
+          </h2>
         </div>
 
         {/* RESIDENTS CAROUSEL */}
-        <div className="flex overflow-x-auto px-4 md:px-8 gap-6 snap-x snap-mandatory no-scrollbar pb-8">
+        <div className="flex overflow-x-auto px-4 md:px-8 gap-6 snap-x snap-mandatory no-scrollbar pb-4">
           {residents.map((resident, index) => {
              const isHovered = hoveredIndex === index;
 
@@ -70,7 +68,7 @@ export function ResidentsSection() {
                 key={index}
                 className={clsx(
                     "group relative flex-shrink-0 snap-center cursor-pointer",
-                    "w-52 md:w-64"
+                    "w-48 md:w-56" 
                 )}
                 onTouchStart={() => { isTouchRef.current = true }}
                 onMouseEnter={() => { if (!isTouchRef.current) setHoveredIndex(index) }}
@@ -124,6 +122,19 @@ export function ResidentsSection() {
             )
           })}
         </div>
+
+        {/* --- MENSAJE POÉTICO (CON CSS PURO) --- */}
+        <div className="mt-16 px-6 text-center relative z-10">
+            {/* HEMOS CAMBIADO 'animate-slow-heartbeat' POR 'latido-mork'.
+                Esta clase viene directamente de tu globals.css, así que funcionará sí o sí.
+            */}
+            <p className="latido-mork text-red-600 font-thin text-[10px] md:text-xs tracking-[0.25em] uppercase max-w-6xl mx-auto leading-loose">
+                {t('quote')}
+            </p>
+            {/* Línea decorativa minimalista */}
+            <div className="w-8 h-[1px] bg-red-600/30 mx-auto mt-6"></div>
+        </div>
+
       </div>
     </section>
   )

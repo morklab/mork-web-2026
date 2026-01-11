@@ -118,6 +118,11 @@
     "tba_title": "NEXT DATES TBA",
     "tba_subtitle": "MØRK LAB SERIES 2026",
     "event1_title": "A NIGHT WITH LANNA FAMILY",
-    "event1_desc": "REEKO VS MANGLES"
-  }
+    "event1_desc": "REEKO VS MANGLES",
+
+    "countdown_label": "NEXT REVEAL IN",
+    "status_locked": "SYSTEM LOCKED",
+    "status_unlocked": "INCOMING TRANSMISSION",
+    "access_restricted": "// ACCESS RESTRICTED // AWAITING SIGNAL"
+}
 }

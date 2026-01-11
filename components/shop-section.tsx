@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail } from "lucide-react"
+import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail, ArrowLeft } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import clsx from "clsx"
 import { useTranslations } from "next-intl"
@@ -70,6 +70,14 @@ export function ShopSection() {
   ] as const
 
   const filteredProducts = products.filter((p) => activeCategory === "all" || p.category === activeCategory)
+
+  // --- EFECTO: Resaltar el primer producto al cargar (solo móvil) ---
+  useEffect(() => {
+    // Si estamos en móvil (detectado por ancho de pantalla) y hay productos
+    if (window.innerWidth < 768 && filteredProducts.length > 0) {
+      setCenterIndex(0) // Selecciona el primero por defecto
+    }
+  }, [activeCategory]) // Se ejecuta al cambiar de categoría
 
   // --- FUNCIÓN SCROLL ---
   const handleScroll = () => {
@@ -367,15 +375,37 @@ export function ShopSection() {
         <div className="fixed inset-0 z-50 flex justify-end">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={() => setIsCartOpen(false)} />
           <div className="relative w-full max-w-md bg-zinc-950 border-l border-white/10 flex flex-col h-full shadow-2xl animate-in slide-in-from-right duration-300">
-            <div className="flex items-center justify-between p-6 border-b border-white/10">
-              <h3 className="text-lg font-black tracking-[0.2em] uppercase text-white">Your Cart</h3>
-              <button onClick={() => setIsCartOpen(false)} className="p-2 text-gray-400 hover:text-white"><X size={20} /></button>
+            
+            {/* 1. CABECERA CARRITO (BOTÓN VOLVER AÑADIDO) */}
+            <div className="flex items-center justify-between p-6 border-b border-white/10 bg-zinc-900/50">
+                <div className="flex items-center gap-4">
+                    {/* Botón Volver */}
+                    <button 
+                        onClick={() => setIsCartOpen(false)} 
+                        className="p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center gap-1 group"
+                    >
+                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                        <span className="text-xs uppercase font-bold tracking-widest hidden sm:block">Back</span>
+                    </button>
+                    <h3 className="text-lg font-black tracking-[0.2em] uppercase text-white">Your Cart</h3>
+                </div>
+                {/* Botón cerrar X */}
+                <button onClick={() => setIsCartOpen(false)} className="p-2 text-gray-400 hover:text-white hover:bg-red-900/30 rounded-full transition-colors">
+                    <X size={20} />
+                </button>
             </div>
             
             {cart.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
                 <ShoppingBag size={48} className="mb-4 opacity-20" />
                 <p className="text-sm tracking-wide uppercase">Empty Cart</p>
+                {/* Botón para volver a la tienda si está vacío */}
+                <button 
+                    onClick={() => setIsCartOpen(false)} 
+                    className="mt-6 text-xs uppercase tracking-widest border-b border-gray-600 pb-1 hover:text-white hover:border-white transition-colors"
+                >
+                    Continue Shopping
+                </button>
               </div>
             ) : (
               <>
@@ -419,6 +449,14 @@ export function ShopSection() {
                   <button onClick={handleCheckoutEmail} className="w-full bg-red-900 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-800 transition-colors flex items-center justify-center gap-2">
                     <Mail size={16} />
                     Email Order
+                  </button>
+                  
+                  {/* Botón volver discreto abajo también */}
+                  <button 
+                    onClick={() => setIsCartOpen(false)} 
+                    className="w-full text-center text-xs text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition-colors"
+                  >
+                    Continue Shopping
                   </button>
                 </div>
               </>

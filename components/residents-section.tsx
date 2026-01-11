@@ -46,7 +46,16 @@ export function ResidentsSection() {
   const t = useTranslations("Artists")
 
   return (
-    <section id="core-artists" className="pt-16 pb-80 md:pt-24 md:pb-96 bg-card border-t border-white/10 overflow-hidden flex flex-col justify-center min-h-screen">
+    <section 
+      id="core-artists" 
+      /* 🔥 CAMBIOS RADICALES DE ESPACIADO:
+         1. min-h-fit md:min-h-screen: Adaptable en móvil, completo en PC.
+         2. md:justify-start: En PC alineamos ARRIBA (no al centro) para controlar la posición exacta.
+         3. md:pt-32: Empujamos el contenido un poco hacia abajo en PC para que no quede pegado al techo.
+         4. md:pb-[50vh]: ¡MITAD DE PANTALLA DE AIRE! Esto asegura que el mensaje tenga muchísimo espacio debajo.
+      */
+      className="relative min-h-fit md:min-h-screen bg-card border-t border-white/10 overflow-hidden flex flex-col justify-center md:justify-start pt-16 pb-12 md:pt-32 md:pb-[50vh]"
+    >
       <div className="w-full">
         
         {/* Section Header */}
@@ -123,15 +132,15 @@ export function ResidentsSection() {
           })}
         </div>
 
-        {/* --- MENSAJE POÉTICO (CON CSS PURO) --- */}
-        <div className="mt-16 px-6 text-center relative z-10">
-            {/* HEMOS CAMBIADO 'animate-slow-heartbeat' POR 'latido-mork'.
-                Esta clase viene directamente de tu globals.css, así que funcionará sí o sí.
-            */}
+        {/* --- MENSAJE POÉTICO --- */}
+        {/* md:mt-12: Reducido ligeramente el margen superior para acercarlo a las fotos 
+            y alejarlo aún más del borde inferior de la pantalla.
+        */}
+        <div className="mt-8 md:mt-12 px-6 text-center relative z-10">
             <p className="latido-mork text-red-600 font-thin text-[10px] md:text-xs tracking-[0.25em] uppercase max-w-6xl mx-auto leading-loose">
                 {t('quote')}
             </p>
-            {/* Línea decorativa minimalista */}
+            {/* Línea decorativa */}
             <div className="w-8 h-[1px] bg-red-600/30 mx-auto mt-6"></div>
         </div>
 

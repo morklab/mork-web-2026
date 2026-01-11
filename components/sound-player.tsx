@@ -19,8 +19,8 @@ export function SoundPlayer() {
   }
 
   return (
-    // 👇 CAMBIO AQUÍ: 'left-8' en lugar de 'right-8'
-    <div className="fixed bottom-8 left-8 z-50">
+    // 🔥 CAMBIO VITAL: z-[100] para que NUNCA se oculte bajo las cartas
+    <div className="fixed bottom-8 left-8 z-[100]">
       {/* 1. EL REPRODUCTOR INVISIBLE */}
       <audio 
         ref={audioRef} 

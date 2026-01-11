@@ -11,58 +11,55 @@ import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
-    <main className="bg-black selection:bg-red-600 selection:text-white">
+    <main className="bg-black selection:bg-red-600 selection:text-white min-h-screen">
       
-      {/* 1. HERO: 
-          Aquí podemos dejar sticky también en móvil porque el Hero suele ocupar 
-          exactamente el 100vh, así que no da problemas de corte. 
-          Pero si quieres asegurar, ponle 'lg:' también. 
-          De momento lo dejo como estaba para el efecto visual inicial. */}
+      {/* 1. HERO: Sticky base (z-0) */}
       <div className="sticky top-0 z-0">
         <HeroSection />
       </div>
       
-      {/* 2. EVENTOS: Ya es relative, funciona bien. */}
+      {/* 2. EVENTOS: Sube a z-10 para tapar al Hero */}
       <div className="relative z-10 bg-black">
         <EventsSection />
       </div>
 
-      {/* A PARTIR DE AQUÍ: CORRECCIÓN RESPONSIVE
-          Cambiamos "sticky top-0" por "relative lg:sticky lg:top-0"
-          Esto significa: "Normal en móvil, Pegajoso en PC". */}
+      {/* --- ZONA DE EFECTO STACKING (Cartas) --- 
+          Fíjate que ahora el Z-INDEX sube progresivamente.
+          z-20, z-30, z-40... Esto es OBLIGATORIO para el efecto.
+      */}
       
-      {/* 3. CORE ARTISTS */}
-      <div className="relative lg:sticky lg:top-0 z-0 bg-black">
+      {/* 3. CORE ARTISTS (z-20) */}
+      <div className="relative lg:sticky lg:top-0 z-20 bg-black">
         <ResidentsSection />
       </div>
 
-      {/* 4. MANIFIESTO (Este daba mucho problema por la altura del texto) */}
-      <div className="relative lg:sticky lg:top-0 z-0 bg-black">
+      {/* 4. MANIFIESTO (z-30) */}
+      <div className="relative lg:sticky lg:top-0 z-30 bg-black">
         <ManifestoSection />
       </div>
       
-      {/* 5. ECOS RITUALES */}
-      <div className="relative lg:sticky lg:top-0 z-0 bg-black">
+      {/* 5. ECOS RITUALES (z-40) */}
+      <div className="relative lg:sticky lg:top-0 z-40 bg-black">
         <VisualsSection />
       </div>
       
-      {/* 6. ARCHIVE / MEDIA */}
-      <div className="relative lg:sticky lg:top-0 z-0 bg-black">
+      {/* 6. ARCHIVE / MEDIA (z-50) */}
+      <div className="relative lg:sticky lg:top-0 z-50 bg-black">
         <MediaSection />
       </div>
       
-      {/* 7. EQUIPO (Este daba problema por la altura de las fotos) */}
-      <div className="relative lg:sticky lg:top-0 z-0 bg-black">
+      {/* 7. EQUIPO (z-60) */}
+      <div className="relative lg:sticky lg:top-0 z-60 bg-black">
         <TeamSection />
       </div>
       
-      {/* 8. SONIDO */}
-      <div className="relative lg:sticky lg:top-0 z-0 bg-black">
+      {/* 8. SONIDO (z-70) */}
+      <div className="relative lg:sticky lg:top-0 z-70 bg-black">
         <SoundSection />
       </div>
 
-      {/* 9. TIENDA + FOOTER */}
-      <div className="relative z-20 bg-black">
+      {/* 9. TIENDA + FOOTER (z-80) - Tapa todo el stack anterior */}
+      <div className="relative z-80 bg-black">
         <ShopSection />
         <Footer />
       </div>

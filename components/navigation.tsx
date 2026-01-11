@@ -29,7 +29,8 @@ export function Navigation() {
   const linkStyles = "text-muted-foreground hover:text-accent text-xs tracking-[0.15em] lg:tracking-[0.2em] uppercase transition-colors whitespace-nowrap"
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+    /* 🔥 CAMBIO VITAL: z-[100] para estar siempre por encima de las cartas apiladas */
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           

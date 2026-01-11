@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail, ArrowLeft } from "lucide-react"
+import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import clsx from "clsx"
 import { useTranslations } from "next-intl"
@@ -30,24 +30,25 @@ export function ShopSection() {
   const [activeCategory, setActiveCategory] = useState<"all" | "apparel" | "accessories">("all")
   const [cart, setCart] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  
+  // Índice para el carrusel de detalle
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   
   const [selectedSize, setSelectedSize] = useState<string>("")
   const [selectedColor, setSelectedColor] = useState<string>("")
 
-  // --- LÓGICA DE SCROLL (Solo para Móvil) ---
+  // Scroll del dock inferior
   const [centerIndex, setCenterIndex] = useState<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const itemsRef = useRef<any[]>([])
+  const detailContainerRef = useRef<HTMLDivElement>(null) 
 
   const t = useTranslations("Shop")
-  
-  // --- VARIABLES DE TEXTO TRADUCIDO ---
   const descTee = t('description_tee')
   const descKey = t('description_keychain')
   const taglineText = t('tagline')
 
-  // --- DATOS PRODUCTOS ---
+  // --- PRODUCTOS ---
   const products: Product[] = [
     { id: "tee-01", name: "T-Shirt Ritual 01", category: "apparel", price: 35, image: "/tshirt-1.jpg", description: descTee, sizes: ["S", "M", "L", "XL", "XXL"] },
     { id: "tee-02", name: "T-Shirt Ritual 02", category: "apparel", price: 35, image: "/tshirt-2.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
@@ -71,15 +72,22 @@ export function ShopSection() {
 
   const filteredProducts = products.filter((p) => activeCategory === "all" || p.category === activeCategory)
 
-  // --- EFECTO: Resaltar el primer producto al cargar (solo móvil) ---
   useEffect(() => {
-    // Si estamos en móvil (detectado por ancho de pantalla) y hay productos
     if (window.innerWidth < 768 && filteredProducts.length > 0) {
-      setCenterIndex(0) // Selecciona el primero por defecto
+      setCenterIndex(0)
     }
-  }, [activeCategory]) // Se ejecuta al cambiar de categoría
+  }, [activeCategory])
 
-  // --- FUNCIÓN SCROLL ---
+  // Auto-scroll al abrir detalle
+  useEffect(() => {
+    if (selectedIndex !== null && detailContainerRef.current) {
+        const slide = document.getElementById(`detail-slide-${selectedIndex}`)
+        if (slide) {
+            slide.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' })
+        }
+    }
+  }, [selectedIndex])
+
   const handleScroll = () => {
     if (!containerRef.current) return
     const container = containerRef.current
@@ -100,16 +108,21 @@ export function ShopSection() {
     setCenterIndex(closestIndex)
   }
 
-  // --- LÓGICA CARRITO ---
   const addToCart = (product: Product, size?: string, color?: string) => {
     if (product.soldOut) return
+    
+    window.dispatchEvent(new Event('add-to-cart'))
+
     const existingItem = cart.find((item) => item.id === product.id && item.selectedSize === size && item.selectedColor === color)
     if (existingItem) {
       setCart(cart.map((item) => item.id === product.id && item.selectedSize === size && item.selectedColor === color ? { ...item, quantity: item.quantity + 1 } : item))
     } else {
       setCart([...cart, { ...product, quantity: 1, selectedSize: size, selectedColor: color }])
     }
-    setSelectedProduct(null); setSelectedSize(""); setSelectedColor(""); setIsCartOpen(true)
+    
+    setSelectedSize("")
+    setSelectedColor("")
+    setIsCartOpen(true)
   }
 
   const removeFromCart = (id: string, size?: string, color?: string) => {
@@ -156,6 +169,13 @@ export function ShopSection() {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+
+  // Función para cerrar el modal de detalle
+  const closeDetail = () => {
+    setSelectedIndex(null)
+    setSelectedSize("")
+    setSelectedColor("")
+  }
 
   return (
     <section id="shop" className="py-20 md:py-32 px-0 md:px-8 bg-black border-t border-white/5 relative overflow-hidden">
@@ -204,9 +224,7 @@ export function ShopSection() {
                 onScroll={handleScroll}
                 className={clsx(
                     "flex overflow-x-auto gap-2 md:gap-4 scrollbar-hide items-end w-full",
-                    // Config Móvil
                     "px-[calc(50%-3.5rem)] pt-40 pb-40 snap-x snap-mandatory",
-                    // Config Escritorio
                     "md:px-10 md:justify-start md:snap-none"
                 )}
             >
@@ -219,31 +237,18 @@ export function ShopSection() {
                             ref={(el) => { itemsRef.current[index] = el }}
                             className={clsx(
                                 "group cursor-pointer flex-shrink-0 snap-center relative transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] transform origin-bottom",
-                                "w-20 md:w-32", // Tamaño base
-                                
-                                // --- VERSIÓN ESCRITORIO (md:) ---
-                                "md:scale-100 md:opacity-100 md:grayscale-0 md:blur-0 md:z-auto", // Reset de estilos móviles
-                                // AQUÍ SE HA REDUCIDO LA ESCALA AL PASAR EL RATÓN
+                                "w-20 md:w-32",
+                                "md:scale-100 md:opacity-100 md:grayscale-0 md:blur-0 md:z-auto",
                                 "md:hover:scale-[1.55] md:hover:z-50 md:hover:mx-6", 
-
-                                // --- VERSIÓN MÓVIL (Sin prefijo md:) ---
-                                isCenter 
-                                    ? "scale-[1.75] z-50 mx-4 opacity-100" 
-                                    : "scale-75 z-10 opacity-60"
+                                isCenter ? "scale-[1.75] z-50 mx-4 opacity-100" : "scale-75 z-10 opacity-60"
                             )}
-                            onClick={() => !product.soldOut && setSelectedProduct(product)}
+                            onClick={() => !product.soldOut && setSelectedIndex(index)}
                         >
                     
-                            {/* Imagen */}
                             <div className={clsx(
                                 "relative aspect-[3/4] bg-zinc-900 border border-white/10 overflow-hidden mb-1 transition-all duration-300 w-full shadow-lg rounded-sm",
-                                
-                                // ESCRITORIO: AQUÍ SE HA AJUSTADO EL BRILLO
                                 "md:group-hover:border-accent md:group-hover:shadow-[0_0_15px_rgba(220,38,38,0.6)]",
-                                
-                                // MÓVIL
                                 isCenter ? "border-accent shadow-[0_0_30px_rgba(255,0,0,0.8)]" : "",
-
                                 product.soldOut ? "opacity-50" : ""
                             )}>
                                 <Image 
@@ -252,12 +257,11 @@ export function ShopSection() {
                                 fill 
                                 className={clsx(
                                     "object-cover transition-all duration-300",
-                                    "grayscale brightness-[0.6]", // Base
-                                    "md:group-hover:grayscale-0 md:group-hover:brightness-100", // Desktop Hover
-                                    isCenter ? "grayscale-0 brightness-100" : "" // Mobile Center
+                                    "grayscale brightness-[0.6]",
+                                    "md:group-hover:grayscale-0 md:group-hover:brightness-100",
+                                    isCenter ? "grayscale-0 brightness-100" : ""
                                 )} 
                                 />
-                                
                                 {product.soldOut && (
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
                                     <span className="text-red-600 text-[8px] md:text-[10px] tracking-widest uppercase font-bold border border-red-600 px-1">Sold</span>
@@ -265,7 +269,6 @@ export function ShopSection() {
                                 )}
                             </div>
                             
-                            {/* Texto + Descripción */}
                             <div className={clsx(
                                 "text-center transition-opacity duration-200 absolute -bottom-20 left-1/2 -translate-x-1/2 w-[200px] pointer-events-none",
                                 isCenter ? "opacity-100 visible" : "opacity-0 invisible",
@@ -275,9 +278,6 @@ export function ShopSection() {
                                     <h3 className="text-[6px] md:text-[8px] font-bold uppercase text-white mb-1 tracking-wider">
                                         {product.name}
                                     </h3>
-                                    <p className="text-[4px] md:text-[5px] text-gray-400 uppercase tracking-wide leading-tight mb-1 max-w-[90%]">
-                                        {product.description}
-                                    </p>
                                     <p className="text-accent font-mono text-[6px] md:text-[8px] font-bold border-t border-white/10 pt-1 w-full mt-1">
                                         {product.price}€
                                     </p>
@@ -288,13 +288,9 @@ export function ShopSection() {
                 })}
             </div>
 
-            {/* --- TEXTO ROJO ABAJO --- */}
             <div className="mt-10 text-center px-4 pb-20">
-                <p className="text-red-600 font-mono uppercase tracking-[0.5em] text-xs md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">
-                    {taglineText}
-                </p>
+                <p className="text-red-600 font-mono uppercase tracking-[0.5em] text-xs md:text-sm font-bold drop-shadow-[0_0_15px_rgba(220,38,38,0.9)] animate-pulse">{taglineText}</p>
             </div>
-
         </div>
 
         {/* BOTÓN FLOTANTE CARRITO */}
@@ -310,102 +306,145 @@ export function ShopSection() {
         </button>
       </div>
 
-      {/* MODAL PRODUCTO (Detalle) */}
-      {selectedProduct && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-zinc-950 border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid md:grid-cols-2 relative">
-            <div className="relative aspect-square md:aspect-auto md:h-full bg-zinc-900">
-              <Image src={selectedProduct.image || "/placeholder.svg"} alt={selectedProduct.name} fill className="object-cover" />
-            </div>
-            <div className="p-6 md:p-10 flex flex-col h-full relative">
-               <button onClick={() => { setSelectedProduct(null); setSelectedSize(""); setSelectedColor("") }} className="absolute top-4 right-4 text-white/50 hover:text-white p-2 z-10">
-                <X size={24} />
-              </button>
-              
-              <div className="mb-auto mt-8 md:mt-0">
-                <p className="text-accent text-xs tracking-[0.2em] uppercase mb-2">
-                  {selectedProduct.category === 'apparel' ? t('cat_apparel') : t('cat_accessories')}
-                </p>
-                <h3 className="text-2xl md:text-4xl font-black tracking-tight uppercase text-white mb-4">
-                  {selectedProduct.name}
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                  {selectedProduct.description}
-                </p>
-                <p className="text-3xl font-mono text-white mb-8">
-                  {selectedProduct.price}€
-                </p>
-                
-                {selectedProduct.sizes && (
-                  <div className="space-y-3 mb-6">
-                    <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Select Size</p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProduct.sizes.map((size) => (
-                        <button key={size} onClick={() => setSelectedSize(size)} className={clsx("px-4 py-2 md:px-6 md:py-3 border text-xs tracking-wider uppercase transition-all", selectedSize === size ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white")}>{size}</button>
-                      ))}
+      {/* --- MODAL CARRUSEL DE DETALLE (Swipeable) --- */}
+      {selectedIndex !== null && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-200">
+          
+          {/* BOTÓN CERRAR SUPERIOR (La X) - Mantenemos la X por si acaso */}
+          <button 
+            onClick={closeDetail} 
+            className="absolute top-4 right-4 text-white/50 hover:text-white p-2 z-[60] bg-black/50 rounded-full border border-white/10"
+          >
+            <X size={24} />
+          </button>
+
+          {/* CONTENEDOR DE SCROLL HORIZONTAL */}
+          <div 
+            ref={detailContainerRef}
+            className="flex-1 flex overflow-x-auto snap-x snap-mandatory items-center no-scrollbar"
+            style={{ scrollBehavior: 'smooth' }}
+          >
+             {filteredProducts.map((product, idx) => (
+               <div 
+                 key={`detail-${product.id}`}
+                 id={`detail-slide-${idx}`}
+                 className="w-full flex-shrink-0 snap-center flex items-center justify-center p-4 h-full"
+               >
+                 <div className="bg-zinc-950 border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid md:grid-cols-2 relative shadow-2xl">
+                    {/* IMAGEN */}
+                    <div className="relative aspect-square md:aspect-auto md:h-full bg-zinc-900">
+                        <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
                     </div>
-                  </div>
-                )}
-                {selectedProduct.colors && (
-                  <div className="space-y-3 mb-8">
-                    <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Select Color</p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProduct.colors.map((color) => (
-                        <button key={color} onClick={() => setSelectedColor(color)} className={clsx("px-4 py-2 md:px-6 md:py-3 border text-xs tracking-wider uppercase transition-all", selectedColor === color ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white")}>{color}</button>
-                      ))}
+                    
+                    {/* DETALLES */}
+                    <div className="p-6 md:p-10 flex flex-col h-full relative">
+                        
+                        {/* 🔥 BOTÓN "VOLVER" REUBICADO (Top Right, Rojo) */}
+                        <button 
+                          onClick={closeDetail} 
+                          className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 text-red-600 hover:text-red-400 transition-colors group"
+                        >
+                          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform"/>
+                          <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Back to Shop</span>
+                        </button>
+
+                        <div className="mb-auto mt-8">
+                            <p className="text-accent text-xs tracking-[0.2em] uppercase mb-2">
+                            {product.category === 'apparel' ? t('cat_apparel') : t('cat_accessories')}
+                            </p>
+                            <h3 className="text-2xl md:text-4xl font-black tracking-tight uppercase text-white mb-4">
+                            {product.name}
+                            </h3>
+                            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                            {product.description}
+                            </p>
+                            <p className="text-3xl font-mono text-white mb-8">
+                            {product.price}€
+                            </p>
+                            
+                            {product.sizes && (
+                            <div className="space-y-3 mb-6">
+                                <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Select Size</p>
+                                <div className="flex flex-wrap gap-2">
+                                {product.sizes.map((size) => (
+                                    <button 
+                                      key={size} 
+                                      onClick={() => setSelectedSize(size)} 
+                                      className={clsx(
+                                          "px-4 py-2 md:px-6 md:py-3 border text-xs tracking-wider uppercase transition-all", 
+                                          (selectedSize === size && idx === selectedIndex) ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white"
+                                      )}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                                </div>
+                            </div>
+                            )}
+                            
+                            {product.colors && (
+                            <div className="space-y-3 mb-8">
+                                <p className="text-xs tracking-[0.2em] uppercase text-gray-500">Select Color</p>
+                                <div className="flex flex-wrap gap-2">
+                                {product.colors.map((color) => (
+                                    <button 
+                                      key={color} 
+                                      onClick={() => setSelectedColor(color)} 
+                                      className={clsx(
+                                          "px-4 py-2 md:px-6 md:py-3 border text-xs tracking-wider uppercase transition-all", 
+                                          (selectedColor === color && idx === selectedIndex) ? "border-white bg-white text-black font-bold" : "border-white/20 text-gray-400 hover:border-white hover:text-white"
+                                      )}
+                                    >
+                                        {color}
+                                    </button>
+                                ))}
+                                </div>
+                            </div>
+                            )}
+                        </div>
+                        
+                        <button 
+                            onClick={() => addToCart(product, selectedSize || undefined, selectedColor || undefined)} 
+                            disabled={(product.sizes && !selectedSize) || (product.colors && !selectedColor)} 
+                            className="w-full bg-accent text-white py-4 text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-zinc-800 flex items-center justify-center gap-3 mt-4"
+                        >
+                            <Plus size={18} />
+                            {t('btn_buy')}
+                        </button>
+                        
+                        {/* Indicador swipe móvil */}
+                        <div className="md:hidden flex justify-center items-center gap-4 mt-6 text-[10px] text-zinc-500 animate-pulse uppercase tracking-widest">
+                             <ChevronLeft size={12}/> Swipe <ChevronRight size={12}/>
+                        </div>
+
                     </div>
-                  </div>
-                )}
-              </div>
-              <button 
-                onClick={() => addToCart(selectedProduct, selectedSize || undefined, selectedColor || undefined)} 
-                disabled={(selectedProduct.sizes && !selectedSize) || (selectedProduct.colors && !selectedColor)} 
-                className="w-full bg-accent text-white py-4 text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-zinc-800 flex items-center justify-center gap-3 mt-4"
-              >
-                <Plus size={18} />
-                {t('btn_buy')}
-              </button>
-            </div>
+                 </div>
+               </div>
+             ))}
           </div>
         </div>
       )}
 
-      {/* SIDEBAR CARRITO */}
+      {/* SIDEBAR CARRITO (IGUAL QUE ANTES) */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-[200] flex justify-end">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={() => setIsCartOpen(false)} />
           <div className="relative w-full max-w-md bg-zinc-950 border-l border-white/10 flex flex-col h-full shadow-2xl animate-in slide-in-from-right duration-300">
-            
-            {/* 1. CABECERA CARRITO (BOTÓN VOLVER AÑADIDO) */}
             <div className="flex items-center justify-between p-6 border-b border-white/10 bg-zinc-900/50">
                 <div className="flex items-center gap-4">
-                    {/* Botón Volver */}
-                    <button 
-                        onClick={() => setIsCartOpen(false)} 
-                        className="p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center gap-1 group"
-                    >
+                    <button onClick={() => setIsCartOpen(false)} className="p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors flex items-center gap-1 group">
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                         <span className="text-xs uppercase font-bold tracking-widest hidden sm:block">Back</span>
                     </button>
                     <h3 className="text-lg font-black tracking-[0.2em] uppercase text-white">Your Cart</h3>
                 </div>
-                {/* Botón cerrar X */}
-                <button onClick={() => setIsCartOpen(false)} className="p-2 text-gray-400 hover:text-white hover:bg-red-900/30 rounded-full transition-colors">
-                    <X size={20} />
-                </button>
+                <button onClick={() => setIsCartOpen(false)} className="p-2 text-gray-400 hover:text-white hover:bg-red-900/30 rounded-full transition-colors"><X size={20} /></button>
             </div>
-            
             {cart.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-gray-500">
                 <ShoppingBag size={48} className="mb-4 opacity-20" />
                 <p className="text-sm tracking-wide uppercase">Empty Cart</p>
-                {/* Botón para volver a la tienda si está vacío */}
-                <button 
-                    onClick={() => setIsCartOpen(false)} 
-                    className="mt-6 text-xs uppercase tracking-widest border-b border-gray-600 pb-1 hover:text-white hover:border-white transition-colors"
-                >
-                    Continue Shopping
-                </button>
+                <button onClick={() => setIsCartOpen(false)} className="mt-6 text-xs uppercase tracking-widest border-b border-gray-600 pb-1 hover:text-white hover:border-white transition-colors">Continue Shopping</button>
               </div>
             ) : (
               <>
@@ -436,28 +475,14 @@ export function ShopSection() {
                     </div>
                   ))}
                 </div>
-                
                 <div className="p-6 border-t border-white/10 space-y-3 bg-zinc-900/50">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-400 text-sm uppercase tracking-wide">Total</span>
                     <span className="text-2xl font-mono text-white">{cartTotal}€</span>
                   </div>
-                  <button onClick={handleCheckoutWhatsApp} className="w-full bg-green-600 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2">
-                    <MessageCircle size={16} />
-                    WhatsApp
-                  </button>
-                  <button onClick={handleCheckoutEmail} className="w-full bg-red-900 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-800 transition-colors flex items-center justify-center gap-2">
-                    <Mail size={16} />
-                    Email Order
-                  </button>
-                  
-                  {/* Botón volver discreto abajo también */}
-                  <button 
-                    onClick={() => setIsCartOpen(false)} 
-                    className="w-full text-center text-xs text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition-colors"
-                  >
-                    Continue Shopping
-                  </button>
+                  <button onClick={handleCheckoutWhatsApp} className="w-full bg-green-600 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-green-500 transition-colors flex items-center justify-center gap-2"><MessageCircle size={16} />WhatsApp</button>
+                  <button onClick={handleCheckoutEmail} className="w-full bg-red-900 text-white py-3 text-xs md:text-sm tracking-[0.2em] uppercase font-bold hover:bg-red-800 transition-colors flex items-center justify-center gap-2"><Mail size={16} />Email Order</button>
+                  <button onClick={() => setIsCartOpen(false)} className="w-full text-center text-xs text-gray-500 hover:text-white mt-2 uppercase tracking-wider transition-colors">Continue Shopping</button>
                 </div>
               </>
             )}

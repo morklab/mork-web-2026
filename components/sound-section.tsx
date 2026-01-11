@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image" 
 import { Play, X, Radio } from "lucide-react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import clsx from "clsx"
@@ -27,8 +28,6 @@ const podcasts = [
 
 export function SoundSection() {
   const [activeTrack, setActiveTrack] = useState<number | null>(null)
-  
-  // Conectamos con las traducciones "Sound"
   const t = useTranslations("Sound")
 
   const toggleTrack = (index: number) => {
@@ -40,21 +39,56 @@ export function SoundSection() {
   }
 
   return (
-    <section id="sound" className="py-20 md:py-32 px-4 md:px-8 bg-card border-t border-white/5">
+    <section id="sound" className="py-20 md:py-32 px-4 md:px-8 bg-card border-t border-white/5 relative">
       <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}
-        <div className="mb-16 md:mb-24">
-          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">
-            {t('subtitle')}
-          </p>
-          {/* 🔥 TÍTULO UNIFICADO: Igual que en Manifiesto y Eventos */}
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
-            <GlitchText>{t('title')}</GlitchText>
-          </h2>
-          <p className="text-muted-foreground text-sm md:text-base tracking-wider mt-6 max-w-xl">
-            {t('text')}
-          </p>
+        <div className="mb-16 md:mb-24 flex flex-col md:flex-row justify-between md:items-center gap-10">
+          
+          {/* IZQUIERDA: TEXTOS */}
+          <div className="max-w-xl">
+            <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">
+              {t('subtitle')}
+            </p>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
+              <GlitchText>{t('title')}</GlitchText>
+            </h2>
+            <p className="text-muted-foreground text-sm md:text-base tracking-wider mt-6 leading-relaxed">
+              {t('text')}
+            </p>
+          </div>
+
+          {/* DERECHA: LOGO + FRASE PALPITANTE */}
+          <div className="flex flex-col md:flex-row-reverse items-center gap-6 mx-auto md:mx-0 mt-8 md:mt-0 shrink-0">
+             
+             {/* 1. LOGO */}
+             {/* 🔥 CORRECCIÓN COLOR: 
+                 - opacity-100: En móvil se ve FULL color (rojo intenso).
+                 - md:opacity-60: En escritorio se baja el brillo (más sutil).
+             */}
+             <div className="relative w-28 h-28 md:w-32 md:h-32 opacity-100 md:opacity-60">
+                <Image 
+                  src="/GALLETA_ROJA.PNG" 
+                  alt="MØRK Red Cookie" 
+                  fill 
+                  className="object-contain latido-mork" 
+                />
+             </div>
+             
+             {/* 2. TEXTO */}
+             {/* 🔥 CORRECCIÓN COLOR:
+                 - text-accent: En móvil es ROJO PURO.
+                 - md:text-accent/60: En escritorio es rojo apagado.
+             */}
+             <p className="latido-mork text-accent md:text-accent/60 font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase 
+                           text-center md:text-right 
+                           border-t md:border-t-0 md:border-r border-accent/30 
+                           pt-2 md:pt-0 md:pr-6">
+                We are Technø<br/>We are Mørk
+             </p>
+             
+          </div>
+
         </div>
 
         {/* LISTA DE PODCASTS */}
@@ -65,7 +99,6 @@ export function SoundSection() {
             return (
               <div key={index} className="border-b border-border bg-card">
                 
-                {/* FILA CLICKABLE */}
                 <div 
                   onClick={() => toggleTrack(index)}
                   className={clsx(
@@ -73,7 +106,7 @@ export function SoundSection() {
                     isActive ? "bg-zinc-900/50" : "hover:bg-zinc-900/30"
                   )}
                 >
-                  {/* BOTÓN PLAY / CERRAR */}
+                  {/* BOTÓN PLAY */}
                   <div className="flex items-center gap-4">
                     <div className={clsx(
                         "w-12 h-12 md:w-16 md:h-16 border flex items-center justify-center transition-all duration-300 min-h-11 min-w-11",
@@ -118,7 +151,7 @@ export function SoundSection() {
                   </div>
                 </div>
 
-                {/* REPRODUCTOR EMBEBIDO */}
+                {/* REPRODUCTOR */}
                 {isActive && (
                   <div className="w-full bg-black border-t border-white/5 animate-in fade-in slide-in-from-top-4 duration-500">
                     <iframe
@@ -137,7 +170,7 @@ export function SoundSection() {
           })}
         </div>
 
-        {/* LINKS EXTERNOS */}
+        {/* LINKS */}
         <div className="mt-16 flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="https://www.mixcloud.com/Mørk_lab/" 

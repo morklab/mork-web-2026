@@ -46,7 +46,8 @@
     padding: 0;
     background-color: black;
     color: white;
-    overflow-x: hidden;
+    /* 🔴 CAMBIO VITAL: De 'hidden' a 'clip' */
+    overflow-x: clip; 
   }
   
   /* 🔥 CAMBIO: HE ELIMINADO EL TEXT-SHADOW AQUÍ */

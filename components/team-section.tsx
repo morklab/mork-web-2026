@@ -1,20 +1,49 @@
 "use client"
 
+import Image from "next/image"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 
 export function TeamSection() {
   const t = useTranslations("Team")
 
-  // Quitamos la propiedad 'image' porque no la vamos a usar
+  // Asignamos una imagen conceptual a cada miembro
   const team = [
-    { name: "Erick Navas", role: t('role_cofounder') },
-    { name: "Alex Losa", role: t('role_cofounder_artist') },
-    { name: "MZDZ", role: t('role_ceo_artist') },
-    { name: "Rut Garau", role: t('role_pr') },
-    { name: "Álvaro Company", role: t('role_video') },
-    { name: "Ernesto Montero", role: t('role_visuals') },
-    { name: "Carlos Gomez", role: t('role_lighting') },
+    { 
+      name: "Erick Navas", 
+      role: t('role_cofounder'), 
+      image: "/team/structure.jpg" // Foto de arquitectura/cemento
+    },
+    { 
+      name: "Alex Losa", 
+      role: t('role_cofounder_artist'), 
+      image: "/team/audio.jpg" // Foto de vinilo/mesa
+    },
+    { 
+      name: "MZDZ", 
+      role: t('role_ceo_artist'), 
+      image: "/team/audio-2.jpg" // Foto de vinilo/mesa (o audio-2.jpg)
+    },
+    { 
+      name: "Rut Garau", 
+      role: t('role_pr'), 
+      image: "/team/pr.jpg" // Foto de cables/conexiones
+    },
+    { 
+      name: "Álvaro Company", 
+      role: t('role_video'), 
+      image: "/team/glitch.jpg" // Foto de estática/pantalla
+    },
+    { 
+      name: "Ernesto Montero", 
+      role: t('role_visuals'), 
+      image: "/team/glitch-2.jpg" // Foto de estática/pantalla
+    },
+    { 
+      name: "Carlos Gomez", 
+      role: t('role_lighting'), 
+      image: "/team/light.jpg" // Foto de haz de luz
+    },
   ]
 
   return (
@@ -44,11 +73,16 @@ export function TeamSection() {
           {team.map((member) => (
             <div key={member.name} className="group flex items-center gap-4 p-3 border border-white/5 bg-zinc-900/20 hover:border-red-900/40 hover:bg-zinc-900/60 transition-all duration-300">
               
-              {/* CUADRADO NEGRO LOGO MØRK (Sin foto) */}
-              <div className="relative w-14 h-14 md:w-16 md:h-16 flex-shrink-0 bg-black border border-white/10 flex items-center justify-center overflow-hidden transition-colors duration-300 group-hover:border-accent/30">
-                 <span className="text-[10px] font-black text-white/20 tracking-tighter group-hover:text-accent transition-colors duration-300">
-                    MØRK
-                 </span>
+              {/* IMAGEN CONCEPTUAL (Cuadrada) */}
+              <div className="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 border border-white/10 overflow-hidden bg-black">
+                 <Image 
+                    src={member.image}
+                    alt={member.role}
+                    fill
+                    className="object-cover grayscale opacity-60 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
+                 />
+                 {/* Capa de superposición para unificar tonos */}
+                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300" />
               </div>
 
               {/* DATOS */}
@@ -58,7 +92,7 @@ export function TeamSection() {
                 </h3>
                 
                 {/* Línea decorativa */}
-                <div className="h-px w-8 bg-white/10 my-1 group-hover:w-full group-hover:bg-accent/80 transition-all duration-500" />
+                <div className="h-px w-8 bg-white/10 my-2 group-hover:w-full group-hover:bg-accent/80 transition-all duration-500" />
                 
                 <p className="text-accent text-[10px] tracking-[0.1em] uppercase opacity-80 group-hover:opacity-100 truncate font-mono">
                   {member.role}

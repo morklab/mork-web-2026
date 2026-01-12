@@ -2,17 +2,27 @@
 
 import { useState, useEffect } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl" // <--- 1. Importamos useLocale
 import clsx from "clsx"
 import { X } from "lucide-react" 
+
+// Definimos un tipo para facilitar el manejo de textos bilingües
+type BilingualText = {
+  en: string;
+  es: string;
+};
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
   
   const t = useTranslations("Events")
+  const locale = useLocale(); // <--- 2. Detectamos el idioma
+  
+  // Forzamos que sea 'en' o 'es' para acceder al objeto de forma segura
+  const lang = (locale === 'es' || locale.startsWith('es-')) ? 'es' : 'en';
 
-  // Bloquear scroll de la web de fondo cuando el modal está abierto
+  // Bloquear scroll
   useEffect(() => {
     if (selectedScriptCode) {
       document.body.style.overflow = 'hidden'
@@ -24,44 +34,66 @@ export function EventsSection() {
 
   // --- TUS EVENTOS ---
   const events = [
-    // EVENTO 1: 14 FEB (BLANCO)
+    // EVENTO 1: 14 FEB
     {
       date: "2026.02.14",
       day: "SAT",
-      title: "MANGLES b2b REEKO", 
-      subtitle: `${t('night_with')} Lanna Family`, 
+      // Los nombres propios suelen ser iguales, pero mantenemos estructura por consistencia
+      title: { en: "MANGLES b2b REEKO", es: "MANGLES b2b REEKO" }, 
+      subtitle: { 
+        en: `${t('night_with')} Lanna Family`, 
+        es: `${t('night_with')} Lanna Family` 
+      }, 
       venue: "Wave Club",
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
       hasTicket: true
     },
-    // EVENTO 2: 7 DE MARZO (GRIS OSCURO)
+    // EVENTO 2: 7 DE MARZO
     {
       date: "2026.03.07",
       day: "SAT",
-      title: "ARTISTA TBA", 
-      subtitle: "REVEAL: 20 DE ENERO A LAS 18:00", 
+      title: { 
+        en: "ARTIST TBA", 
+        es: "ARTISTA TBA" 
+      }, 
+      subtitle: { 
+        en: "WILL BE REVEALED ON JANUARY 20 AT 6:00 PM", 
+        es: "SE REVELARÁ EL 20 DE ENERO A LAS 18:00" 
+      }, 
       venue: "Wave Club",
-      scriptTag: null, 
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
       hasTicket: true
     },
-    // EVENTO 3: 18 DE ABRIL (GRIS OSCURO)
+    // EVENTO 3: 18 DE ABRIL
     {
       date: "2026.04.18",
       day: "SAT",
-      title: "ARTISTA TBA", 
-      subtitle: "REVEAL: 27 DE ENERO A LAS 18:00", 
+      title: { 
+        en: "ARTIST TBA", 
+        es: "ARTISTA TBA" 
+      }, 
+      subtitle: { 
+        en: "WILL BE REVEALED ON JANUARY 27 AT 6:00 PM", 
+        es: "SE REVELARÁ EL 27 DE ENERO A LAS 18:00" 
+      }, 
       venue: "Wave Club",
-      scriptTag: null, 
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/1WZ7"></script>`, 
       hasTicket: true
     },
-    // EVENTO 4: 9 DE MAYO (GRIS OSCURO)
+    // EVENTO 4: 9 DE MAYO
     {
       date: "2026.05.09",
       day: "SAT",
-      title: "ARTISTA TBA", 
-      subtitle: "REVEAL: 3 DE FEBRERO A LAS 18:00", 
+      title: { 
+        en: "ARTIST TBA", 
+        es: "ARTISTA TBA" 
+      }, 
+      subtitle: { 
+        en: "WILL BE REVEALED ON FEBRUARY 3 AT 6:00 PM", 
+        es: "SE REVELARÁ EL 3 DE FEBRERO A LAS 18:00" 
+      }, 
       venue: "Wave Club",
-      scriptTag: null, 
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/2AJ1"></script>`, 
       hasTicket: true
     }
   ]
@@ -75,18 +107,10 @@ export function EventsSection() {
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
       {/* Fondo decorativo */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/colin-detras.JPEG')`,
-          filter: 'grayscale(100%)',
-          opacity: 0.4,
-        }}
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url('/colin-detras.JPEG')`, filter: 'grayscale(100%)', opacity: 0.4 }}
       />
-      <div
-        className="absolute right-0 bottom-0 bg-gradient-to-b from-background/70 via-background/80 to-background"
-        style={{ left: "auto", top: "auto" }}
-      />
+      <div className="absolute right-0 bottom-0 bg-gradient-to-b from-background/70 via-background/80 to-background" style={{ left: "auto", top: "auto" }} />
       
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="mb-16 md:mb-24">
@@ -107,6 +131,11 @@ export function EventsSection() {
             let titleColorClass = "!text-zinc-700"; 
             if (isFirstEvent) titleColorClass = "text-foreground"; 
             if (isHovered) titleColorClass = "!text-accent"; 
+            
+            // Selección de texto según idioma
+            // Forzamos el tipado para que TypeScript no se queje
+            const currentTitle = (event.title as BilingualText)[lang];
+            const currentSubtitle = (event.subtitle as BilingualText)[lang];
 
             return (
               <div key={index} className="border-b border-border">
@@ -129,20 +158,15 @@ export function EventsSection() {
                     
                     {/* INFO CENTRAL */}
                     <div className="flex-1">
-                      <h3
-                        className={clsx(
-                          "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors",
-                          titleColorClass
-                        )}
-                      >
+                      <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
                         {isFirstEvent ? (
-                          event.title
+                          currentTitle
                         ) : (
-                          <GlitchText>{event.title}</GlitchText>
+                          <GlitchText>{currentTitle}</GlitchText>
                         )}
                       </h3>
                       <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase font-bold">
-                          {event.subtitle}
+                          {currentSubtitle}
                       </p>
                     </div>
 
@@ -152,17 +176,15 @@ export function EventsSection() {
                       
                       {event.hasTicket ? (
                           <button 
-                          onClick={(e) => {
-                              e.stopPropagation(); 
-                              handleTicketClick(event.scriptTag);
-                          }}
+                          onClick={(e) => { e.stopPropagation(); handleTicketClick(event.scriptTag); }}
                           className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
                           >
                           {t('ticket_btn')}
                           </button>
                       ) : (
                           <span className="text-muted-foreground/50 text-[10px] uppercase tracking-[0.2em] border border-white/10 px-4 py-2 cursor-not-allowed">
-                              Coming Soon
+                               {/* He cambiado el texto hardcodeado por la variable de traducción */}
+                              {t('coming_soon')}
                           </span>
                       )}
                     </div>
@@ -177,11 +199,9 @@ export function EventsSection() {
         {/* --- TBA SECTION --- */}
         <div className="mt-8 md:mt-12 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
            <div className="w-[1px] h-8 bg-accent/30 mx-auto mb-6"></div>
-           
            <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
              <GlitchText>{t('tba_title')}</GlitchText>
            </h3>
-           
            <p className="text-xs tracking-[0.3em] uppercase text-zinc-600 mt-4 font-mono">
              {t('tba_subtitle')}
            </p>
@@ -191,8 +211,6 @@ export function EventsSection() {
       {/* --- MODAL FULL SCREEN --- */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
-            
-            {/* BOTÓN CERRAR (Misma posición que te gustó) */}
             <button 
               onClick={() => setSelectedScriptCode(null)}
               className="fixed top-24 right-6 z-[999999] bg-red-600 text-white p-3 rounded-full border border-white/20 shadow-2xl hover:scale-110 transition-transform cursor-pointer flex items-center justify-center"
@@ -200,8 +218,6 @@ export function EventsSection() {
             >
               <X className="w-8 h-8 font-bold" /> 
             </button>
-
-            {/* IFRAME */}
             <iframe
             title="Checkout Safe Frame"
             className="w-full h-full border-none block relative z-[9999]"
@@ -214,16 +230,7 @@ export function EventsSection() {
                     <style>
                     html, body { height: 100%; width: 100%; margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: sans-serif; }
                     body { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
-                    
-                    /* 🔥 AQUÍ ESTÁ EL CAMBIO: padding-top: 100px 🔥 */
-                    .wrapper { 
-                        width: 100%; 
-                        max-width: 800px; 
-                        margin: 0 auto; 
-                        padding-top: 100px; /* <--- BAJADO PARA QUE SE VEA LA IMAGEN */
-                        padding-bottom: 120px; 
-                    }
-                    
+                    .wrapper { width: 100%; max-width: 800px; margin: 0 auto; padding-top: 100px; padding-bottom: 120px; }
                     iframe { width: 100% !important; border: none !important; }
                     </style>
                 </head>
@@ -235,7 +242,6 @@ export function EventsSection() {
             />
         </div>
       )}
-
     </section>
   )
 }

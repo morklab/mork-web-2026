@@ -1,193 +1,241 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
-
-// 👇 FECHA DE LANZAMIENTO: 12 de Enero de 2026 a las 18:00:00
-const LAUNCH_DATE = "2026-01-12T18:00:00" 
+import clsx from "clsx"
+import { X } from "lucide-react" 
 
 export function EventsSection() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
+  
   const t = useTranslations("Events")
-  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 })
-  const [isLocked, setIsLocked] = useState(true)
-  const [isMounted, setIsMounted] = useState(false)
 
+  // Bloquear scroll de la web de fondo cuando el modal está abierto
   useEffect(() => {
-    setIsMounted(true)
-    const calculateTimeLeft = () => {
-      const difference = +new Date(LAUNCH_DATE) - +new Date()
-      
-      if (difference > 0) {
-        return {
-          hours: Math.floor((difference / (1000 * 60 * 60))),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60),
-        }
-      } else {
-        setIsLocked(false)
-        return { hours: 0, minutes: 0, seconds: 0 }
-      }
+    if (selectedScriptCode) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
     }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [selectedScriptCode])
 
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft())
-    }, 1000)
+  // --- TUS EVENTOS ---
+  const events = [
+    // EVENTO 1: 14 FEB (BLANCO)
+    {
+      date: "2026.02.14",
+      day: "SAT",
+      title: "MANGLES b2b REEKO", 
+      subtitle: `${t('night_with')} Lanna Family`, 
+      venue: "Wave Club",
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
+      hasTicket: true
+    },
+    // EVENTO 2: 7 DE MARZO (GRIS OSCURO)
+    {
+      date: "2026.03.07",
+      day: "SAT",
+      title: "ARTISTA TBA", 
+      subtitle: "REVEAL: 20 DE ENERO A LAS 18:00", 
+      venue: "Wave Club",
+      scriptTag: null, 
+      hasTicket: true
+    },
+    // EVENTO 3: 18 DE ABRIL (GRIS OSCURO)
+    {
+      date: "2026.04.18",
+      day: "SAT",
+      title: "ARTISTA TBA", 
+      subtitle: "REVEAL: 27 DE ENERO A LAS 18:00", 
+      venue: "Wave Club",
+      scriptTag: null, 
+      hasTicket: true
+    },
+    // EVENTO 4: 9 DE MAYO (GRIS OSCURO)
+    {
+      date: "2026.05.09",
+      day: "SAT",
+      title: "ARTISTA TBA", 
+      subtitle: "REVEAL: 3 DE FEBRERO A LAS 18:00", 
+      venue: "Wave Club",
+      scriptTag: null, 
+      hasTicket: true
+    }
+  ]
 
-    return () => clearInterval(timer)
-  }, [])
-
-  const formatTime = (num: number) => String(num).padStart(2, '0')
-
-  // --- CSS MANUAL: COLOR OSCURO + MALA SEÑAL ---
-  const glitchStyle = `
-    @keyframes signal-noise {
-      0% { transform: translate(0); }
-      2% { transform: translate(-2px, 1px); }
-      4% { transform: translate(2px, -1px); }
-      6% { transform: translate(0); }
-      90% { transform: translate(0); }
-      92% { transform: translate(2px, 0); }
-      94% { transform: translate(-2px, 0); }
-      96% { transform: translate(0); }
-      100% { transform: translate(0); }
-    }
-    .bad-signal {
-      display: inline-block;
-      position: relative;
-      /* 👇 AQUÍ CAMBIAMOS EL COLOR A UNO MÁS OSCURO/MATE */
-      color: #b91c1c; 
-      animation: signal-noise 3s infinite linear;
-    }
-    .bad-signal::before, .bad-signal::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      /* 👇 MISMO COLOR OSCURO PARA LAS CAPAS DE RUIDO */
-      color: #b91c1c; 
-      opacity: 0.7;
-    }
-    .bad-signal::before {
-      animation: signal-noise 4s infinite linear reverse;
-      clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-      transform: translate(-2px, 0);
-    }
-    .bad-signal::after {
-      animation: signal-noise 2s infinite linear;
-      clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-      transform: translate(2px, 0);
-    }
-  `
+  const handleTicketClick = (script: string | null) => {
+    if (!script) return;
+    setSelectedScriptCode(script)
+  }
 
   return (
-    <section id="events" className="relative bg-black py-20 md:py-32 border-t border-white/10 min-h-[60vh] flex flex-col justify-center overflow-hidden">
+    <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
-      {/* Estilos inyectados */}
-      <style>{glitchStyle}</style>
-
-      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full relative z-10">
-        
-        {/* CABECERA */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-b border-white/10 pb-8">
-          <div>
-            <p className="text-zinc-500 text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">
-              {t('subtitle')}
-            </p>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white">
-              <GlitchText>{t('title')}</GlitchText>
-            </h2>
-          </div>
-          <div className="hidden md:block">
-             <p className="text-zinc-600 font-mono text-xs tracking-widest uppercase text-right">
-                {isLocked ? t('status_locked') : t('tba_subtitle')}
-             </p>
-          </div>
+      {/* Fondo decorativo */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/colin-detras.JPEG')`,
+          filter: 'grayscale(100%)',
+          opacity: 0.4,
+        }}
+      />
+      <div
+        className="absolute right-0 bottom-0 bg-gradient-to-b from-background/70 via-background/80 to-background"
+        style={{ left: "auto", top: "auto" }}
+      />
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="mb-16 md:mb-24">
+          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
+            <GlitchText>{t('title')}</GlitchText>
+          </h2>
         </div>
 
-        {/* --- CONTENIDO DINÁMICO --- */}
-        {isLocked ? (
-          
-          /* 🔒 MODO BLOQUEADO (CUENTA ATRÁS) */
-          <div className="flex flex-col items-center justify-center py-10 md:py-20 animate-in fade-in zoom-in duration-1000">
+        {/* Lista de Eventos */}
+        <div className="border-t border-border">
+          {events.map((event, index) => {
             
-            <p className="text-white/30 text-xs md:text-sm tracking-[0.5em] uppercase mb-6 font-bold">
-              {t('countdown_label')}
-            </p>
-
-            {/* AQUÍ ESTÁ LA CLAVE:
-               1. 'animate-pulse' en el DIV (para que lata despacio).
-               2. 'bad-signal' en el H3 (para que tenga distorsión rápida).
-            */}
-            <div className="relative group animate-pulse">
-              {isMounted ? (
-                 <h3 
-                   className="text-6xl md:text-9xl font-black tracking-tighter tabular-nums scale-y-110 bad-signal"
-                   data-text={`${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
-                 >
-                   {`${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
-                 </h3>
-              ) : (
-                 <h3 className="text-6xl md:text-9xl font-black text-red-700 tracking-tighter">
-                   00:00:00
-                 </h3>
-              )}
-            </div>
-
-            <div className="mt-8 md:mt-12 max-w-md text-center">
-               <div className="h-px w-full bg-gradient-to-r from-transparent via-zinc-800 to-transparent mb-4" />
-               <p className="text-zinc-600 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] blink-effect">
-                 {t('access_restricted')}
-               </p>
-            </div>
-          </div>
-
-        ) : (
-
-          /* 🔓 MODO DESBLOQUEADO (TUS EVENTOS) */
-          <div className="grid grid-cols-1 gap-4 animate-in slide-in-from-bottom-10 fade-in duration-700">
+            const isHovered = hoveredIndex === index && event.hasTicket;
+            const isFirstEvent = index === 0;
             
-            {/* EVENTO 1 */}
-            <Link 
-              href="/tickets/lanna"
-              className="group relative flex flex-col md:flex-row items-start md:items-center justify-between p-6 md:p-8 border border-white/5 bg-zinc-900/20 hover:bg-white/5 hover:border-white/20 transition-all duration-300"
-            >
-              <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center">
-                <span className="text-4xl md:text-5xl font-black text-white/20 group-hover:text-white transition-all duration-300 w-16">
-                  01
-                </span>
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                      <span className="text-[10px] font-bold text-red-500 border border-red-900/30 px-2 py-0.5 uppercase tracking-wider">
-                        12 JAN
-                      </span>
+            // LÓGICA DE COLOR
+            let titleColorClass = "!text-zinc-700"; 
+            if (isFirstEvent) titleColorClass = "text-foreground"; 
+            if (isHovered) titleColorClass = "!text-accent"; 
+
+            return (
+              <div key={index} className="border-b border-border">
+                <div
+                  className={clsx(
+                    "group block py-6 md:py-8 transition-colors hover:bg-secondary/30 relative",
+                    event.hasTicket ? "cursor-pointer" : "cursor-default"
+                  )}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  onClick={() => event.hasTicket && handleTicketClick(event.scriptTag)}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                    
+                    {/* FECHA */}
+                    <div className="flex items-center gap-4 md:w-48">
+                      <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
+                      <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
+                    </div>
+                    
+                    {/* INFO CENTRAL */}
+                    <div className="flex-1">
+                      <h3
+                        className={clsx(
+                          "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors",
+                          titleColorClass
+                        )}
+                      >
+                        {isFirstEvent ? (
+                          event.title
+                        ) : (
+                          <GlitchText>{event.title}</GlitchText>
+                        )}
+                      </h3>
+                      <p className="text-muted-foreground text-sm tracking-wider mt-1 uppercase font-bold">
+                          {event.subtitle}
+                      </p>
+                    </div>
+
+                    {/* BOTÓN */}
+                    <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
+                      <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
+                      
+                      {event.hasTicket ? (
+                          <button 
+                          onClick={(e) => {
+                              e.stopPropagation(); 
+                              handleTicketClick(event.scriptTag);
+                          }}
+                          className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
+                          >
+                          {t('ticket_btn')}
+                          </button>
+                      ) : (
+                          <span className="text-muted-foreground/50 text-[10px] uppercase tracking-[0.2em] border border-white/10 px-4 py-2 cursor-not-allowed">
+                              Coming Soon
+                          </span>
+                      )}
+                    </div>
+
                   </div>
-                  <h3 className="text-xl md:text-3xl font-bold text-white uppercase tracking-tight group-hover:translate-x-2 transition-transform duration-300">
-                    {t('event1_title')}
-                  </h3>
-                  <p className="text-zinc-500 text-xs md:text-sm tracking-widest uppercase mt-1">
-                    {t('event1_desc')}
-                  </p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-white border border-white/20 px-4 py-2 mt-4 md:mt-0 group-hover:bg-white group-hover:text-black transition-colors uppercase">
-                 {t('ticket_btn')}
-              </span>
-            </Link>
+            )
+          })}
+        </div>
 
-             {/* INFO GENÉRICA TBA */}
-             <div className="mt-8 text-center border-t border-white/5 pt-8">
-                <p className="text-zinc-600 text-xs tracking-widest uppercase">{t('tba_title')}</p>
-             </div>
-
-          </div>
-        )}
-
+        {/* --- TBA SECTION --- */}
+        <div className="mt-8 md:mt-12 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
+           <div className="w-[1px] h-8 bg-accent/30 mx-auto mb-6"></div>
+           
+           <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
+             <GlitchText>{t('tba_title')}</GlitchText>
+           </h3>
+           
+           <p className="text-xs tracking-[0.3em] uppercase text-zinc-600 mt-4 font-mono">
+             {t('tba_subtitle')}
+           </p>
+        </div>
       </div>
+
+      {/* --- MODAL FULL SCREEN --- */}
+      {selectedScriptCode && (
+        <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
+            
+            {/* BOTÓN CERRAR (Misma posición que te gustó) */}
+            <button 
+              onClick={() => setSelectedScriptCode(null)}
+              className="fixed top-24 right-6 z-[999999] bg-red-600 text-white p-3 rounded-full border border-white/20 shadow-2xl hover:scale-110 transition-transform cursor-pointer flex items-center justify-center"
+              aria-label="Cerrar"
+            >
+              <X className="w-8 h-8 font-bold" /> 
+            </button>
+
+            {/* IFRAME */}
+            <iframe
+            title="Checkout Safe Frame"
+            className="w-full h-full border-none block relative z-[9999]"
+            srcDoc={`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                    <style>
+                    html, body { height: 100%; width: 100%; margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: sans-serif; }
+                    body { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+                    
+                    /* 🔥 AQUÍ ESTÁ EL CAMBIO: padding-top: 100px 🔥 */
+                    .wrapper { 
+                        width: 100%; 
+                        max-width: 800px; 
+                        margin: 0 auto; 
+                        padding-top: 100px; /* <--- BAJADO PARA QUE SE VEA LA IMAGEN */
+                        padding-bottom: 120px; 
+                    }
+                    
+                    iframe { width: 100% !important; border: none !important; }
+                    </style>
+                </head>
+                <body>
+                    <div class="wrapper">${selectedScriptCode}</div>
+                </body>
+                </html>
+            `}
+            />
+        </div>
+      )}
+
     </section>
   )
 }

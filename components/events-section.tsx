@@ -39,7 +39,7 @@ export function EventsSection() {
       date: "2026.02.14",
       day: "SAT",
       // Los nombres propios suelen ser iguales, pero mantenemos estructura por consistencia
-      title: { en: "MANGLES b2b REEKO", es: "MANGLES b2b REEKO" }, 
+      title: { en: "REEKO vs MANGLES", es: "REEKO vs MANGLES" }, 
       subtitle: { 
         en: `${t('night_with')} Lanna Family`, 
         es: `${t('night_with')} Lanna Family` 

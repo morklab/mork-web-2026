@@ -148,7 +148,7 @@ export function ShopSection() {
         message += ` - ${item.price * item.quantity}€\n`
     })
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
-    message += `\nTotal Estimado: ${total}€\n\nQuedo a la espera de las instrucciones de pago.`
+    message += `\nTotal Estimado: ${total}€ (Envío no incluido)\n\nQuedo a la espera de las instrucciones de pago.`
     return message
   }
 
@@ -310,7 +310,7 @@ export function ShopSection() {
       {selectedIndex !== null && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-200">
           
-          {/* BOTÓN CERRAR SUPERIOR (La X) - Mantenemos la X por si acaso */}
+          {/* BOTÓN CERRAR SUPERIOR (La X) */}
           <button 
             onClick={closeDetail} 
             className="absolute top-4 right-4 text-white/50 hover:text-white p-2 z-[60] bg-black/50 rounded-full border border-white/10"
@@ -339,7 +339,7 @@ export function ShopSection() {
                     {/* DETALLES */}
                     <div className="p-6 md:p-10 flex flex-col h-full relative">
                         
-                        {/* 🔥 BOTÓN "VOLVER" REUBICADO (Top Right, Rojo) */}
+                        {/* BOTÓN "VOLVER" (Top Right) */}
                         <button 
                           onClick={closeDetail} 
                           className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 text-red-600 hover:text-red-400 transition-colors group"
@@ -358,9 +358,19 @@ export function ShopSection() {
                             <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             {product.description}
                             </p>
-                            <p className="text-3xl font-mono text-white mb-8">
-                            {product.price}€
-                            </p>
+                            
+                            {/* --- PRECIO + AVISO DE ENVÍO SOLO --- */}
+                            <div className="mb-8">
+                                <p className="text-3xl font-mono text-white">
+                                {product.price}€
+                                </p>
+                                {/* 👇 AQUÍ HE BORRADO LO DEL IVA Y SOLO SALE ENVÍO */}
+                                <div className="mt-2">
+                                    <p className="text-[10px] md:text-xs text-muted-foreground/70 tracking-wide font-light">
+                                    * {t('shipping_note')}
+                                    </p>
+                                </div>
+                            </div>
                             
                             {product.sizes && (
                             <div className="space-y-3 mb-6">
@@ -425,7 +435,7 @@ export function ShopSection() {
         </div>
       )}
 
-      {/* SIDEBAR CARRITO (IGUAL QUE ANTES) */}
+      {/* SIDEBAR CARRITO */}
       {isCartOpen && (
         <div className="fixed inset-0 z-[200] flex justify-end">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in" onClick={() => setIsCartOpen(false)} />

@@ -4,26 +4,26 @@ import { useState, useEffect } from "react"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations, useLocale } from "next-intl"
 import clsx from "clsx"
-import { X } from "lucide-react" 
+import { X } from "lucide-react"
+import React from "react" 
 
+// Tipo actualizado para aceptar JSX
 type BilingualText = {
-  en: string;
-  es: string;
+  en: string | React.ReactNode;
+  es: string | React.ReactNode;
 };
 
-// 1. CONFIGURACIÓN DE FECHAS DE REVELACIÓN
-// He quitado el índice 1 (Marzo) para que ya no tenga cuenta atrás.
+// CONFIGURACIÓN DE FECHAS
 const REVEAL_DATES: Record<number, number> = {
     // 1: ELIMINADO (Ya revelado: SOL ORTEGA)
-    2: new Date("2026-01-27T18:00:00").getTime(), // Evento 18 Abril -> Reveal 27 Ene
-    3: new Date("2026-02-03T18:00:00").getTime(), // Evento 9 Mayo -> Reveal 3 Feb
+    2: new Date("2026-01-27T18:00:00").getTime(), 
+    3: new Date("2026-02-03T18:00:00").getTime(), 
 }
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
   
-  // Estado de las cuentas atrás
   const [countdowns, setCountdowns] = useState<Record<number, string>>({})
   const [isCalculated, setIsCalculated] = useState(false)
   
@@ -31,7 +31,6 @@ export function EventsSection() {
   const locale = useLocale();
   const lang = (locale === 'es' || locale.startsWith('es')) ? 'es' : 'en';
 
-  // --- LÓGICA DE TEMPORIZADORES ---
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date().getTime()
@@ -46,10 +45,8 @@ export function EventsSection() {
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
             const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-            
             const pad = (n: number) => n.toString().padStart(2, '0')
 
-            // Formato Inteligente
             if (days > 0) {
                newCountdowns[index] = `${pad(days)}d ${pad(hours)}h ${pad(minutes)}m`
             } else {
@@ -65,14 +62,12 @@ export function EventsSection() {
     return () => clearInterval(interval)
   }, [])
 
-  // Bloquear scroll
   useEffect(() => {
     if (selectedScriptCode) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = 'unset'
     return () => { document.body.style.overflow = 'unset' }
   }, [selectedScriptCode])
 
-  // --- EVENTOS ---
   const events = [
     // [0] 14 FEB
     {
@@ -84,11 +79,33 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
       hasTicket: true
     },
-    // [1] 7 MARZO (REVELADO: SOL ORTEGA)
+    // [1] 7 MARZO (SOL ORTEGA) - DISEÑO FINAL INDUSTRIAL
     {
       date: "2026.03.07",
       day: "SAT",
-      title: { en: "A Night With SOL ORTEGA", es: "Una Noche con SOL ORTEGA" }, 
+      title: { 
+        en: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             {/* - uppercase: Mayúsculas (como pediste).
+                - font-bold: Negrita (mismo peso que los subtítulos).
+                - tracking-widest: Espaciado amplio (estilo industrial).
+                - text-xs / text-sm: Tamaño controlado.
+             */}
+             <span className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-widest">
+                A Night With
+             </span>
+             <span>SOL ORTEGA</span>
+          </div>
+        ), 
+        es: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             <span className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-widest">
+                Una Noche con
+             </span>
+             <span>SOL ORTEGA</span>
+          </div>
+        ) 
+      }, 
       subtitle: { en: "International Women´s Day", es: "Dia Internacional de la mujer" }, 
       venue: "Wave Club",
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
@@ -124,7 +141,6 @@ export function EventsSection() {
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
-      {/* Fondo */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('/colin-detras.JPEG')`, filter: 'grayscale(100%)', opacity: 0.4 }}
       />
@@ -138,21 +154,15 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* Lista */}
         <div className="border-t border-border">
           {events.map((event, index) => {
             
             const isHovered = hoveredIndex === index && event.hasTicket;
-            
-            // 🔥 LÓGICA DE COLOR 🔥
-            // Definimos qué eventos están "revelados" (activos) para que salgan en blanco.
-            // Ahora incluimos el índice 0 (Reeko) y el índice 1 (Sol Ortega).
             const isRevealed = index === 0 || index === 1;
 
             const currentTitle = (event.title as BilingualText)[lang];
             let currentSubtitle = (event.subtitle as BilingualText)[lang];
 
-            // 1. Lógica de Cuenta Atrás
             const isSpecialEvent = REVEAL_DATES.hasOwnProperty(index);
             const timer = countdowns[index];
             const isCountdownActive = !!timer;
@@ -167,10 +177,9 @@ export function EventsSection() {
                 }
             }
 
-            // 2. Clases de Color del Título
-            let titleColorClass = "!text-zinc-700"; // Por defecto (gris oscuro para TBAs)
-            if (isRevealed) titleColorClass = "text-foreground"; // Blanco para eventos revelados
-            if (isHovered) titleColorClass = "!text-accent"; // Rojo al pasar el ratón
+            let titleColorClass = "!text-zinc-700"; 
+            if (isRevealed) titleColorClass = "text-foreground"; 
+            if (isHovered) titleColorClass = "!text-accent"; 
 
             return (
               <div key={index} className="border-b border-border">
@@ -185,20 +194,21 @@ export function EventsSection() {
                 >
                   <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
                     
-                    {/* FECHA */}
                     <div className="flex items-center gap-4 md:w-48">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
                       <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
                     </div>
                     
-                    {/* INFO */}
                     <div className="flex-1">
                       <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
-                        {/* Si está revelado, mostramos el texto normal. Si es TBA, aplicamos efecto Glitch opcional o texto fijo */}
-                        {isRevealed ? currentTitle : <GlitchText>{currentTitle}</GlitchText>}
+                        {/* VALIDACIÓN SEGURA PARA EVITAR EL ERROR ROJO */}
+                        {!isRevealed && typeof currentTitle === 'string' ? (
+                           <GlitchText>{currentTitle}</GlitchText>
+                        ) : (
+                           currentTitle
+                        )}
                       </h3>
                       
-                      {/* SUBTÍTULO / CUENTA ATRÁS */}
                       <p className={clsx(
                         "text-sm tracking-wider mt-1 uppercase font-bold tabular-nums transition-all",
                         shouldHideText && "invisible opacity-0",
@@ -210,7 +220,6 @@ export function EventsSection() {
                       </p>
                     </div>
 
-                    {/* BOTÓN */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                       
@@ -235,7 +244,6 @@ export function EventsSection() {
           })}
         </div>
 
-        {/* TBA Footer */}
         <div className="mt-8 md:mt-12 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
            <div className="w-[1px] h-8 bg-accent/30 mx-auto mb-6"></div>
            <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
@@ -247,7 +255,6 @@ export function EventsSection() {
         </div>
       </div>
 
-      {/* MODAL CHECKOUT */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
             <button 

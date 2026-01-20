@@ -13,7 +13,7 @@ type BilingualText = {
 
 // 1. Definimos las fechas aquí arriba para usarlas tanto en la lógica como en el diseño
 const REVEAL_DATES: Record<number, number> = {
-    1: new Date("2026-01-20T21:00:00").getTime(), // Evento 7 Marzo -> Reveal 20 Ene
+    1: new Date("2026-01-20T20:00:00").getTime(), // Evento 7 Marzo -> Reveal 20 Ene
     2: new Date("2026-01-27T18:00:00").getTime(), // Evento 18 Abril -> Reveal 27 Ene
     3: new Date("2026-02-03T18:00:00").getTime(), // Evento 9 Mayo -> Reveal 3 Feb
 }

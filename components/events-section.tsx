@@ -11,9 +11,10 @@ type BilingualText = {
   es: string;
 };
 
-// 1. Definimos las fechas aquí arriba para usarlas tanto en la lógica como en el diseño
+// 1. CONFIGURACIÓN DE FECHAS DE REVELACIÓN
+// He quitado el índice 1 (Marzo) para que ya no tenga cuenta atrás.
 const REVEAL_DATES: Record<number, number> = {
-    1: new Date("2026-01-20T20:00:00").getTime(), // Evento 7 Marzo -> Reveal 20 Ene
+    // 1: ELIMINADO (Ya revelado: SOL ORTEGA)
     2: new Date("2026-01-27T18:00:00").getTime(), // Evento 18 Abril -> Reveal 27 Ene
     3: new Date("2026-02-03T18:00:00").getTime(), // Evento 9 Mayo -> Reveal 3 Feb
 }
@@ -24,7 +25,6 @@ export function EventsSection() {
   
   // Estado de las cuentas atrás
   const [countdowns, setCountdowns] = useState<Record<number, string>>({})
-  // Estado para saber si ya hemos calculado el tiempo inicial (evita el parpadeo)
   const [isCalculated, setIsCalculated] = useState(false)
   
   const t = useTranslations("Events")
@@ -59,7 +59,7 @@ export function EventsSection() {
       })
       
       setCountdowns(newCountdowns)
-      setIsCalculated(true) // Marcamos que ya hemos hecho el primer cálculo
+      setIsCalculated(true)
     }, 1000)
 
     return () => clearInterval(interval)
@@ -74,7 +74,7 @@ export function EventsSection() {
 
   // --- EVENTOS ---
   const events = [
-    // [0]
+    // [0] 14 FEB
     {
       date: "2026.02.14",
       day: "SAT",
@@ -84,17 +84,17 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
       hasTicket: true
     },
-    // [1]
+    // [1] 7 MARZO (REVELADO: SOL ORTEGA)
     {
       date: "2026.03.07",
       day: "SAT",
-      title: { en: "ARTIST TBA", es: "ARTISTA TBA" }, 
-      subtitle: { en: "WILL BE REVEALED ON JANUARY 20 AT 6:00 PM", es: "SE REVELARÁ EL 20 DE ENERO A LAS 18:00" }, 
+      title: { en: "A Night With SOL ORTEGA", es: "Una Noche con SOL ORTEGA" }, 
+      subtitle: { en: "International Women´s Day", es: "Dia Internacional de la mujer" }, 
       venue: "Wave Club",
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
       hasTicket: true
     },
-    // [2]
+    // [2] 18 ABRIL (TBA)
     {
       date: "2026.04.18",
       day: "SAT",
@@ -104,7 +104,7 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/1WZ7"></script>`, 
       hasTicket: true
     },
-    // [3]
+    // [3] 9 MAYO (TBA)
     {
       date: "2026.05.09",
       day: "SAT",
@@ -143,40 +143,34 @@ export function EventsSection() {
           {events.map((event, index) => {
             
             const isHovered = hoveredIndex === index && event.hasTicket;
-            const isFirstEvent = index === 0;
             
+            // 🔥 LÓGICA DE COLOR 🔥
+            // Definimos qué eventos están "revelados" (activos) para que salgan en blanco.
+            // Ahora incluimos el índice 0 (Reeko) y el índice 1 (Sol Ortega).
+            const isRevealed = index === 0 || index === 1;
+
             const currentTitle = (event.title as BilingualText)[lang];
             let currentSubtitle = (event.subtitle as BilingualText)[lang];
 
-            // --- LÓGICA DE VISUALIZACIÓN ---
-            // 1. ¿Es este un evento con cuenta atrás? (Lo miramos en la constante global)
+            // 1. Lógica de Cuenta Atrás
             const isSpecialEvent = REVEAL_DATES.hasOwnProperty(index);
-            
-            // 2. ¿Tenemos el tiempo calculado?
             const timer = countdowns[index];
             const isCountdownActive = !!timer;
-
-            // 3. PREVENCIÓN DE PARPADEO:
-            // Si es un evento especial PERO aún no hemos calculado los tiempos (carga inicial/cambio idioma),
-            // forzamos que el texto esté vacío o invisible para no mostrar el gris por defecto.
             let shouldHideText = false;
 
             if (isSpecialEvent) {
                 if (isCountdownActive) {
-                    // Ya tenemos tiempo -> Mostramos el rojo
                     const prefix = lang === 'es' ? "SE REVELA EN: " : "REVEAL IN: ";
                     currentSubtitle = `${prefix}${timer}`;
                 } else if (!isCalculated) {
-                    // Aún estamos cargando -> Ocultamos para que no salga el gris
                     shouldHideText = true;
                 }
-                // Si isCalculated es true y no hay timer, es que la fecha pasó -> Se muestra el gris normal.
             }
 
-            // Colores
-            let titleColorClass = "!text-zinc-700"; 
-            if (isFirstEvent) titleColorClass = "text-foreground"; 
-            if (isHovered) titleColorClass = "!text-accent"; 
+            // 2. Clases de Color del Título
+            let titleColorClass = "!text-zinc-700"; // Por defecto (gris oscuro para TBAs)
+            if (isRevealed) titleColorClass = "text-foreground"; // Blanco para eventos revelados
+            if (isHovered) titleColorClass = "!text-accent"; // Rojo al pasar el ratón
 
             return (
               <div key={index} className="border-b border-border">
@@ -200,15 +194,14 @@ export function EventsSection() {
                     {/* INFO */}
                     <div className="flex-1">
                       <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
-                        {isFirstEvent ? currentTitle : <GlitchText>{currentTitle}</GlitchText>}
+                        {/* Si está revelado, mostramos el texto normal. Si es TBA, aplicamos efecto Glitch opcional o texto fijo */}
+                        {isRevealed ? currentTitle : <GlitchText>{currentTitle}</GlitchText>}
                       </h3>
                       
                       {/* SUBTÍTULO / CUENTA ATRÁS */}
                       <p className={clsx(
                         "text-sm tracking-wider mt-1 uppercase font-bold tabular-nums transition-all",
-                        // Si debemos ocultar (cargando), ponemos invisible
                         shouldHideText && "invisible opacity-0",
-                        // Si tenemos cuenta activa, ponemos rojo y pálpito. Si no, gris normal.
                         isCountdownActive 
                           ? "text-red-600 animate-pulse drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]"
                           : "text-muted-foreground"

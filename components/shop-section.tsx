@@ -6,6 +6,7 @@ import { ShoppingBag, X, Plus, Minus, MessageCircle, Mail, ArrowLeft, ChevronLef
 import { GlitchText } from "@/components/ui/glitch-text"
 import clsx from "clsx"
 import { useTranslations } from "next-intl"
+import { SizeGuide } from "@/components/shop/size-guide"
 
 // --- INTERFACES ---
 interface Product {
@@ -120,8 +121,8 @@ export function ShopSection() {
       setCart([...cart, { ...product, quantity: 1, selectedSize: size, selectedColor: color }])
     }
     
-    setSelectedSize("")
-    setSelectedColor("")
+    // setSelectedSize("") // Opcional: limpiar la selección o dejarla marcada
+    // setSelectedColor("")
     setIsCartOpen(true)
   }
 
@@ -170,7 +171,6 @@ export function ShopSection() {
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
 
-  // Función para cerrar el modal de detalle
   const closeDetail = () => {
     setSelectedIndex(null)
     setSelectedSize("")
@@ -306,11 +306,10 @@ export function ShopSection() {
         </button>
       </div>
 
-      {/* --- MODAL CARRUSEL DE DETALLE (Swipeable) --- */}
+      {/* --- MODAL CARRUSEL DE DETALLE --- */}
       {selectedIndex !== null && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-200">
           
-          {/* BOTÓN CERRAR SUPERIOR (La X) */}
           <button 
             onClick={closeDetail} 
             className="absolute top-4 right-4 text-white/50 hover:text-white p-2 z-[60] bg-black/50 rounded-full border border-white/10"
@@ -318,7 +317,6 @@ export function ShopSection() {
             <X size={24} />
           </button>
 
-          {/* CONTENEDOR DE SCROLL HORIZONTAL */}
           <div 
             ref={detailContainerRef}
             className="flex-1 flex overflow-x-auto snap-x snap-mandatory items-center no-scrollbar"
@@ -331,15 +329,12 @@ export function ShopSection() {
                  className="w-full flex-shrink-0 snap-center flex items-center justify-center p-4 h-full"
                >
                  <div className="bg-zinc-950 border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-y-auto grid md:grid-cols-2 relative shadow-2xl">
-                    {/* IMAGEN */}
                     <div className="relative aspect-square md:aspect-auto md:h-full bg-zinc-900">
                         <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
                     </div>
                     
-                    {/* DETALLES */}
                     <div className="p-6 md:p-10 flex flex-col h-full relative">
                         
-                        {/* BOTÓN "VOLVER" (Top Right) */}
                         <button 
                           onClick={closeDetail} 
                           className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 text-red-600 hover:text-red-400 transition-colors group"
@@ -359,12 +354,10 @@ export function ShopSection() {
                             {product.description}
                             </p>
                             
-                            {/* --- PRECIO + AVISO DE ENVÍO SOLO --- */}
                             <div className="mb-8">
                                 <p className="text-3xl font-mono text-white">
                                 {product.price}€
                                 </p>
-                                {/* 👇 AQUÍ HE BORRADO LO DEL IVA Y SOLO SALE ENVÍO */}
                                 <div className="mt-2">
                                     <p className="text-[10px] md:text-xs text-muted-foreground/70 tracking-wide font-light">
                                     * {t('shipping_note')}
@@ -389,6 +382,9 @@ export function ShopSection() {
                                     </button>
                                 ))}
                                 </div>
+                                
+                                {/* AQUI LA MAGIA: Pasamos la función addToCart a la Guía */}
+                                <SizeGuide onSelectSize={(size) => addToCart(product, size, undefined)} />
                             </div>
                             )}
                             
@@ -422,7 +418,6 @@ export function ShopSection() {
                             {t('btn_buy')}
                         </button>
                         
-                        {/* Indicador swipe móvil */}
                         <div className="md:hidden flex justify-center items-center gap-4 mt-6 text-[10px] text-zinc-500 animate-pulse uppercase tracking-widest">
                              <ChevronLeft size={12}/> Swipe <ChevronRight size={12}/>
                         </div>

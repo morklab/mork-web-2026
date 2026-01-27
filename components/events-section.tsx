@@ -16,7 +16,7 @@ type BilingualText = {
 // CONFIGURACIÓN DE FECHAS
 const REVEAL_DATES: Record<number, number> = {
     // 1: ELIMINADO (Ya revelado: SOL ORTEGA)
-    2: new Date("2026-01-27T18:00:00").getTime(), 
+    // 2: ELIMINADO (Ya revelado: FREDDY K)
     3: new Date("2026-02-03T18:00:00").getTime(), 
 }
 
@@ -79,18 +79,13 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
       hasTicket: true
     },
-    // [1] 7 MARZO (SOL ORTEGA) - DISEÑO FINAL INDUSTRIAL
+    // [1] 7 MARZO (SOL ORTEGA)
     {
       date: "2026.03.07",
       day: "SAT",
       title: { 
         en: (
           <div className="flex flex-col items-start leading-none gap-1">
-             {/* - uppercase: Mayúsculas (como pediste).
-                - font-bold: Negrita (mismo peso que los subtítulos).
-                - tracking-widest: Espaciado amplio (estilo industrial).
-                - text-xs / text-sm: Tamaño controlado.
-             */}
              <span className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-widest">
                 A Night With
              </span>
@@ -111,12 +106,30 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
       hasTicket: true
     },
-    // [2] 18 ABRIL (TBA)
+    // [2] 18 ABRIL (FREDDY K - REVELADO) 🔥
     {
       date: "2026.04.18",
       day: "SAT",
-      title: { en: "ARTIST TBA", es: "ARTISTA TBA" }, 
-      subtitle: { en: "WILL BE REVEALED ON JANUARY 27 AT 6:00 PM", es: "SE REVELARÁ EL 27 DE ENERO A LAS 18:00" }, 
+      title: { 
+        en: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             {/* Estilo idéntico a Sol Ortega */}
+             <span className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-widest">
+                A Night With
+             </span>
+             <span>FREDDY K</span>
+          </div>
+        ), 
+        es: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             <span className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-widest">
+                Una Noche con
+             </span>
+             <span>FREDDY K</span>
+          </div>
+        ) 
+      }, 
+      subtitle: { en: "BACK TO THE ROOTS - VINYL ONLY", es: "VUELTA A LAS RAICES - SOLO VINILO" }, 
       venue: "Wave Club",
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/1WZ7"></script>`, 
       hasTicket: true
@@ -158,7 +171,9 @@ export function EventsSection() {
           {events.map((event, index) => {
             
             const isHovered = hoveredIndex === index && event.hasTicket;
-            const isRevealed = index === 0 || index === 1;
+            
+            // 🔥 ACTUALIZADO: Índices 0, 1 y 2 están revelados 🔥
+            const isRevealed = index === 0 || index === 1 || index === 2;
 
             const currentTitle = (event.title as BilingualText)[lang];
             let currentSubtitle = (event.subtitle as BilingualText)[lang];

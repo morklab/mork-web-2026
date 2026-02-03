@@ -7,18 +7,14 @@ import clsx from "clsx"
 import { X } from "lucide-react"
 import React from "react" 
 
-// Tipo actualizado para aceptar JSX
+// Tipo actualizado
 type BilingualText = {
   en: string | React.ReactNode;
   es: string | React.ReactNode;
 };
 
-// CONFIGURACIÓN DE FECHAS
-const REVEAL_DATES: Record<number, number> = {
-    // 1: ELIMINADO (Ya revelado: SOL ORTEGA)
-    // 2: ELIMINADO (Ya revelado: FREDDY K)
-    3: new Date("2026-02-03T18:00:00").getTime(), 
-}
+// CONFIGURACIÓN DE FECHAS (Todo revelado)
+const REVEAL_DATES: Record<number, number> = {}
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
@@ -106,14 +102,13 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
       hasTicket: true
     },
-    // [2] 18 ABRIL (FREDDY K - REVELADO) 🔥
+    // [2] 18 ABRIL (FREDDY K)
     {
       date: "2026.04.18",
       day: "SAT",
       title: { 
         en: (
           <div className="flex flex-col items-start leading-none gap-1">
-             {/* Estilo idéntico a Sol Ortega */}
              <span className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-widest">
                 A Night With
              </span>
@@ -134,12 +129,13 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/1WZ7"></script>`, 
       hasTicket: true
     },
-    // [3] 9 MAYO (TBA)
+    // [3] 9 MAYO (SETAOC MASS)
     {
       date: "2026.05.09",
       day: "SAT",
-      title: { en: "ARTIST TBA", es: "ARTISTA TBA" }, 
-      subtitle: { en: "WILL BE REVEALED ON FEBRUARY 3 AT 6:00 PM", es: "SE REVELARÁ EL 3 DE FEBRERO A LAS 18:00" }, 
+      // 👇 ESTRUCTURA SIMPLE (Igual que Reeko vs Mangles)
+      title: { en: "SETAOC MASS", es: "SETAOC MASS" }, 
+      subtitle: { en: "A NIGHT WITH SETAOC MASS", es: "UNA NOCHE CON SETAOC MASS" }, 
       venue: "Wave Club",
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/2AJ1"></script>`, 
       hasTicket: true
@@ -172,8 +168,8 @@ export function EventsSection() {
             
             const isHovered = hoveredIndex === index && event.hasTicket;
             
-            // 🔥 ACTUALIZADO: Índices 0, 1 y 2 están revelados 🔥
-            const isRevealed = index === 0 || index === 1 || index === 2;
+            // 🔥 ACTUALIZADO: Índices 0, 1, 2 y 3 están revelados
+            const isRevealed = index === 0 || index === 1 || index === 2 || index === 3;
 
             const currentTitle = (event.title as BilingualText)[lang];
             let currentSubtitle = (event.subtitle as BilingualText)[lang];
@@ -216,7 +212,7 @@ export function EventsSection() {
                     
                     <div className="flex-1">
                       <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
-                        {/* VALIDACIÓN SEGURA PARA EVITAR EL ERROR ROJO */}
+                        {/* VALIDACIÓN SEGURA */}
                         {!isRevealed && typeof currentTitle === 'string' ? (
                            <GlitchText>{currentTitle}</GlitchText>
                         ) : (

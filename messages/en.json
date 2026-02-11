@@ -44,15 +44,15 @@
     "r3_d": "Enjoy the moment. Our staff will capture the event. Flash-free dancefloor.",
     "r4_t": "LEAVE BAD ENERGY OUTSIDE",
     "r4_d": "Good vibes or the door. Bring your best self.",
-    "r5_t": "CELEBRA DIVERSITY",
+    "r5_t": "CELEBRATE DIVERSITY",
     "r5_d": "All bodies, genders, and styles are welcome. Here we all dance.",
     "r6_t": "TAKE CARE OF THE DANCEFLOOR",
     "r6_d": "If you see something off, tell the staff. We are here to help."
   },
   "Visuals": {
-  "subtitle": "YOUR CURRENT SUBTITLE",
-  "description": "aftermovies of past rituals",
-  "dragHint": "DRAG TO EXPLORE"
+    "subtitle": "RITUAL ECHOES",
+    "description": "aftermovies of past rituals",
+    "dragHint": "DRAG TO EXPLORE"
   },
   "Team": {
     "subtitle": "THE FAMILY",
@@ -75,18 +75,18 @@
     "btn_mixcloud": "Mixcloud"
   },
   "Shop": {
-  "title": "SHOP",
-  "subtitle": "OFFICIAL MERCH",
-  "cat_all": "COLLECTION",
-  "cat_apparel": "APPAREL",
-  "cat_accessories": "ACCESSORIES",
-  "shipping_note": "Shipping costs not included",
-  "btn_buy": "BUY NOW",
+    "title": "SHOP",
+    "subtitle": "OFFICIAL MERCH",
+    "cat_all": "COLLECTION",
+    "cat_apparel": "APPAREL",
+    "cat_accessories": "ACCESSORIES",
+    "shipping_note": "Shipping costs not included",
+    "btn_buy": "BUY NOW",
 
-  "tagline": "DESIGNED FOR THE TECHNØ MINDS",
-  "description_tee": "100% Heavyweight Cotton. Oversized fit. Official MØRK merchandising designed in Mallorca.",
-  "description_keychain": "Premium accessory. Official MØRK merchandising."
-},
+    "tagline": "DESIGNED FOR THE TECHNØ MINDS",
+    "description_tee": "100% Heavyweight Cotton. Oversized fit. Official MØRK merchandising designed in Mallorca.",
+    "description_keychain": "Premium accessory. Official MØRK merchandising."
+  },
   "Artists": {
     "subtitle": "The Architects",
     "title": "CORE ARTISTS",
@@ -123,5 +123,12 @@
     "status_locked": "SYSTEM LOCKED",
     "status_unlocked": "INCOMING TRANSMISSION",
     "access_restricted": "// ACCESS RESTRICTED // AWAITING SIGNAL"
+  },
+  "U300": {
+    "date": "28.02.2026",
+    "concept": "A NIGHT WITH",
+    "cta": "GET TICKETS",
+    "footer_1": "LIMITED CAPACITY. NO PHONES. NO CAMERAS.",
+    "footer_2": "PURE TECHNO RITUALS."
   }
 }

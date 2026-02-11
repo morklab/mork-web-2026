@@ -1,10 +1,10 @@
 {
   "Navigation": {
     "events": "EVENTOS",
-    "artists": "CORE ARTISTS",
+    "artists": "ARTISTAS CLAVE",
     "manifesto": "MANIFIESTO",
     "visuals": "ECOS RITUALES",
-    "media": "ARCHIVO", 
+    "media": "ARCHIVO",
     "team": "EQUIPO",
     "sound": "SONIDO",
     "shop": "TIENDA",
@@ -23,105 +23,112 @@
     "m1_t": "MØRK NO ES SOLO UNA FIESTA",
     "m1_d": "Es una declaración. Un compromiso inquebrantable con el sonido como verdad.",
     
-    "m2_t": "DONDE EL EGO SE APAGA",
-    "m2_d": "Creamos un espacio donde el cuerpo recuerda cómo escuchar. Un refugio para quienes entienden la música no como fondo, sino como centro.",
+    "m2_t": "DONDE EL EGO SE DISUELVE",
+    "m2_d": "Creamos un espacio donde el cuerpo recuerda cómo escuchar. Un refugio para quienes entienden la música no como fondo, sino como el centro.",
     
     "m3_t": "PARA EL OÍDO EDUCADO",
-    "m3_d": "Curamos noches para quienes reconocen la intención en la repetición y la profundidad en la oscuridad. Aquí el ritmo no distrae: revela.",
+    "m3_d": "Curamos noches para quienes reconocen la intención en la repetición y la profundidad en la oscuridad. Aquí, el ritmo no distrae: revela.",
     
     "m4_t": "TERRITORIO NEUTRAL",
-    "m4_d": "La pista no tiene jerarquías ni personajes, solo pulsos sincronizados. En la oscuridad encontramos unidad. En la repetición, trascendencia. En el volumen justo, comunión.",
+    "m4_d": "La pista no tiene jerarquías ni personajes, solo pulsos sincronizados. En la oscuridad, encontramos unidad. En la repetición, trascendencia.",
     
     "m5_t": "RITUAL, NO CONSUMO",
-    "m5_d": "Es presencia, no espectáculo. Es comunidad sin rostro. Cuando la luz desaparece, el sonido toma el control. Y ahí, comienza MØRK.",
+    "m5_d": "Es presencia, no espectáculo. Comunidad sin rostro. Cuando la luz desaparece, el sonido toma el control. Y ahí, comienza MØRK.",
 
-    "code_title": "MØRK CØDE",
-    "r1_t": "RESPETA EL VIBE",
-    "r1_d": "Aquí venimos a bailar. La música nos une, no molestes a quien está a tu lado.",
-    "r2_t": "RESPETA A LXS DEMÁS",
+    "code_title": "CÓDIGO MØRK",
+    "r1_t": "RESPETA LA VIBRA",
+    "r1_d": "Estamos aquí para bailar. La música nos une, no molestes a los que te rodean.",
+    "r2_t": "RESPETA A LOS DEMÁS",
     "r2_d": "No es NO. El consentimiento es obligatorio. No toques sin permiso.",
-    "r3_t": "NO PHOTOS, NO VIDEOS",
-    "r3_d": "Disfruta del momento. Nuestro personal se encargará de inmortalizar el evento. Pista libre de flashes.",
+    "r3_t": "SIN FOTOS, SIN VÍDEOS",
+    "r3_d": "Disfruta el momento. Nuestro equipo capturará el evento. Pista libre de flashes.",
     "r4_t": "DEJA LA MALA ENERGÍA FUERA",
-    "r4_d": "Buen rollo o puerta. Trae tu mejor versión.",
+    "r4_d": "Buen rollo o a la calle. Trae tu mejor versión.",
     "r5_t": "CELEBRA LA DIVERSIDAD",
-    "r5_d": "Todos los cuerpos, géneros y estilos son bienvenidos. Aquí todxs bailamos.",
+    "r5_d": "Todos los cuerpos, géneros y estilos son bienvenidos. Aquí todos bailamos.",
     "r6_t": "CUIDA LA PISTA",
-    "r6_d": "Si ves algo raro, avisa al staff. Estamos aquí para ayudarte."
+    "r6_d": "Si ves algo raro, avisa al personal. Estamos para ayudar."
   },
   "Visuals": {
-    "subtitle": "TU SUBTITULO ACTUAL",
+    "subtitle": "ECOS VISUALES",
     "description": "aftermovies de rituales pasados",
-    "dragHint": "DESLIZA PARA EXPLORAR"
+    "dragHint": "ARRASTRA PARA EXPLORAR"
   },
   "Team": {
     "subtitle": "LA FAMILIA",
     "title": "EL EQUIPO",
-    "text": "Somos una familia que cree en el proyecto desde el principio. El techno y la cultura de club no son una moda para nosotros: son una forma de vida.",
+    "text": "Somos una familia que creyó en el proyecto desde el principio. El techno y la cultura de club no son tendencias para nosotros, sino una forma de vida.",
     "quote": "La excelencia está en lo invisible.",
     "role_cofounder": "COFUNDADOR",
-    "role_cofounder_artist": "COFUNDADOR Y ARTISTA",
-    "role_ceo_artist": "CEO Y ARTISTA",
-    "role_pr": "COORDINADORA DE PR Y PROMOCIÓN",
+    "role_cofounder_artist": "COFUNDADOR, ARTISTA",
+    "role_ceo_artist": "CEO, ARTISTA",
+    "role_pr": "COORDINACIÓN DE PR Y PROMOCIÓN",
     "role_video": "DIRECTOR Y JEFE DE VÍDEO",
     "role_visuals": "ARTISTA VISUAL Y FOTÓGRAFO",
     "role_lighting": "DIRECTOR DE ILUMINACIÓN"
   },
   "Sound": {
-    "subtitle": "Escuchar",
+    "subtitle": "Escucha",
     "title": "EL SONIDO",
-    "text": "Sumérgete en el sonido MØRK. Escúchalo aquí.",
+    "text": "Sumérgete en el sonido MØRK. Reproduce directamente aquí.",
     "profile_button": "Perfil de Mixcloud",
     "btn_mixcloud": "Mixcloud"
   },
   "Shop": {
-  "title": "TIENDA",
-  "subtitle": "MERCH OFICIAL",
-  "cat_all": "COLECCIÓN",
-  "cat_apparel": "INDUMENTARIA",
-  "cat_accessories": "ACCESORIOS",
-  "shipping_note": "Gastos de envío no incluidos",
-  "btn_buy": "COMPRAR AHORA",
-  
-  "tagline": "DISEÑADO PARA MENTES TECHNO",
-  "description_tee": "Algodón 100% de alto gramaje. Corte Oversize. Merchandising oficial de MØRK diseñado en Mallorca.",
-  "description_keychain": "Accesorio premium. Merchandising oficial de MØRK."
-},
+    "title": "TIENDA",
+    "subtitle": "MERCH OFICIAL",
+    "cat_all": "COLECCIÓN",
+    "cat_apparel": "ROPA",
+    "cat_accessories": "ACCESORIOS",
+    "shipping_note": "Gastos de envío no incluidos",
+    "btn_buy": "COMPRAR AHORA",
+
+    "tagline": "DISEÑADO PARA MENTES TECHNØ",
+    "description_tee": "100% Algodón de alto gramaje. Corte oversize. Merchandising oficial MØRK diseñado en Mallorca.",
+    "description_keychain": "Accesorio premium. Merchandising oficial MØRK."
+  },
   "Artists": {
     "subtitle": "Los Arquitectos",
-    "title": "CORE ARTISTS",
+    "title": "ARTISTAS CLAVE",
     "quote": "“Entre lo mecánico y lo animal, el techno late como el sonido de la vida.”"
   },
   "Footer": {
-    "text": "Cultura de música electrónica underground en Mallorca. Puro techno, pura experiencia.",
+    "text": "Cultura de música electrónica underground en Mallorca. Techno puro, experiencia pura.",
     "rights": "Todos los derechos reservados.",
     "col_nav": "NAVEGACIÓN",
     "col_connect": "CONECTAR",
     "pure_mork": "SOMOS TECHNO, SOMOS MØRK."
   },
   "ShopProducts": {
-    "tee_desc": "100% Algodón Orgánico. Alto gramaje. Serigrafía trasera.",
-    "keychain_desc": "Metal y Goma. Acento Rojo.",
+    "tee_desc": "100% Algodón Orgánico. Alto gramaje. Serigrafía en espalda.",
+    "keychain_desc": "Metal y Caucho. Acento Rojo.",
     "ticket_desc": "Wave Club Mallorca",
-    "tagline": "DISEÑADO PARA MENTES TECHNO"
+    "tagline": "DISEÑADO PARA MENTES TECHNØ"
   },
   "Media": {
     "title": "ARCHIVO",
-    "subtitle": "VIVIDO",
-    "disclaimer": "IMÁGENES CAPTURADAS POR NUESTRO EQUIPO AUTORIZADO CON TOTAL RESPETO POR EL VIBE."
+    "subtitle": "VISTO",
+    "disclaimer": "IMÁGENES CAPTURADAS POR NUESTRO EQUIPO AUTORIZADO CON TOTAL RESPETO POR LA VIBRA."
   },
   "Events": {
-    "subtitle": "Próximamente",
+    "subtitle": "Próximos",
     "title": "PRÓXIMOS EVENTOS",
     "ticket_btn": "Entradas",
-    "view_all": "Ver todos los eventos →",
+    "view_all": "Ver Todos los Eventos →",
     "night_with": "Una Noche Con",
     "tba_title": "PRÓXIMAS FECHAS TBA",
     "tba_subtitle": "MØRK LAB SERIES 2026",
-    "event1_title": "A NIGHT WITH LANNA FAMILY",
+    "event1_title": "UNA NOCHE CON LANNA FAMILY",
     "event1_desc": "REEKO VS MANGLES",
     "status_locked": "SISTEMA BLOQUEADO",
     "status_unlocked": "TRANSMISIÓN ENTRANTE",
     "access_restricted": "// ACCESO RESTRINGIDO // ESPERANDO SEÑAL"
+  },
+  "U300": {
+    "date": "28.02.2026",
+    "concept": "UNA NOCHE CON",
+    "cta": "COMPRAR ENTRADAS",
+    "footer_1": "AFORO LIMITADO. SIN MÓVILES. SIN CÁMARAS.",
+    "footer_2": "RITUALES DE TECHNO PURO."
   }
 }

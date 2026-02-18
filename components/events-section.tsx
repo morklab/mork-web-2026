@@ -23,11 +23,16 @@ export function EventsSection() {
   const [countdowns, setCountdowns] = useState<Record<number, string>>({})
   const [isCalculated, setIsCalculated] = useState(false)
   
+  // --- LÓGICA DE FECHAS ---
+  const [today, setToday] = useState<Date | null>(null);
+
   const t = useTranslations("Events")
   const locale = useLocale();
   const lang = (locale === 'es' || locale.startsWith('es')) ? 'es' : 'en';
 
   useEffect(() => {
+    setToday(new Date());
+
     const interval = setInterval(() => {
       const now = new Date().getTime()
       const newCountdowns: Record<number, string> = {}
@@ -64,8 +69,17 @@ export function EventsSection() {
     return () => { document.body.style.overflow = 'unset' }
   }, [selectedScriptCode])
 
+  // --- FUNCIÓN HELPER: SABER SI EL EVENTO YA PASÓ ---
+  const isEventPast = (dateStr: string) => {
+    if (!today) return false;
+    const formattedDate = dateStr.replace(/\./g, '-');
+    const eventDate = new Date(formattedDate);
+    eventDate.setHours(23, 59, 59); 
+    return eventDate < today;
+  }
+
   const events = [
-    // [0] 14 FEB
+    // [0] 14 FEB - REEKO
     {
       date: "2026.02.14",
       day: "SAT",
@@ -75,7 +89,7 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
       hasTicket: true
     },
-    // [1] 7 MARZO (SOL ORTEGA)
+    // [1] 7 MARZO - SOL ORTEGA
     {
       date: "2026.03.07",
       day: "SAT",
@@ -102,7 +116,7 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
       hasTicket: true
     },
-    // [2] 18 ABRIL (FREDDY K)
+    // [2] 18 ABRIL - FREDDY K
     {
       date: "2026.04.18",
       day: "SAT",
@@ -129,11 +143,10 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/1WZ7"></script>`, 
       hasTicket: true
     },
-    // [3] 9 MAYO (SETAOC MASS)
+    // [3] 9 MAYO - SETAOC MASS
     {
       date: "2026.05.09",
       day: "SAT",
-      // 👇 ESTRUCTURA SIMPLE (Igual que Reeko vs Mangles)
       title: { en: "SETAOC MASS", es: "SETAOC MASS" }, 
       subtitle: { en: "A NIGHT WITH SETAOC MASS", es: "UNA NOCHE CON SETAOC MASS" }, 
       venue: "Wave Club",
@@ -166,10 +179,9 @@ export function EventsSection() {
         <div className="border-t border-border">
           {events.map((event, index) => {
             
-            const isHovered = hoveredIndex === index && event.hasTicket;
-            
-            // 🔥 ACTUALIZADO: Índices 0, 1, 2 y 3 están revelados
-            const isRevealed = index === 0 || index === 1 || index === 2 || index === 3;
+            const isPast = isEventPast(event.date); 
+            const isHovered = hoveredIndex === index && event.hasTicket && !isPast; 
+            const isRevealed = true; 
 
             const currentTitle = (event.title as BilingualText)[lang];
             let currentSubtitle = (event.subtitle as BilingualText)[lang];
@@ -192,27 +204,57 @@ export function EventsSection() {
             if (isRevealed) titleColorClass = "text-foreground"; 
             if (isHovered) titleColorClass = "!text-accent"; 
 
+            // CLASES DEL CONTENEDOR
+            const containerClasses = clsx(
+                "group block py-6 md:py-8 transition-colors relative border-b border-border",
+                isPast 
+                    ? "pointer-events-none select-none" 
+                    : event.hasTicket ? "cursor-pointer hover:bg-secondary/30" : "cursor-default"
+            );
+
+            // CLASES DEL CONTENIDO (Gris si es pasado)
+            const contentClasses = clsx(
+                "flex flex-col md:flex-row md:items-center gap-4 md:gap-8 transition-all",
+                isPast ? "opacity-30 grayscale blur-[1px]" : ""
+            );
+
             return (
-              <div key={index} className="border-b border-border">
-                <div
-                  className={clsx(
-                    "group block py-6 md:py-8 transition-colors hover:bg-secondary/30 relative",
-                    event.hasTicket ? "cursor-pointer" : "cursor-default"
+              <div key={index} className={containerClasses}
+                  onMouseEnter={() => !isPast && setHoveredIndex(index)}
+                  onMouseLeave={() => !isPast && setHoveredIndex(null)}
+                  onClick={() => !isPast && event.hasTicket && handleTicketClick(event.scriptTag)}
+              >
+                  {/* --- SELLO "ARCHIVADO" (OPACIDAD AL 40%) --- */}
+                  {isPast && (
+                    <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none overflow-hidden">
+                        {/* opacity-40: Hace que todo el sello sea semitransparente.
+                           mix-blend-overlay: Opcional, pero ayuda a que se "imprima" en el fondo. 
+                           Lo he dejado normal con opacidad para asegurar legibilidad.
+                        */}
+                        <div className="opacity-40 border-[4px] md:border-[6px] border-red-600 px-6 py-2 md:px-8 md:py-4 -rotate-12 backdrop-blur-none">
+                            <span className="text-3xl md:text-6xl font-black text-red-600 tracking-[0.2em] uppercase whitespace-nowrap">
+                                {lang === 'es' ? 'ARCHIVADO' : 'ARCHIVED'}
+                            </span>
+                        </div>
+                    </div>
                   )}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={() => event.hasTicket && handleTicketClick(event.scriptTag)}
-                >
-                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+
+                  {/* --- CONTENIDO DEL EVENTO --- */}
+                  <div className={contentClasses}>
                     
+                    {/* FECHA */}
                     <div className="flex items-center gap-4 md:w-48">
-                      <span className="text-muted-foreground text-xs tracking-[0.2em] font-mono">{event.date}</span>
-                      <span className="text-accent text-xs tracking-[0.2em] font-bold">{event.day}</span>
+                      <span className={clsx("text-xs tracking-[0.2em] font-mono", isPast ? "text-zinc-500 line-through decoration-zinc-500/50" : "text-muted-foreground")}>
+                        {event.date}
+                      </span>
+                      <span className={clsx("text-xs tracking-[0.2em] font-bold", isPast ? "text-zinc-600" : "text-accent")}>
+                        {event.day}
+                      </span>
                     </div>
                     
+                    {/* INFO PRINCIPAL */}
                     <div className="flex-1">
                       <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
-                        {/* VALIDACIÓN SEGURA */}
                         {!isRevealed && typeof currentTitle === 'string' ? (
                            <GlitchText>{currentTitle}</GlitchText>
                         ) : (
@@ -231,10 +273,15 @@ export function EventsSection() {
                       </p>
                     </div>
 
+                    {/* BOTÓN O ESTADO */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                       
-                      {event.hasTicket ? (
+                      {isPast ? (
+                          <span className="text-zinc-600 border border-zinc-800 px-6 py-2 text-[10px] tracking-[0.2em] uppercase font-bold min-h-11 flex items-center justify-center cursor-not-allowed">
+                              {lang === 'es' ? 'FINALIZADO' : 'ENDED'}
+                          </span>
+                      ) : event.hasTicket ? (
                           <button 
                           onClick={(e) => { e.stopPropagation(); handleTicketClick(event.scriptTag); }}
                           className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
@@ -249,7 +296,6 @@ export function EventsSection() {
                     </div>
 
                   </div>
-                </div>
               </div>
             )
           })}

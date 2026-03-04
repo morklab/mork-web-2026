@@ -174,7 +174,7 @@ export default function U300Page() {
             {/* LOGO DE FONDO (U300) */}
             <div className="mb-20 mix-blend-overlay opacity-20 select-none pointer-events-none">
                 <Image 
-                    src="/u300.png" 
+                    src="/u300tran.png" 
                     alt="U300 Background"
                     width={500} 
                     height={200}

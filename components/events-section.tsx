@@ -227,10 +227,6 @@ export function EventsSection() {
                   {/* --- SELLO "ARCHIVADO" (OPACIDAD AL 40%) --- */}
                   {isPast && (
                     <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none overflow-hidden">
-                        {/* opacity-40: Hace que todo el sello sea semitransparente.
-                           mix-blend-overlay: Opcional, pero ayuda a que se "imprima" en el fondo. 
-                           Lo he dejado normal con opacidad para asegurar legibilidad.
-                        */}
                         <div className="opacity-40 border-[4px] md:border-[6px] border-red-600 px-6 py-2 md:px-8 md:py-4 -rotate-12 backdrop-blur-none">
                             <span className="text-3xl md:text-6xl font-black text-red-600 tracking-[0.2em] uppercase whitespace-nowrap">
                                 {lang === 'es' ? 'ARCHIVADO' : 'ARCHIVED'}

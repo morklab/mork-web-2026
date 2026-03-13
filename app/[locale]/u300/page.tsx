@@ -56,12 +56,40 @@ export default function U300Page() {
       concept: { en: "OPENING U300 - LIMITED CAPACITY", es: "APERTURA U300 - AFORO LIMITADO" },
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/111C"></script>`
     },
-    // [1] PRÓXIMO EVENTO: TOMMY FOUR SEVEN
+    // [1] EVENTO: TOMMY FOUR SEVEN
     {
       date: "2026.03.14",
       artist: "TOMMY FOUR SEVEN",
       concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/5IQ8"></script>`
+    },
+    // [2] EVENTO: Ø[Pase]
+    {
+      date: "2026.03.28",
+      artist: "Ø[Pase]",
+      concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/RLRN"></script>`
+    },
+    // [3] EVENTO: MARCAL
+    {
+      date: "2026.04.11",
+      artist: "MARCAL",
+      concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/2QUN"></script>`
+    },
+    // [4] EVENTO: PHARA
+    {
+      date: "2026.05.02",
+      artist: "PHARA",
+      concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/QJSF"></script>`
+    },
+    // [5] EVENTO: NASTIA REIGEL
+    {
+      date: "2026.05.23",
+      artist: "NASTIA REIGEL",
+      concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/LB4F"></script>`
     }
   ]
 
@@ -274,13 +302,13 @@ export default function U300Page() {
           </div>
       </div>
 
-      {/* --- POPUP DEL IFRAME (TICKETS) --- */}
+      {/* --- POPUP DEL IFRAME (TICKETS) CORREGIDO --- */}
       {selectedScriptCode && (
-        <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300 flex items-start justify-center overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
             
             <button 
               onClick={() => setSelectedScriptCode(null)}
-              className="fixed top-6 right-6 z-[999999] bg-red-600 text-white p-3 rounded-full border border-white/20 shadow-2xl hover:scale-110 transition-transform cursor-pointer flex items-center justify-center"
+              className="fixed top-24 right-6 z-[999999] bg-red-600 text-white p-3 rounded-full border border-white/20 shadow-2xl hover:scale-110 transition-transform cursor-pointer flex items-center justify-center"
             >
               <X className="w-8 h-8 font-bold" /> 
             </button>
@@ -295,29 +323,9 @@ export default function U300Page() {
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                     <style>
-                    html, body { 
-                        height: auto !important;
-                        min-height: auto !important;
-                        margin: 0; 
-                        padding: 0; 
-                        background-color: #000000; 
-                        color: #ffffff; 
-                        font-family: sans-serif; 
-                    }
+                    html, body { height: 100%; width: 100%; margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: sans-serif; }
                     body { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
-                    .wrapper { 
-                        width: 100%; 
-                        max-width: 800px; 
-                        margin: 0 auto; 
-                        padding-top: 40px;
-                        padding-bottom: 80px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: flex-start;
-                        gap: 0;
-                        height: auto !important;
-                    }
-                    .wrapper > * { flex-grow: 0 !important; margin-bottom: 20px; }
+                    .wrapper { width: 100%; max-width: 800px; margin: 0 auto; padding-top: 100px; padding-bottom: 120px; }
                     iframe { width: 100% !important; border: none !important; }
                     </style>
                 </head>

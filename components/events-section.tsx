@@ -19,6 +19,7 @@ const REVEAL_DATES: Record<number, number> = {}
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
+  const [showPastEvents, setShowPastEvents] = useState(false) // ESTADO PARA EL ACORDEÓN
   
   const [countdowns, setCountdowns] = useState<Record<number, string>>({})
   const [isCalculated, setIsCalculated] = useState(false)
@@ -160,34 +161,55 @@ export function EventsSection() {
     setSelectedScriptCode(script)
   }
 
+  // Separamos los eventos entre Futuros y Pasados (guardando el índice original para no romper lógicas)
+  const upcomingEvents = events.map((e, i) => ({...e, originalIndex: i})).filter(e => !isEventPast(e.date));
+  const pastEvents = events.map((e, i) => ({...e, originalIndex: i})).filter(e => isEventPast(e.date));
+
+  // Texto del slider
+  const marqueeText = lang === 'es' 
+    ? "// TRANSMISIÓN ENTRANTE // DISEÑANDO LOS PRÓXIMOS RITUALES // NUEVAS FECHAS TBA "
+    : "// INCOMING TRANSMISSION // DESIGNING THE NEXT RITUALS // NEW DATES TBA ";
+  const repeatedMarqueeText = Array(6).fill(marqueeText).join("\u00A0\u00A0\u00A0");
+
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
+      {/* FILTRO SVG PARA EL SLIDER */}
+      <svg className="hidden">
+        <defs>
+          <filter id="marquee-glitch">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.1" numOctaves="1" result="warp" />
+            <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="3" in="SourceGraphic" in2="warp" />
+          </filter>
+        </defs>
+      </svg>
+
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('/colin-detras.JPEG')`, filter: 'grayscale(100%)', opacity: 0.4 }}
       />
       <div className="absolute right-0 bottom-0 bg-gradient-to-b from-background/70 via-background/80 to-background" style={{ left: "auto", top: "auto" }} />
       
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="mb-16 md:mb-24">
+        
+        {/* TÍTULO PRINCIPAL */}
+        <div className="mb-12 md:mb-16">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
             <GlitchText>{t('title')}</GlitchText>
           </h2>
         </div>
 
+        {/* LISTA DE EVENTOS FUTUROS */}
         <div className="border-t border-border">
-          {events.map((event, index) => {
-            
-            const isPast = isEventPast(event.date); 
-            const isHovered = hoveredIndex === index && event.hasTicket && !isPast; 
+          {upcomingEvents.map((event) => {
+            const isHovered = hoveredIndex === event.originalIndex && event.hasTicket; 
             const isRevealed = true; 
 
             const currentTitle = (event.title as BilingualText)[lang];
             let currentSubtitle = (event.subtitle as BilingualText)[lang];
 
-            const isSpecialEvent = REVEAL_DATES.hasOwnProperty(index);
-            const timer = countdowns[index];
+            const isSpecialEvent = REVEAL_DATES.hasOwnProperty(event.originalIndex);
+            const timer = countdowns[event.originalIndex];
             const isCountdownActive = !!timer;
             let shouldHideText = false;
 
@@ -204,48 +226,18 @@ export function EventsSection() {
             if (isRevealed) titleColorClass = "text-foreground"; 
             if (isHovered) titleColorClass = "!text-accent"; 
 
-            // CLASES DEL CONTENEDOR
-            const containerClasses = clsx(
-                "group block py-6 md:py-8 transition-colors relative border-b border-border",
-                isPast 
-                    ? "pointer-events-none select-none" 
-                    : event.hasTicket ? "cursor-pointer hover:bg-secondary/30" : "cursor-default"
-            );
-
-            // CLASES DEL CONTENIDO (Gris si es pasado)
-            const contentClasses = clsx(
-                "flex flex-col md:flex-row md:items-center gap-4 md:gap-8 transition-all",
-                isPast ? "opacity-30 grayscale blur-[1px]" : ""
-            );
-
             return (
-              <div key={index} className={containerClasses}
-                  onMouseEnter={() => !isPast && setHoveredIndex(index)}
-                  onMouseLeave={() => !isPast && setHoveredIndex(null)}
-                  onClick={() => !isPast && event.hasTicket && handleTicketClick(event.scriptTag)}
+              <div key={event.originalIndex} className={clsx("group block py-6 md:py-8 transition-colors relative border-b border-border", event.hasTicket ? "cursor-pointer hover:bg-secondary/30" : "cursor-default")}
+                  onMouseEnter={() => setHoveredIndex(event.originalIndex)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  onClick={() => event.hasTicket && handleTicketClick(event.scriptTag)}
               >
-                  {/* --- SELLO "ARCHIVADO" (OPACIDAD AL 40%) --- */}
-                  {isPast && (
-                    <div className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none overflow-hidden">
-                        <div className="opacity-40 border-[4px] md:border-[6px] border-red-600 px-6 py-2 md:px-8 md:py-4 -rotate-12 backdrop-blur-none">
-                            <span className="text-3xl md:text-6xl font-black text-red-600 tracking-[0.2em] uppercase whitespace-nowrap">
-                                {lang === 'es' ? 'ARCHIVADO' : 'ARCHIVED'}
-                            </span>
-                        </div>
-                    </div>
-                  )}
-
-                  {/* --- CONTENIDO DEL EVENTO --- */}
-                  <div className={contentClasses}>
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 transition-all">
                     
                     {/* FECHA */}
                     <div className="flex items-center gap-4 md:w-48">
-                      <span className={clsx("text-xs tracking-[0.2em] font-mono", isPast ? "text-zinc-500 line-through decoration-zinc-500/50" : "text-muted-foreground")}>
-                        {event.date}
-                      </span>
-                      <span className={clsx("text-xs tracking-[0.2em] font-bold", isPast ? "text-zinc-600" : "text-accent")}>
-                        {event.day}
-                      </span>
+                      <span className="text-xs tracking-[0.2em] font-mono text-muted-foreground">{event.date}</span>
+                      <span className="text-xs tracking-[0.2em] font-bold text-accent">{event.day}</span>
                     </div>
                     
                     {/* INFO PRINCIPAL */}
@@ -272,12 +264,7 @@ export function EventsSection() {
                     {/* BOTÓN O ESTADO */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
-                      
-                      {isPast ? (
-                          <span className="text-zinc-600 border border-zinc-800 px-6 py-2 text-[10px] tracking-[0.2em] uppercase font-bold min-h-11 flex items-center justify-center cursor-not-allowed">
-                              {lang === 'es' ? 'FINALIZADO' : 'ENDED'}
-                          </span>
-                      ) : event.hasTicket ? (
+                      {event.hasTicket ? (
                           <button 
                           onClick={(e) => { e.stopPropagation(); handleTicketClick(event.scriptTag); }}
                           className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
@@ -290,14 +277,14 @@ export function EventsSection() {
                           </span>
                       )}
                     </div>
-
                   </div>
               </div>
             )
           })}
         </div>
 
-        <div className="mt-8 md:mt-12 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
+        {/* PRÓXIMAS FECHAS TBA (Bloque estático) */}
+        <div className="mt-12 md:mt-16 mb-12 md:mb-16 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
            <div className="w-[1px] h-8 bg-accent/30 mx-auto mb-6"></div>
            <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
              <GlitchText>{t('tba_title')}</GlitchText>
@@ -306,8 +293,109 @@ export function EventsSection() {
              {t('tba_subtitle')}
            </p>
         </div>
+
+        {/* MARQUEE / SLIDER DE TEXTO DISTORSIONADO */}
+        <div className="relative w-full border-y border-zinc-900 py-3 md:py-4 mb-16 overflow-hidden select-none group bg-black/40 backdrop-blur-sm">
+          <div 
+            className="animate-marquee whitespace-nowrap flex items-center font-mono font-bold text-xs md:text-sm tracking-[0.3em] uppercase opacity-70 text-zinc-500 transition-all duration-300 group-hover:text-red-600 group-hover:opacity-100" 
+            style={{ filter: 'url(#marquee-glitch)' }}
+          >
+            <span className="mx-4">{repeatedMarqueeText}</span>
+            <span className="mx-4">{repeatedMarqueeText}</span>
+          </div>
+          <style jsx>{`
+            @keyframes marquee {
+              0% { transform: translateX(0%); }
+              100% { transform: translateX(-50%); }
+            }
+            .animate-marquee {
+              display: inline-block;
+              animation: marquee 50s linear infinite; /* Más lento */
+              will-change: transform;
+            }
+          `}</style>
+        </div>
+
+        {/* --- ACORDEÓN: CAJA DE EVENTOS PASADOS --- */}
+        {pastEvents.length > 0 && (
+          <div className="border border-zinc-900/50 bg-black/10 transition-all duration-300">
+            
+            {/* BOTÓN DESPLEGABLE (MÁS ESTRECHO Y CON TEXTOS ROJOS) */}
+            <button 
+              onClick={() => setShowPastEvents(!showPastEvents)}
+              className="w-full flex items-center justify-between py-5 px-4 md:py-6 md:px-8 cursor-pointer group hover:bg-black/40 transition-colors"
+            >
+              <div className="flex flex-col items-start gap-1">
+                <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase font-bold">
+                  {/* INYECCIÓN DEL COLOR ROJO */}
+                  <GlitchText color="#dc2626">{lang === 'es' ? 'ARCHIVO' : 'ARCHIVE'}</GlitchText>
+                </span>
+                <span className="font-black text-xl md:text-3xl uppercase tracking-tighter">
+                   {/* INYECCIÓN DEL COLOR ROJO */}
+                  <GlitchText color="#dc2626">{lang === 'es' ? 'Eventos Pasados' : 'Past Events'}</GlitchText>
+                </span>
+              </div>
+              <span className="text-zinc-600 text-3xl md:text-4xl font-light group-hover:text-red-600 transition-colors">
+                {showPastEvents ? '−' : '+'}
+              </span>
+            </button>
+
+            {/* CONTENIDO DESPLEGABLE */}
+            {showPastEvents && (
+              <div className="border-t border-zinc-900/50 px-4 md:px-8 pb-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                 {pastEvents.map((event) => {
+                    const currentTitle = (event.title as BilingualText)[lang];
+                    const currentSubtitle = (event.subtitle as BilingualText)[lang];
+
+                    return (
+                      <div key={event.originalIndex} className="group block py-6 md:py-8 relative border-b border-zinc-900/50 last:border-0 pointer-events-none select-none">
+                          
+                          {/* SELLO ARCHIVADO */}
+                          <div className="absolute inset-0 flex items-center justify-center z-50 overflow-hidden">
+                              <div className="opacity-40 border-[4px] md:border-[6px] border-red-600 px-6 py-2 md:px-8 md:py-4 -rotate-12">
+                                  <span className="text-3xl md:text-6xl font-black text-red-600 tracking-[0.2em] uppercase whitespace-nowrap">
+                                      {lang === 'es' ? 'ARCHIVADO' : 'ARCHIVED'}
+                                  </span>
+                              </div>
+                          </div>
+
+                          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 opacity-30 grayscale blur-[1px]">
+                            
+                            {/* FECHA */}
+                            <div className="flex items-center gap-4 md:w-48">
+                              <span className="text-xs tracking-[0.2em] font-mono text-zinc-500 line-through decoration-zinc-500/50">{event.date}</span>
+                              <span className="text-xs tracking-[0.2em] font-bold text-zinc-600">{event.day}</span>
+                            </div>
+                            
+                            {/* INFO */}
+                            <div className="flex-1">
+                              <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase text-zinc-700">
+                                {currentTitle}
+                              </h3>
+                              <p className="text-sm tracking-wider mt-1 uppercase font-bold text-zinc-500">
+                                {currentSubtitle}
+                              </p>
+                            </div>
+
+                            {/* ESTADO FINALIZADO */}
+                            <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
+                              <span className="text-zinc-600 text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
+                              <span className="text-zinc-600 border border-zinc-800 px-6 py-2 text-[10px] tracking-[0.2em] uppercase font-bold min-h-11 flex items-center justify-center">
+                                  {lang === 'es' ? 'FINALIZADO' : 'ENDED'}
+                              </span>
+                            </div>
+                          </div>
+                      </div>
+                    )
+                 })}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
+      {/* POPUP DE COMPRA */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
             <button 

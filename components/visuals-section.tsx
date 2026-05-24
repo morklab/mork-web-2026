@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Instagram, Play } from "lucide-react"
@@ -8,8 +8,46 @@ import clsx from "clsx"
 import { GlitchText } from "@/components/ui/glitch-text"
 import { useTranslations } from "next-intl"
 
+// --- ESTRUCTURA DE DATOS CORREGIDA CON ENLACES NUEVOS ---
+const ARCHIVE_DATA = {
+  "2026": [
+    { title: "RITUAL MØRK 023", image: "/event-023.jpg", link: "https://www.instagram.com/reel/DYP0CL-o_Le/?igsh=djZ2bW5sbmRhYWox" },
+    { title: "RITUAL MØRK 022", image: "/event-022.jpg", link: "https://www.instagram.com/reel/DXZ8VKfiPSY/?igsh=aGhjcnAzMWQ2MWsy" },
+    { title: "RITUAL MØRK 021", image: "/event-021.jpg", link: "https://www.instagram.com/reel/DVt3sx0CLKR/?igsh=aXk4bXJrazB4azFz" },
+    { title: "RITUAL MØRK 020", image: "/event-020.jpg", link: "https://www.instagram.com/reel/DU3ys-WCBgW/?igsh=MWp4aGcyeWdiN3hjaA==" },
+  ],
+  "2025": [
+    { title: "RITUAL MØRK 019", image: "/event-019.JPEG", link: "https://www.instagram.com/reel/DSDhLylEQta/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 018", image: "/event-018.JPEG", link: "https://www.instagram.com/reel/DQ7cc2OCBZR/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 017", image: "/event-017.JPEG", link: "https://www.instagram.com/reel/DP6-AOqCLLn/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 016", image: "/event-016.jpg", link: "https://www.instagram.com/reel/DOWjj5Ikawq/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 015", image: "/event-015.jpg", link: "https://www.instagram.com/reel/DM-LcHXx4vr/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 014", image: "/event-014.jpg", link: "https://www.instagram.com/reel/DMdaGbmxiJd/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 013", image: "/event-013.jpg", link: "https://www.instagram.com/reel/DKuplyTx1CS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 012", image: "/event-012.jpg", link: "https://www.instagram.com/reel/DJUsYo-x-qS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 011", image: "/event-011.jpg", link: "https://www.instagram.com/reel/DIPKGmtxW60/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 010", image: "/event-010.jpg", link: "https://www.instagram.com/reel/DHogvTTRBez/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+  ],
+  "2024": [
+    { title: "RITUAL MØRK 009", image: "/event-009.jpg", link: "https://www.instagram.com/reel/DDuxcSoiZWY/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 008", image: "/event-008.jpg", link: "https://www.instagram.com/reel/DCXCvBBsHQW/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 007", image: "/event-007.jpg", link: "https://www.instagram.com/reel/C_xvUC2tOF4/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 006", image: "/event-006.jpg", link: "https://www.instagram.com/reel/DARMtXcMxT_/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 005", image: "/event-005.jpg", link: "https://www.instagram.com/reel/C_JCBzGN3We/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 004", image: "/event-004.jpg", link: "https://www.instagram.com/reel/C95SDHAtYd-/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 003", image: "/event-003.jpg", link: "https://www.instagram.com/reel/C8sGa57o33w/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 002", image: "/event-002.jpg", link: "https://www.instagram.com/reel/C7EaFgHtLVr/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+    { title: "RITUAL MØRK 001", image: "/event-001.jpg", link: "https://www.instagram.com/reel/C6PEypRtS9M/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
+  ]
+};
+
+// Obtenemos los años disponibles y definimos el estado inicial
+const YEARS = Object.keys(ARCHIVE_DATA).sort((a, b) => parseInt(b) - parseInt(a));
+
 export function VisualsSection() {
+  const [activeYear, setActiveYear] = useState<string>(YEARS[0]);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  
   const isTouchingRef = useRef(false)
   const isClickedRef = useRef(false)
   const clickedIndexRef = useRef<number | null>(null)
@@ -19,27 +57,19 @@ export function VisualsSection() {
 
   const t = useTranslations("Visuals")
 
-  const items = [
-    { title: "RITUAL MØRK 001", image: "/event-001.jpg", link: "https://www.instagram.com/reel/C6PEypRtS9M/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 002", image: "/event-002.jpg", link: "https://www.instagram.com/reel/C7EaFgHtLVr/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 003", image: "/event-003.jpg", link: "https://www.instagram.com/reel/C8sGa57o33w/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 004", image: "/event-004.jpg", link: "https://www.instagram.com/reel/C95SDHAtYd-/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 005", image: "/event-005.jpg", link: "https://www.instagram.com/reel/C_JCBzGN3We/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 006", image: "/event-006.jpg", link: "https://www.instagram.com/reel/DARMtXcMxT_/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 007", image: "/event-007.jpg", link: "https://www.instagram.com/reel/C_xvUC2tOF4/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 008", image: "/event-008.jpg", link: "https://www.instagram.com/reel/DCXCvBBsHQW/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 009", image: "/event-009.jpg", link: "https://www.instagram.com/reel/DDuxcSoiZWY/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 010", image: "/event-010.jpg", link: "https://www.instagram.com/reel/DHogvTTRBez/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 011", image: "/event-011.jpg", link: "https://www.instagram.com/reel/DIPKGmtxW60/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 012", image: "/event-012.jpg", link: "https://www.instagram.com/reel/DJUsYo-x-qS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 013", image: "/event-013.jpg", link: "https://www.instagram.com/reel/DKuplyTx1CS/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 014", image: "/event-014.jpg", link: "https://www.instagram.com/reel/DMdaGbmxiJd/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 015", image: "/event-015.jpg", link: "https://www.instagram.com/reel/DM-LcHXx4vr/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 016", image: "/event-016.jpg", link: "https://www.instagram.com/reel/DOWjj5Ikawq/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 017", image: "/event-017.JPEG", link: "https://www.instagram.com/reel/DP6-AOqCLLn/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 018", image: "/event-018.JPEG", link: "https://www.instagram.com/reel/DQ7cc2OCBZR/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-    { title: "RITUAL MØRK 019", image: "/event-019.JPEG", link: "https://www.instagram.com/reel/DSDhLylEQta/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" },
-  ]
+  // Obtener los items activos basados en el año seleccionado
+  const activeItems = ARCHIVE_DATA[activeYear as keyof typeof ARCHIVE_DATA];
+  
+  // LÓGICA DE CENTRADO DINÁMICO: Si hay 4 o menos, centramos en pantallas grandes
+  const isFewItems = activeItems.length <= 4;
+
+  // Resetear el scroll cuando cambiamos de año
+  useEffect(() => {
+    if (containerRef.current) {
+        containerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+    setHoveredIndex(null);
+  }, [activeYear]);
 
   const calculateCenterItem = () => {
     if (!containerRef.current) return
@@ -47,8 +77,11 @@ export function VisualsSection() {
     const containerCenter = container.scrollLeft + (container.clientWidth / 2)
     let closestIndex = null
     let minDistance = Infinity
-    itemsRef.current.forEach((item, index) => {
-      if (!item) return
+    
+    // Limpiamos los nulos que pueden haber quedado al cambiar de año
+    const validRefs = itemsRef.current.filter(Boolean);
+    
+    validRefs.forEach((item, index) => {
       const el = item as HTMLElement
       const itemCenter = el.offsetLeft + (el.offsetWidth / 2)
       const distance = Math.abs(containerCenter - itemCenter)
@@ -84,7 +117,7 @@ export function VisualsSection() {
   return (
     <section id="visuals" className="relative py-20 bg-black border-t border-white/10 overflow-hidden">
       
-      {/* ----------------- IMAGEN DE FONDO (Escala de grises) ----------------- */}
+      {/* ----------------- IMAGEN DE FONDO ----------------- */}
       <Image
         src="/tu-fondo-visuals.jpg"
         alt="Visuals background"
@@ -92,35 +125,59 @@ export function VisualsSection() {
         className="object-cover z-0 opacity-30 grayscale select-none pointer-events-none"
         priority
       />
-      {/* ----------------- FIN IMAGEN DE FONDO ----------------- */}
 
       {/* Contenedor principal del contenido */}
       <div className="relative z-10 w-full">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-end mb-2">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-6">
           <div className="flex flex-col">
             <p className="text-accent text-xs tracking-[0.4em] uppercase mb-2 font-bold no-glow">
               {t('subtitle')}
             </p>
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-white">
-              <GlitchText>RITUAL ECHOES</GlitchText> ({items.length})
+              <GlitchText>RITUAL ECHOES</GlitchText>
             </h2>
             <p className="text-zinc-400 text-sm md:text-base mt-2 font-light tracking-wide uppercase">
                {t('description')}
             </p>
           </div>
-          <Link href="https://www.instagram.com/mork.lab/" target="_blank" className="hidden md:flex text-white border border-white/30 px-6 py-3 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all items-center gap-2 mb-2">
-            <Instagram size={16} />
-            Instagram
-          </Link>
+          
+          <div className="flex flex-col items-end gap-4 w-full md:w-auto">
+              {/* SELECTOR DE AÑO */}
+              <div className="flex gap-2 bg-zinc-900/50 p-1 border border-white/10 rounded-sm self-start md:self-end">
+                {YEARS.map(year => (
+                    <button 
+                        key={year}
+                        onClick={() => setActiveYear(year)}
+                        className={clsx(
+                            "px-4 py-2 text-xs font-bold tracking-[0.2em] transition-all cursor-pointer",
+                            activeYear === year 
+                                ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]" 
+                                : "text-zinc-500 hover:text-white"
+                        )}
+                    >
+                        {year}
+                    </button>
+                ))}
+              </div>
+
+              <Link href="https://www.instagram.com/mork.lab/" target="_blank" className="hidden md:flex text-white border border-white/30 px-6 py-3 text-xs tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all items-center gap-2">
+                <Instagram size={16} />
+                Instagram
+              </Link>
+          </div>
         </div>
 
+        {/* CONTENEDOR DEL SLIDER */}
         <div 
           ref={containerRef}
           onScroll={handleScroll}
           className={clsx(
-              "flex overflow-x-auto pt-8 md:pt-20 pb-8 md:pb-12 gap-6 snap-x snap-mandatory no-scrollbar items-end",
+              "flex overflow-x-auto pt-8 md:pt-20 pb-8 md:pb-12 gap-6 snap-x snap-mandatory no-scrollbar items-end transition-all",
               "h-[280px] md:h-[400px]", 
-              "px-[calc(50%-3.5rem)] md:px-[calc(50%-4rem)]"
+              // MAGIA: Si hay pocos, centramos en PC. En móvil mantenemos el padding para poder hacer scroll al centro.
+              isFewItems 
+                 ? "px-[calc(50%-3.5rem)] md:px-4 md:justify-center" 
+                 : "px-[calc(50%-3.5rem)] md:px-[calc(50%-4rem)]"
           )}
           onTouchMove={() => {
             isClickedRef.current = false 
@@ -134,7 +191,7 @@ export function VisualsSection() {
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
         >
-          {items.map((item, index) => {
+          {activeItems.map((item, index) => {
             const distanceFromHovered = hoveredIndex === null ? 999 : Math.abs(hoveredIndex - index)
             const isSelected = hoveredIndex === index
             let scaleClass = "scale-100 opacity-50 grayscale blur-[0.5px]" 
@@ -155,7 +212,7 @@ export function VisualsSection() {
 
             return (
               <Link 
-                key={index}
+                key={`${activeYear}-${index}`} // Forzamos re-render al cambiar de año
                 ref={(el) => { itemsRef.current[index] = el }} 
                 href={item.link}
                 target="_blank"
@@ -172,7 +229,6 @@ export function VisualsSection() {
                   } 
                 }}
                 className={clsx(
-                    // CAMBIO AQUÍ: bg-black/90 (menos transparencia que antes)
                     "relative flex-shrink-0 aspect-square border bg-black/90 backdrop-blur-md overflow-visible snap-center rounded-lg",
                     "w-28 md:w-32", 
                     "transition-all duration-300 ease-out origin-bottom transform-gpu will-change-transform",

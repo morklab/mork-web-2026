@@ -38,15 +38,28 @@ export default function U300Page() {
     return () => { document.body.style.overflow = 'unset' }
   }, [selectedScriptCode])
 
+  // --- LÓGICA DE FECHAS MEJORADA (Acepta YYYY.MM.DD y DD.MM.YYYY) ---
   const isEventPast = (dateStr: string) => {
     if (!today) return false;
-    const formattedDate = dateStr.replace(/\./g, '-');
-    const eventDate = new Date(formattedDate);
-    eventDate.setHours(23, 59, 59); 
-    return eventDate < today;
+    const normalizedDate = dateStr.replace(/-/g, '.');
+    const parts = normalizedDate.split('.');
+    
+    if (parts.length === 3) {
+      let eventDate;
+      if (parts[0].length === 4) {
+         // Formato antiguo: 2026.05.23
+         eventDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      } else {
+         // Formato nuevo: 23.05.2026
+         eventDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      }
+      eventDate.setHours(23, 59, 59); 
+      return eventDate < today;
+    }
+    return false;
   }
 
-  // --- LISTA DE EVENTOS U300 CON FLYERS DINÁMICOS ---
+  // --- LISTA DE EVENTOS U300 ---
   const u300Events = [
     {
       date: "2026.02.28",
@@ -56,7 +69,7 @@ export default function U300Page() {
       media: {
         aftermovie: "https://www.instagram.com/reel/DVb5oQ8DRe0/?igsh=MTNicXhzcnh0Zmcy",
         flyer: "/u300-flyer-001.jpg",
-        igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
+        igCarousel: "https://www.instagram.com/p/DVX1n5QDRmC/?igsh=OWdrZm9udWFoZ3Ri" 
       }
     },
     {
@@ -115,12 +128,12 @@ export default function U300Page() {
       }
     },
     {
-      date: "2026.07.11",
+      date: "13.06.2026", // NUEVO FORMATO DE FECHA
       artist: "CONCEPTUAL",
       concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
-      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/WYQK"></script>`,
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/WYQK"></script>`, // YA CON TU ID REAL
       media: {
-        aftermovie: "#", 
+        aftermovie: "https://www.instagram.com/u300palma/",
         flyer: "/u300-flyer-007.jpg",
         igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
       }

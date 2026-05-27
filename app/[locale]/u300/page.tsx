@@ -56,7 +56,7 @@ export default function U300Page() {
       media: {
         aftermovie: "https://www.instagram.com/reel/DVb5oQ8DRe0/?igsh=MTNicXhzcnh0Zmcy",
         flyer: "/u300-flyer-001.jpg",
-        igCarousel: "https://www.instagram.com/p/DVX1n5QDRmC/?igsh=OWdrZm9udWFoZ3Ri" 
+        igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
       }
     },
     {
@@ -111,6 +111,17 @@ export default function U300Page() {
       media: {
         aftermovie: "https://www.instagram.com/mork.lab/", 
         flyer: "/u300-flyer-006.jpg",
+        igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
+      }
+    },
+    {
+      date: "2026.07.11",
+      artist: "CONCEPTUAL",
+      concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/WYQK"></script>`,
+      media: {
+        aftermovie: "#", 
+        flyer: "/u300-flyer-007.jpg",
         igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
       }
     }
@@ -264,7 +275,7 @@ export default function U300Page() {
                                                         <Play size={14} fill="currentColor" /> AFTERMOVIE
                                                     </Link>
                                                     <span className="text-zinc-800">|</span>
-                                                    <Link href={event.media.igCarousel} target="_blank" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-[0.2em] font-bold">
+                                                    <Link href={event.media.igCarousel || "#"} target="_blank" className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-[0.2em] font-bold">
                                                         <Instagram size={14} /> VIEW ON IG
                                                     </Link>
                                                 </div>

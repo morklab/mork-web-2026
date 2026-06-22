@@ -151,14 +151,21 @@ export function Navigation() {
 
         {/* MENÚ MÓVIL */}
         {isOpen && (
-          <div className="md:hidden bg-background border-t border-border h-screen">
-            <div className="px-4 py-6 flex flex-col gap-4">
-              <Link href="#events" onClick={() => setIsOpen(false)} className="text-foreground text-lg uppercase py-3 border-b border-border">{t('events')}</Link>
+          <div className="md:hidden bg-background border-t border-border h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="px-4 py-6 flex flex-col">
+              <Link href="#events" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('events')}</Link>
+              <Link href="#core-artists" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('artists')}</Link>
+              <Link href="#manifesto" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('manifesto')}</Link>
+              <Link href="#visuals" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('visuals')}</Link>
+              <Link href="#media" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('media')}</Link>
+              <Link href="#team" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('team')}</Link>
+              <Link href="#sound" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('sound')}</Link>
+              <Link href="#shop" onClick={() => setIsOpen(false)} className="text-foreground text-sm tracking-[0.2em] uppercase py-4 border-b border-border">{t('shop')}</Link>
               
-              <div className="flex justify-center py-4 transform scale-75"><LanguageSwitcher /></div>
+              <div className="flex justify-center py-6 mt-4 transform scale-90"><LanguageSwitcher /></div>
               
               {/* BOTÓN U300 (MÓVIL) - LOGO PEQUEÑO */}
-              <div className="flex justify-center mt-6">
+              <div className="flex justify-center pb-12 mt-2">
                 <a 
                     href="/u300" 
                     onClick={enterU300} 

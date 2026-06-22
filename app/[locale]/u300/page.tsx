@@ -128,13 +128,24 @@ export default function U300Page() {
       }
     },
     {
-      date: "13.06.2026", // NUEVO FORMATO DE FECHA
+      date: "13.06.2026",
       artist: "CONCEPTUAL",
       concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
-      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/WYQK"></script>`, // YA CON TU ID REAL
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/WYQK"></script>`,
       media: {
         aftermovie: "https://www.instagram.com/u300palma/",
         flyer: "/u300-flyer-007.jpg",
+        igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
+      }
+    },
+    {
+      date: "27.06.2026", 
+      artist: "ALIENATA",
+      concept: { en: "ONLY FOR 300 CHOSEN ONES", es: "SOLO PARA 300 ELEGIDOS" },
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/u300/ATOL"></script>`,
+      media: {
+        aftermovie: "https://www.instagram.com/u300palma/",
+        flyer: "/u300-flyer-008.jpg", 
         igCarousel: "https://www.instagram.com/u300palma?igsh=ajAzM240ZGk4Yjhp" 
       }
     }

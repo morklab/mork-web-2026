@@ -153,6 +153,27 @@ export function EventsSection() {
       venue: "Wave Club",
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/2AJ1"></script>`, 
       hasTicket: true
+    },
+    // [4] 12 SEPT - PHILIPPA PACHO & FADI MOHEM
+    {
+      date: "2026.09.12",
+      day: "SAT",
+      title: { 
+        en: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             <span>PHILIPPA PACHO<br/>& FADI MOHEM</span>
+          </div>
+        ), 
+        es: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             <span>PHILIPPA PACHO<br/>& FADI MOHEM</span>
+          </div>
+        ) 
+      }, 
+      subtitle: { en: "MØRK RETURNS", es: "MØRK VUELVE" }, 
+      venue: "", // DEJADO EN BLANCO
+      scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/LKU2"></script>`, 
+      hasTicket: true
     }
   ]
 

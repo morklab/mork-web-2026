@@ -7,19 +7,34 @@ import clsx from "clsx"
 import { X } from "lucide-react"
 import React from "react" 
 
-// Tipo actualizado
+// Tipo para manejar idiomas en los textos
 type BilingualText = {
   en: string | React.ReactNode;
   es: string | React.ReactNode;
 };
 
-// CONFIGURACIÓN DE FECHAS (Todo revelado)
-const REVEAL_DATES: Record<number, number> = {}
+// TIPO DE EVENTO EXPLÍCITO (Esto soluciona el error rojo de TypeScript)
+type EventData = {
+  date: string;
+  day: string;
+  title: BilingualText;
+  hiddenTitle?: BilingualText; // Lo hacemos opcional
+  subtitle: BilingualText;
+  venue: string;
+  scriptTag: string;
+  hasTicket: boolean;
+};
+
+// CONFIGURACIÓN DE FECHAS (El índice 5 es Oscar Mulero)
+// 17 de octubre de 2026 a las 18:30h (Hora España: +02:00)
+const REVEAL_DATES: Record<number, number> = {
+  5: new Date("2026-10-17T18:30:00+02:00").getTime()
+}
 
 export function EventsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedScriptCode, setSelectedScriptCode] = useState<string | null>(null)
-  const [showPastEvents, setShowPastEvents] = useState(false) // ESTADO PARA EL ACORDEÓN
+  const [showPastEvents, setShowPastEvents] = useState(false) 
   
   const [countdowns, setCountdowns] = useState<Record<number, string>>({})
   const [isCalculated, setIsCalculated] = useState(false)
@@ -79,7 +94,8 @@ export function EventsSection() {
     return eventDate < today;
   }
 
-  const events = [
+  // APLICAMOS EL TIPO A LA LISTA
+  const events: EventData[] = [
     // [0] 14 FEB - REEKO
     {
       date: "2026.02.14",
@@ -171,8 +187,30 @@ export function EventsSection() {
         ) 
       }, 
       subtitle: { en: "MØRK RETURNS", es: "MØRK VUELVE" }, 
-      venue: "", // DEJADO EN BLANCO
+      venue: "", 
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/LKU2"></script>`, 
+      hasTicket: true
+    },
+    // [5] 5 DIC - OSCAR MULERO (CON CUENTA ATRÁS Y XCEED)
+    {
+      date: "2026.12.05",
+      day: "SAT",
+      title: { 
+        en: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             <span>OSCAR MULERO</span>
+          </div>
+        ), 
+        es: (
+          <div className="flex flex-col items-start leading-none gap-1">
+             <span>OSCAR MULERO</span>
+          </div>
+        ) 
+      }, 
+      hiddenTitle: { en: "SPECIAL GUEST", es: "SPECIAL GUEST" },
+      subtitle: { en: "MØRK LAB PRESENTS", es: "MØRK LAB PRESENTA" }, 
+      venue: "", 
+      scriptTag: `<div id="xceed-widget" data-mode="offers" data-event="355707a4-c7f3-11f1-83ac-0242ac110016"></div><script src="https://widget.xceed.me/v2/loader.js"></script>`, 
       hasTicket: true
     }
   ]
@@ -182,11 +220,9 @@ export function EventsSection() {
     setSelectedScriptCode(script)
   }
 
-  // Separamos los eventos entre Futuros y Pasados (guardando el índice original para no romper lógicas)
   const upcomingEvents = events.map((e, i) => ({...e, originalIndex: i})).filter(e => !isEventPast(e.date));
   const pastEvents = events.map((e, i) => ({...e, originalIndex: i})).filter(e => isEventPast(e.date));
 
-  // Texto del slider
   const marqueeText = lang === 'es' 
     ? "// TRANSMISIÓN ENTRANTE // DISEÑANDO LOS PRÓXIMOS RITUALES // NUEVAS FECHAS TBA "
     : "// INCOMING TRANSMISSION // DESIGNING THE NEXT RITUALS // NEW DATES TBA ";
@@ -223,35 +259,41 @@ export function EventsSection() {
         {/* LISTA DE EVENTOS FUTUROS */}
         <div className="border-t border-border">
           {upcomingEvents.map((event) => {
-            const isHovered = hoveredIndex === event.originalIndex && event.hasTicket; 
-            const isRevealed = true; 
-
-            const currentTitle = (event.title as BilingualText)[lang];
-            let currentSubtitle = (event.subtitle as BilingualText)[lang];
-
+            
             const isSpecialEvent = REVEAL_DATES.hasOwnProperty(event.originalIndex);
             const timer = countdowns[event.originalIndex];
             const isCountdownActive = !!timer;
+            
+            // Lógica perfecta sin destellos
+            let isRevealed = true;
             let shouldHideText = false;
 
+            const currentTitle = (event.title as BilingualText)[lang];
+            const hiddenTitle = event.hiddenTitle ? (event.hiddenTitle as BilingualText)[lang] : currentTitle;
+            let currentSubtitle = (event.subtitle as BilingualText)[lang];
+
             if (isSpecialEvent) {
-                if (isCountdownActive) {
+                if (!isCalculated) {
+                    isRevealed = false;
+                    shouldHideText = true;
+                } else if (isCountdownActive) {
+                    isRevealed = false;
                     const prefix = lang === 'es' ? "SE REVELA EN: " : "REVEAL IN: ";
                     currentSubtitle = `${prefix}${timer}`;
-                } else if (!isCalculated) {
-                    shouldHideText = true;
                 }
             }
-
+            
+            const isHovered = hoveredIndex === event.originalIndex && event.hasTicket && isRevealed; 
+            
             let titleColorClass = "!text-zinc-700"; 
             if (isRevealed) titleColorClass = "text-foreground"; 
             if (isHovered) titleColorClass = "!text-accent"; 
 
             return (
-              <div key={event.originalIndex} className={clsx("group block py-6 md:py-8 transition-colors relative border-b border-border", event.hasTicket ? "cursor-pointer hover:bg-secondary/30" : "cursor-default")}
+              <div key={event.originalIndex} className={clsx("group block py-6 md:py-8 transition-colors relative border-b border-border", event.hasTicket && isRevealed ? "cursor-pointer hover:bg-secondary/30" : "cursor-default")}
                   onMouseEnter={() => setHoveredIndex(event.originalIndex)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={() => event.hasTicket && handleTicketClick(event.scriptTag)}
+                  onClick={() => event.hasTicket && isRevealed && handleTicketClick(event.scriptTag)}
               >
                   <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 transition-all">
                     
@@ -264,19 +306,22 @@ export function EventsSection() {
                     {/* INFO PRINCIPAL */}
                     <div className="flex-1">
                       <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
-                        {!isRevealed && typeof currentTitle === 'string' ? (
+                        {!isRevealed ? (
+                           typeof hiddenTitle === 'string' ? <GlitchText>{hiddenTitle}</GlitchText> : hiddenTitle
+                        ) : typeof currentTitle === 'string' ? (
                            <GlitchText>{currentTitle}</GlitchText>
                         ) : (
                            currentTitle
                         )}
                       </h3>
                       
+                      {/* CONTADOR / SUBTÍTULO CON TAMAÑO DINÁMICO */}
                       <p className={clsx(
-                        "text-sm tracking-wider mt-1 uppercase font-bold tabular-nums transition-all",
+                        "tracking-wider uppercase font-bold tabular-nums transition-all",
                         shouldHideText && "invisible opacity-0",
                         isCountdownActive 
-                          ? "text-red-600 animate-pulse drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]"
-                          : "text-muted-foreground"
+                          ? "text-xl sm:text-2xl md:text-3xl lg:text-4xl text-red-600 animate-pulse drop-shadow-[0_0_12px_rgba(220,38,38,0.9)] mt-2 md:mt-3"
+                          : "text-sm text-muted-foreground mt-1"
                       )}>
                           {currentSubtitle}
                       </p>
@@ -285,7 +330,7 @@ export function EventsSection() {
                     {/* BOTÓN O ESTADO */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
-                      {event.hasTicket ? (
+                      {event.hasTicket && isRevealed ? (
                           <button 
                           onClick={(e) => { e.stopPropagation(); handleTicketClick(event.scriptTag); }}
                           className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
@@ -341,18 +386,15 @@ export function EventsSection() {
         {pastEvents.length > 0 && (
           <div className="border border-zinc-900/50 bg-black/10 transition-all duration-300">
             
-            {/* BOTÓN DESPLEGABLE (MÁS ESTRECHO Y CON TEXTOS ROJOS) */}
             <button 
               onClick={() => setShowPastEvents(!showPastEvents)}
               className="w-full flex items-center justify-between py-5 px-4 md:py-6 md:px-8 cursor-pointer group hover:bg-black/40 transition-colors"
             >
               <div className="flex flex-col items-start gap-1">
                 <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase font-bold">
-                  {/* INYECCIÓN DEL COLOR ROJO */}
                   <GlitchText color="#dc2626">{lang === 'es' ? 'ARCHIVO' : 'ARCHIVE'}</GlitchText>
                 </span>
                 <span className="font-black text-xl md:text-3xl uppercase tracking-tighter">
-                   {/* INYECCIÓN DEL COLOR ROJO */}
                   <GlitchText color="#dc2626">{lang === 'es' ? 'Eventos Pasados' : 'Past Events'}</GlitchText>
                 </span>
               </div>
@@ -382,13 +424,11 @@ export function EventsSection() {
 
                           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 opacity-30 grayscale blur-[1px]">
                             
-                            {/* FECHA */}
                             <div className="flex items-center gap-4 md:w-48">
                               <span className="text-xs tracking-[0.2em] font-mono text-zinc-500 line-through decoration-zinc-500/50">{event.date}</span>
                               <span className="text-xs tracking-[0.2em] font-bold text-zinc-600">{event.day}</span>
                             </div>
                             
-                            {/* INFO */}
                             <div className="flex-1">
                               <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase text-zinc-700">
                                 {currentTitle}
@@ -398,7 +438,6 @@ export function EventsSection() {
                               </p>
                             </div>
 
-                            {/* ESTADO FINALIZADO */}
                             <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                               <span className="text-zinc-600 text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
                               <span className="text-zinc-600 border border-zinc-800 px-6 py-2 text-[10px] tracking-[0.2em] uppercase font-bold min-h-11 flex items-center justify-center">

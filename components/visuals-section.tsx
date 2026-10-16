@@ -11,6 +11,9 @@ import { useTranslations } from "next-intl"
 // --- ESTRUCTURA DE DATOS CORREGIDA CON ENLACES NUEVOS ---
 const ARCHIVE_DATA = {
   "2026": [
+    // NUEVO EVENTO (SEPTIEMBRE 2026 - PHILIPPA PACHO & FADI MOHEM)
+    { title: "RITUAL MØRK 024", image: "/event-024.jpg", link: "https://www.instagram.com/reel/DdUXVmkoN8x/?vrfl=dnZobXg1N2gxbHgw" },
+    
     { title: "RITUAL MØRK 023", image: "/event-023.jpg", link: "https://www.instagram.com/reel/DYP0CL-o_Le/?igsh=djZ2bW5sbmRhYWox" },
     { title: "RITUAL MØRK 022", image: "/event-022.jpg", link: "https://www.instagram.com/reel/DXZ8VKfiPSY/?igsh=aGhjcnAzMWQ2MWsy" },
     { title: "RITUAL MØRK 021", image: "/event-021.jpg", link: "https://www.instagram.com/reel/DVt3sx0CLKR/?igsh=aXk4bXJrazB4azFz" },

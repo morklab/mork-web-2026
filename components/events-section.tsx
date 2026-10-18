@@ -13,20 +13,19 @@ type BilingualText = {
   es: string | React.ReactNode;
 };
 
-// TIPO DE EVENTO EXPLÍCITO (Esto soluciona el error rojo de TypeScript)
+// TIPO DE EVENTO EXPLÍCITO
 type EventData = {
   date: string;
   day: string;
   title: BilingualText;
-  hiddenTitle?: BilingualText; // Lo hacemos opcional
+  hiddenTitle?: BilingualText; 
   subtitle: BilingualText;
   venue: string;
   scriptTag: string;
   hasTicket: boolean;
 };
 
-// CONFIGURACIÓN DE FECHAS (El índice 5 es Oscar Mulero)
-// 17 de octubre de 2026 a las 18:30h (Hora España: +02:00)
+// CONFIGURACIÓN DE FECHAS
 const REVEAL_DATES: Record<number, number> = {
   5: new Date("2026-10-17T18:30:00+02:00").getTime()
 }
@@ -85,7 +84,6 @@ export function EventsSection() {
     return () => { document.body.style.overflow = 'unset' }
   }, [selectedScriptCode])
 
-  // --- FUNCIÓN HELPER: SABER SI EL EVENTO YA PASÓ ---
   const isEventPast = (dateStr: string) => {
     if (!today) return false;
     const formattedDate = dateStr.replace(/\./g, '-');
@@ -94,9 +92,7 @@ export function EventsSection() {
     return eventDate < today;
   }
 
-  // APLICAMOS EL TIPO A LA LISTA
   const events: EventData[] = [
-    // [0] 14 FEB - REEKO
     {
       date: "2026.02.14",
       day: "SAT",
@@ -106,7 +102,6 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/V4HB"></script>`, 
       hasTicket: true
     },
-    // [1] 7 MARZO - SOL ORTEGA
     {
       date: "2026.03.07",
       day: "SAT",
@@ -133,7 +128,6 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/PIDD"></script>`,
       hasTicket: true
     },
-    // [2] 18 ABRIL - FREDDY K
     {
       date: "2026.04.18",
       day: "SAT",
@@ -160,7 +154,6 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/1WZ7"></script>`, 
       hasTicket: true
     },
-    // [3] 9 MAYO - SETAOC MASS
     {
       date: "2026.05.09",
       day: "SAT",
@@ -170,7 +163,6 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/2AJ1"></script>`, 
       hasTicket: true
     },
-    // [4] 12 SEPT - PHILIPPA PACHO & FADI MOHEM
     {
       date: "2026.09.12",
       day: "SAT",
@@ -191,7 +183,7 @@ export function EventsSection() {
       scriptTag: `<script src="https://www.fourvenues.com/assets/iframe/mork-lab/LKU2"></script>`, 
       hasTicket: true
     },
-    // [5] 5 DIC - OSCAR MULERO (CON CUENTA ATRÁS Y XCEED)
+    // [5] 5 DIC - OSCAR MULERO (ENLACE DIRECTO SOLUCIONADO)
     {
       date: "2026.12.05",
       day: "SAT",
@@ -208,16 +200,20 @@ export function EventsSection() {
         ) 
       }, 
       hiddenTitle: { en: "SPECIAL GUEST", es: "SPECIAL GUEST" },
-      subtitle: { en: "MØRK LAB PRESENTS", es: "MØRK LAB PRESENTA" }, 
+      subtitle: { en: "LAST DANCE OF THE YEAR", es: "ÚLTIMO BAILE DEL AÑO" }, 
       venue: "", 
-      scriptTag: `<div id="xceed-widget" data-mode="offers" data-event="355707a4-c7f3-11f1-83ac-0242ac110016"></div><script src="https://widget.xceed.me/v2/loader.js"></script>`, 
+      scriptTag: `https://xceed.me/en/palma-de-mallorca/event/a-night-with-oscar-mulero-4/248574`, 
       hasTicket: true
     }
   ]
 
   const handleTicketClick = (script: string | null) => {
     if (!script) return;
-    setSelectedScriptCode(script)
+    
+    // Si no es un enlace directo, activamos el popup de iframe
+    if (!script.startsWith("http") || script.includes("<")) {
+      setSelectedScriptCode(script);
+    }
   }
 
   const upcomingEvents = events.map((e, i) => ({...e, originalIndex: i})).filter(e => !isEventPast(e.date));
@@ -231,7 +227,6 @@ export function EventsSection() {
   return (
     <section id="events" className="relative py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
       
-      {/* FILTRO SVG PARA EL SLIDER */}
       <svg className="hidden">
         <defs>
           <filter id="marquee-glitch">
@@ -248,7 +243,6 @@ export function EventsSection() {
       
       <div className="relative z-10 max-w-7xl mx-auto">
         
-        {/* TÍTULO PRINCIPAL */}
         <div className="mb-12 md:mb-16">
           <p className="text-accent text-xs tracking-[0.4em] uppercase mb-4 font-bold no-glow">{t('subtitle')}</p>
           <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase text-foreground">
@@ -256,7 +250,6 @@ export function EventsSection() {
           </h2>
         </div>
 
-        {/* LISTA DE EVENTOS FUTUROS */}
         <div className="border-t border-border">
           {upcomingEvents.map((event) => {
             
@@ -264,7 +257,6 @@ export function EventsSection() {
             const timer = countdowns[event.originalIndex];
             const isCountdownActive = !!timer;
             
-            // Lógica perfecta sin destellos
             let isRevealed = true;
             let shouldHideText = false;
 
@@ -284,6 +276,7 @@ export function EventsSection() {
             }
             
             const isHovered = hoveredIndex === event.originalIndex && event.hasTicket && isRevealed; 
+            const isDirectLink = event.scriptTag.startsWith("http") && !event.scriptTag.includes("<");
             
             let titleColorClass = "!text-zinc-700"; 
             if (isRevealed) titleColorClass = "text-foreground"; 
@@ -293,17 +286,23 @@ export function EventsSection() {
               <div key={event.originalIndex} className={clsx("group block py-6 md:py-8 transition-colors relative border-b border-border", event.hasTicket && isRevealed ? "cursor-pointer hover:bg-secondary/30" : "cursor-default")}
                   onMouseEnter={() => setHoveredIndex(event.originalIndex)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={() => event.hasTicket && isRevealed && handleTicketClick(event.scriptTag)}
+                  onClick={() => {
+                    if (event.hasTicket && isRevealed) {
+                        if (isDirectLink) {
+                            window.location.href = event.scriptTag; // Forzamos la navegación segura en móviles
+                        } else {
+                            handleTicketClick(event.scriptTag);
+                        }
+                    }
+                  }}
               >
                   <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 transition-all">
                     
-                    {/* FECHA */}
                     <div className="flex items-center gap-4 md:w-48">
                       <span className="text-xs tracking-[0.2em] font-mono text-muted-foreground">{event.date}</span>
                       <span className="text-xs tracking-[0.2em] font-bold text-accent">{event.day}</span>
                     </div>
                     
-                    {/* INFO PRINCIPAL */}
                     <div className="flex-1">
                       <h3 className={clsx("text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-[0.05em] uppercase transition-colors", titleColorClass)}>
                         {!isRevealed ? (
@@ -315,7 +314,6 @@ export function EventsSection() {
                         )}
                       </h3>
                       
-                      {/* CONTADOR / SUBTÍTULO CON TAMAÑO DINÁMICO */}
                       <p className={clsx(
                         "tracking-wider uppercase font-bold tabular-nums transition-all",
                         shouldHideText && "invisible opacity-0",
@@ -327,16 +325,30 @@ export function EventsSection() {
                       </p>
                     </div>
 
-                    {/* BOTÓN O ESTADO */}
                     <div className="flex items-center justify-between md:justify-end gap-4 md:gap-8 mt-4 md:mt-0">
                       <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase hidden md:block">{event.venue}</span>
+                      
                       {event.hasTicket && isRevealed ? (
-                          <button 
-                          onClick={(e) => { e.stopPropagation(); handleTicketClick(event.scriptTag); }}
-                          className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
-                          >
-                          {t('ticket_btn')}
-                          </button>
+                          isDirectLink ? (
+                             // BOTÓN REAL (Evita cualquier bloqueo de popups)
+                             <a 
+                               href={event.scriptTag}
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               onClick={(e) => e.stopPropagation()}
+                               className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase hover:bg-accent hover:border-accent hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
+                             >
+                               {t('ticket_btn')}
+                             </a>
+                          ) : (
+                             // BOTÓN ANTIGUO DE FOURVENUES (Popup virtual)
+                             <button 
+                               onClick={(e) => { e.stopPropagation(); handleTicketClick(event.scriptTag); }}
+                               className="text-foreground border border-foreground px-6 py-2 text-xs tracking-[0.2em] uppercase group-hover:bg-accent group-hover:border-accent group-hover:text-accent-foreground transition-all min-h-11 flex items-center font-bold"
+                             >
+                               {t('ticket_btn')}
+                             </button>
+                          )
                       ) : (
                           <span className="text-muted-foreground/50 text-[10px] uppercase tracking-[0.2em] border border-white/10 px-4 py-2 cursor-not-allowed">
                               {t('coming_soon')}
@@ -349,7 +361,6 @@ export function EventsSection() {
           })}
         </div>
 
-        {/* PRÓXIMAS FECHAS TBA (Bloque estático) */}
         <div className="mt-12 md:mt-16 mb-12 md:mb-16 text-center opacity-60 hover:opacity-100 transition-opacity duration-500">
            <div className="w-[1px] h-8 bg-accent/30 mx-auto mb-6"></div>
            <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-zinc-500">
@@ -360,7 +371,6 @@ export function EventsSection() {
            </p>
         </div>
 
-        {/* MARQUEE / SLIDER DE TEXTO DISTORSIONADO */}
         <div className="relative w-full border-y border-zinc-900 py-3 md:py-4 mb-16 overflow-hidden select-none group bg-black/40 backdrop-blur-sm">
           <div 
             className="animate-marquee whitespace-nowrap flex items-center font-mono font-bold text-xs md:text-sm tracking-[0.3em] uppercase opacity-70 text-zinc-500 transition-all duration-300 group-hover:text-red-600 group-hover:opacity-100" 
@@ -376,13 +386,12 @@ export function EventsSection() {
             }
             .animate-marquee {
               display: inline-block;
-              animation: marquee 50s linear infinite; /* Más lento */
+              animation: marquee 50s linear infinite;
               will-change: transform;
             }
           `}</style>
         </div>
 
-        {/* --- ACORDEÓN: CAJA DE EVENTOS PASADOS --- */}
         {pastEvents.length > 0 && (
           <div className="border border-zinc-900/50 bg-black/10 transition-all duration-300">
             
@@ -403,7 +412,6 @@ export function EventsSection() {
               </span>
             </button>
 
-            {/* CONTENIDO DESPLEGABLE */}
             {showPastEvents && (
               <div className="border-t border-zinc-900/50 px-4 md:px-8 pb-4 animate-in fade-in slide-in-from-top-4 duration-500">
                  {pastEvents.map((event) => {
@@ -413,7 +421,6 @@ export function EventsSection() {
                     return (
                       <div key={event.originalIndex} className="group block py-6 md:py-8 relative border-b border-zinc-900/50 last:border-0 pointer-events-none select-none">
                           
-                          {/* SELLO ARCHIVADO */}
                           <div className="absolute inset-0 flex items-center justify-center z-50 overflow-hidden">
                               <div className="opacity-40 border-[4px] md:border-[6px] border-red-600 px-6 py-2 md:px-8 md:py-4 -rotate-12">
                                   <span className="text-3xl md:text-6xl font-black text-red-600 tracking-[0.2em] uppercase whitespace-nowrap">
@@ -455,7 +462,7 @@ export function EventsSection() {
 
       </div>
 
-      {/* POPUP DE COMPRA */}
+      {/* POPUP DE COMPRA PARA FOURVENUES */}
       {selectedScriptCode && (
         <div className="fixed inset-0 z-[9999] bg-black animate-in fade-in duration-300">
             <button 

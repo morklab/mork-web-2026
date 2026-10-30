@@ -202,7 +202,7 @@ export function EventsSection() {
       hiddenTitle: { en: "SPECIAL GUEST", es: "SPECIAL GUEST" },
       subtitle: { en: "LAST DANCE OF THE YEAR", es: "ÚLTIMO BAILE DEL AÑO" }, 
       venue: "", 
-      scriptTag: `https://xceed.me/en/palma-de-mallorca/event/a-night-with-oscar-mulero-4/248574`, 
+      scriptTag: `https://xceed.me/es/palma-de-mallorca/event/a-night-with-oscar-mulero-4/248574/channel/mork`, 
       hasTicket: true
     }
   ]

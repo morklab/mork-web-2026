@@ -60,6 +60,7 @@ export function ShopSection() {
     { id: "tee-07", name: "T-Shirt Ritual 07", category: "apparel", price: 35, image: "/tshirt-7.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-08", name: "T-Shirt Ritual 08", category: "apparel", price: 35, image: "/tshirt-8.jpg", description: descTee, sizes: ["S", "M", "L", "XL"] },
     { id: "tee-09", name: "T-Shirt Ritual 09", category: "apparel", price: 35, image: "/tshirt-9.jpg", description: descTee, sizes: ["S", "M", "L", "XL", "XXL"] },
+    { id: "tee-10", name: "T-Shirt 3rd Anniversary", category: "apparel", price: 35, image: "/tshirt-10.jpg", description: descTee, sizes: ["S", "M", "L", "XL", "XXL"] },
     { id: "key-01", name: "Keychain Limited", category: "accessories", price: 12, image: "/bicolor.png", description: descKey, colors: ["Black&RED"] },
     { id: "key-02", name: "Keychain Black", category: "accessories", price: 12, image: "/negro.png", description: descKey, colors: ["BLACK"] },
     { id: "key-03", name: "Keychain Red", category: "accessories", price: 12, image: "/rojo.png", description: descKey, colors: ["RED"] }
@@ -121,8 +122,6 @@ export function ShopSection() {
       setCart([...cart, { ...product, quantity: 1, selectedSize: size, selectedColor: color }])
     }
     
-    // setSelectedSize("") // Opcional: limpiar la selección o dejarla marcada
-    // setSelectedColor("")
     setIsCartOpen(true)
   }
 
@@ -360,7 +359,7 @@ export function ShopSection() {
                                 </p>
                                 <div className="mt-2">
                                     <p className="text-[10px] md:text-xs text-muted-foreground/70 tracking-wide font-light">
-                                    * {t('shipping_note')}
+- {t('shipping_note')}
                                     </p>
                                 </div>
                             </div>
@@ -383,7 +382,6 @@ export function ShopSection() {
                                 ))}
                                 </div>
                                 
-                                {/* AQUI LA MAGIA: Pasamos la función addToCart a la Guía */}
                                 <SizeGuide onSelectSize={(size) => addToCart(product, size, undefined)} />
                             </div>
                             )}
